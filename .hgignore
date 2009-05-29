@@ -1,3 +1,4 @@
+syntax: glob
 *.pyc
 *.pyo
 *~
@@ -8,4 +9,3 @@ sessions/*
 errors/*
 cache/*
 uploads/*
-models/0_override.py
