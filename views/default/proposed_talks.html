@@ -1,0 +1,15 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Proposed Talks')}}</h2>
+
+<ul>
+{{for talk in talks:}}
+{{=LI(talk.status,' ',A(talk.title,_href=URL(r=request,f='display_talk',args=talk.id)))}}
+{{pass}}
+</ul>
+</div>
+
+{{if not talks:}}
+No talks proposed yet
+{{pass}}

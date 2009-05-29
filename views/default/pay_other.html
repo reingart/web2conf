@@ -1,0 +1,21 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T("How to Pay somebody else's fees")}}</h2>
+<p>
+{{=T("You can pay somebody else's conference fees by transferring their balance. The transfer is pending until you pay your conference fees. To transfer the balance type below the \"payment token\" for the registrants, separated by a comma")}}
+</p>
+{{=form}}
+
+{{if transfers_in:}}
+<h2>{{=T("Other people's conference fees")}}</h2>
+<table>
+{{for transfer in transfers_in:}}
+<tr><td>{{=transfer.description}}</td><td style="text-align:right">${{='%.2f'%transfer.amount}}</td><td>
+{{if transfer.approved:}}APPROVED</td><td>{{else:}}PENDING<td>[{{=A(T('cancel'),_href=URL(r=request,f='cancel_transfer',args=[transfer.id]))}}]</td>{{pass}}
+</td></tr>
+{{pass}}
+</table>
+{{pass}}
+
+</div>

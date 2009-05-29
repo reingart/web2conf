@@ -1,0 +1,40 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Financial Analysis')}}</h2>
+<ul>
+<li><b>{{=T('Total Amount Billed')}}</b>: ${{=billed}}</li>
+<li><b>{{=T('Total Amount Received')}}</b>: ${{=paid}}</li>
+<li><b>{{=T('Total Amount Still Due')}}</b>: ${{=due}}</li>
+</ul>
+<a href="{{=URL(r=request,f="financials_csv/financials.csv")}}">downloasd as CSV</a>
+</div>
+<div class="frame">
+<h2>{{=T('Breakdown by person')}}</h2>
+<table>
+<tr>
+<th>Id</th>
+<th>Name</th>
+<th>Donation</th>
+<th>Total Amount billed</th>
+<th>Transferred in</th>
+<th>Transferred out</th>
+<th>Amount paid</th>
+<th>Balance due</th>
+</tr>
+{{for row in rows:}}
+<tr>
+<td>{{=row.id}}</td>
+<td>{{=A(row.first_name+' '+row.last_name,
+         _href=URL(r=request,f='impersonate',args=row.id))}}</td>
+<td style="text-align:right">${{='%.2f' % row.donation_to_PSF}}</td>
+<td style="text-align:right">${{='%.2f' % row.amount_billed}}</td>
+<td style="text-align:right">${{='%.2f' % row.amount_added}}</td>
+<td style="text-align:right">${{='%.2f' % row.amount_subtracted}}</td>
+<td style="text-align:right">${{='%.2f' % row.amount_paid}}</td>
+{{due=row.amount_billed+row.amount_added-row.amount_subtracted-row.amount_paid}}
+<td style="text-align:right">${{='%.2f' % due}}</td>
+</tr>
+{{pass}}
+</table>
+</div>

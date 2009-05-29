@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# INSTALL - installs the web2conf system on a ubuntu-server install.
+# depandancies: 
+
+# TODO:  Also need to say something about gchecky (it's missing here)
+#  get 'plugin_checkout' from
+#    http://mdp.cti.depaul.edu/appliances/default/show/43
+
+# This sets up python-poppler which Carl maintains:
+# add to sources.list
+# deb http://ppa.launchpad.net/carlfk/ubuntu intrepid main
+sudo sh -c 'printf "\n\n# NOTE: This sets up python-poppler, a custom implementation maintained by Carl Karsten:\ndeb http://ppa.launchpad.net/carlfk/ubuntu intrepid main\ndeb-src http://ppa.launchpad.net/carlfk/ubuntu intrepid main\n\n" >> /etc/apt/sources.list'
+sudo apt-get update
+
+sudo apt-get install python-reportlab python-setuptools python-poppler python-gtk2 ttf-freefont gsfonts
+# python-imaging - desktop layout tool:
+#  Don't need dabo for deployment / server
+# sudo easy_install dabo
+
+# already have this:
+# sudo apt-get install bzr
+
+# set this to your deployment directory:
+export DEPLOYDIR=/var/apache2/us.pycon.org/2009/web2-conf
+
+# For a working installation:
+# bzr export [destination] [repository]
+
+#bzr export $DEPLOYDIR lp:~:mdipierro/web2py/devel
+
+# no need for this area for web2conf:
+#rm -r web2py/application/examples
+
+# Support library:
+#bzr export $DEPLOYDIR/applications/plugin_t2 lp:~mdipierro/t2/main
+
+# The Conference Application:
+# To run as the default app, export to init:
+# bzr export $DEPLOYDIR/applications/init lp:web2conf
+#bzr export $DEPLOYDIR/applications/register lp:web2conf
+

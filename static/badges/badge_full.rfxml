@@ -1,0 +1,1212 @@
+<?xml version="1.0" encoding="ISO8859-1" standalone="no"?>
+<Report>
+	<Title>PyCon Registration Badge</Title>
+	<ColumnCount>1</ColumnCount>
+	<page>
+		<marginBottom>0</marginBottom>
+		<marginLeft>0</marginLeft>
+		<marginRight>0</marginRight>
+		<marginTop>0</marginTop>
+		<orientation>"portrait"</orientation>
+		<size>"letter"</size>
+	</page>
+	<Variables />
+	<Groups />
+	<PageBackground>
+		<Objects />
+	</PageBackground>
+	<pageHeader>
+		<Height>0</Height>
+		<Objects />
+	</pageHeader>
+	<detail>
+		<height>"8.25 in"</height>
+		<Objects>
+			<Rectangle>
+				<Comment>'copy biz'</Comment>
+				<Height>'115.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'200.0 pt'</width>
+				<x>'5.0 pt'</x>
+				<y>'266.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<height>115.0</height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<Width>200</Width>
+				<x>403.0</x>
+				<y>'380.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<Height>'115.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'200.0 pt'</width>
+				<x>'204.0 pt'</x>
+				<y>'380.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<Height>'115.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'200.0 pt'</width>
+				<x>'5.0 pt'</x>
+				<y>'380.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<Comment>'copy badge'</Comment>
+				<Height>'204.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'280.0 pt'</width>
+				<x>'5.0 pt'</x>
+				<y>'584.0 pt'</y>
+			</Rectangle>
+			<Image>
+				<Comment>'x'</Comment>
+				<expr>"./images/pycon_logo.png"</expr>
+				<Height>'0.8559 in'</Height>
+				<ScaleMode>scale</ScaleMode>
+				<Show>not self.Record["bod"]</Show>
+				<vAnchor>"top"</vAnchor>
+				<width>'49.0 pt'</width>
+				<x>'11.0 pt'</x>
+				<y>'581.0 pt'</y>
+			</Image>
+			<Rectangle>
+				<FillColor>(0.898, 0.898, 0.898)</FillColor>
+				<Height>'84.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeColor>None</strokeColor>
+				<strokeWidth>0</strokeWidth>
+				<width>'260 pt'</width>
+				<x>'12.0 pt'</x>
+				<y>'421.0 pt'</y>
+			</Rectangle>
+			<String>
+				<Align>'center'</Align>
+				<Comment>'copy badge'</Comment>
+				<expr>self.name</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<fontName>"FreeSans"</fontName>
+				<fontSize>28</fontSize>
+				<Height>'30.7623762376 pt'</Height>
+				<width>'260 pt'</width>
+				<x>'12.0 pt'</x>
+				<y>'474.0 pt'</y>
+			</String>
+			<String>
+				<align>"right"</align>
+				<Comment>'copy badge'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.6633663366 pt'</Height>
+				<width>'51.0 pt'</width>
+				<x>'216.9 pt'</x>
+				<y>'394.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Shirt"</expr>
+				<FontSize>25</FontSize>
+				<height>25</height>
+				<ScalePercent>(300.0, 100.0)</ScalePercent>
+				<width>'146.0 pt'</width>
+				<x>'211.0 pt'</x>
+				<y>'350.7 pt'</y>
+			</String>
+			<String>
+				<expr>self.t_shirt_size</expr>
+				<FontSize>20</FontSize>
+				<height>25</height>
+				<Width>145</Width>
+				<x>'211.0 pt'</x>
+				<y>'320.3 pt'</y>
+			</String>
+			<String>
+				<Align>"right"</Align>
+				<expr>self.id</expr>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'342.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<expr>'Vendor'</expr>
+				<Height>10</Height>
+				<Show>self.Record['vendor']</Show>
+				<Width>45</Width>
+				<x>'126.1 pt'</x>
+				<y>'351.0 pt'</y>
+			</String>
+			<String>
+				<Align>'center'</Align>
+				<expr>self.badge_line2</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<FontSize>15</FontSize>
+				<Height>20</Height>
+				<width>'260 pt'</width>
+				<x>'12.0 pt'</x>
+				<y>'429.4 pt'</y>
+			</String>
+			<String>
+				<expr>"Ribbon(s)"</expr>
+				<FontSize>12</FontSize>
+				<Height>12</Height>
+				<Width>60</Width>
+				<x>'11.7 pt'</x>
+				<y>'363 pt'</y>
+			</String>
+			<String>
+				<expr>'Keynote'</expr>
+				<Height>12</Height>
+				<Show>self.Record['keynote']</Show>
+				<Width>45</Width>
+				<x>'153.0 pt'</x>
+				<y>'363 pt'</y>
+			</String>
+			<String>
+				<expr>'Session Chair'</expr>
+				<Height>12</Height>
+				<Show>self.Record['session_chair']</Show>
+				<width>'75.0 pt'</width>
+				<x>'74.0 pt'</x>
+				<y>'363 pt'</y>
+			</String>
+			<String>
+				<expr>'Sponsor'</expr>
+				<Height>10</Height>
+				<Show>self.Record['sponsor']</Show>
+				<Width>45</Width>
+				<x>'12.8 pt'</x>
+				<y>'351.0 pt'</y>
+			</String>
+			<String>
+				<expr>'Speaker'</expr>
+				<Height>10</Height>
+				<Show>self.Record['speaker']</Show>
+				<Width>45</Width>
+				<x>'74.3 pt'</x>
+				<y>'351.0 pt'</y>
+			</String>
+			<String>
+				<Align>'center'</Align>
+				<expr>self.badge_line1</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<FontSize>15</FontSize>
+				<Height>'21.0 pt'</Height>
+				<width>'260 pt'</width>
+				<x>'12.0 pt'</x>
+				<y>'451.4 pt'</y>
+			</String>
+			<String>
+				<Align>"right"</Align>
+				<expr>self.id</expr>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'141.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<expr>"Bag"</expr>
+				<FontSize>25</FontSize>
+				<height>25</height>
+				<ScalePercent>(400.0, 100.0)</ScalePercent>
+				<width>'146.0 pt'</width>
+				<x>'413.0 pt'</x>
+				<y>'348.7 pt'</y>
+			</String>
+			<String>
+				<Align>"right"</Align>
+				<expr>self.id</expr>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'536.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'19.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<Align>left</Align>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'214.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<Align>left</Align>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'409.0 pt'</x>
+				<y>'281.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'218.2 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'414.0 pt'</x>
+				<y>'302.7 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'204.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'190.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'175.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'151.0 pt'</x>
+				<y>'235.2 pt'</y>
+			</String>
+			<String>
+				<expr>"Exchange this for a conference bag"</expr>
+				<Width>180</Width>
+				<x>'413.0 pt'</x>
+				<y>'328.4 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>"badge by dabodev.com"</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<FontName>"NimbusSanL-Regu"</FontName>
+				<FontSize>10</FontSize>
+				<Height>'16.7623762376 pt'</Height>
+				<Rotation>270</Rotation>
+				<ScalePercent>(140,110)</ScalePercent>
+				<width>'150.0 pt'</width>
+				<x>'585 pt'</x>
+				<y>'575.0 pt'</y>
+			</String>
+			<Image>
+				<expr>self.barcode</expr>
+				<Height>50</Height>
+				<Show>True</Show>
+				<when>'Vendor'</when>
+				<Width>'155.0 pt'</Width>
+				<x>'363.2 pt'</x>
+				<y>'419.0 pt'</y>
+			</Image>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'15.0 pt'</x>
+				<y>'232.7 pt'</y>
+			</String>
+			<Image>
+				<expr>self.barcode</expr>
+				<Height>50</Height>
+				<Show>True</Show>
+				<when>'Vendor'</when>
+				<width>'113.0 pt'</width>
+				<x>'18.0 pt'</x>
+				<y>'293.6 pt'</y>
+			</Image>
+			<String>
+				<Align>'right'</Align>
+				<expr>"Hyatt"</expr>
+				<Height>12</Height>
+				<Width>35</Width>
+				<x>'137.0 pt'</x>
+				<y>'328.0 pt'</y>
+			</String>
+			<String>
+				<Align>'right'</Align>
+				<expr>"Crowne"</expr>
+				<Height>12</Height>
+				<Width>35</Width>
+				<x>'137.0 pt'</x>
+				<y>'309.0 pt'</y>
+			</String>
+			<Rectangle>
+				<Comment>'copy biz'</Comment>
+				<Height>12</Height>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<Width>12</Width>
+				<x>'176.0 pt'</x>
+				<y>'338.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<Comment>'copy biz'</Comment>
+				<Height>12</Height>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<Width>12</Width>
+				<x>'176.0 pt'</x>
+				<y>'319.0 pt'</y>
+			</Rectangle>
+			<Rectangle>
+				<Height>1</Height>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'182.0 pt'</width>
+				<x>'13.0 pt'</x>
+				<y>345</y>
+			</Rectangle>
+			<String>
+				<expr>'X'</expr>
+				<Height>10</Height>
+				<Show>self.Record['hotel']=="Hyatt Regency"</Show>
+				<width>'8.0 pt'</width>
+				<x>'178.1 pt'</x>
+				<y>'329.0 pt'</y>
+			</String>
+			<String>
+				<expr>'X'</expr>
+				<Height>'10.0 pt'</Height>
+				<Show>self.Record['hotel']=="Crowne Plaza"</Show>
+				<width>'8.0 pt'</width>
+				<x>'178.1 pt'</x>
+				<y>'309.0 pt'</y>
+			</String>
+			<String>
+				<expr>self.Record['food_preference']</expr>
+				<Height>10</Height>
+				<Show>self.Record['food_preference']!="normal"</Show>
+				<Width>80</Width>
+				<x>'308.1 pt'</x>
+				<y>'393.0 pt'</y>
+			</String>
+			<Image>
+				<Comment>'x'</Comment>
+				<expr>"./images/pycon2009chi.png"</expr>
+				<Height>'0.8559 in'</Height>
+				<ScaleMode>scale</ScaleMode>
+				<vAnchor>"top"</vAnchor>
+				<width>'209.0 pt'</width>
+				<x>'65.0 pt'</x>
+				<y>'581.0 pt'</y>
+			</Image>
+			<String>
+				<Align>'center'</Align>
+				<Comment>''</Comment>
+				<expr>self.Record['tutorials']</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<fontName>"FreeSans"</fontName>
+				<fontSize>16</fontSize>
+				<Height>'30.7623762376 pt'</Height>
+				<width>'260 pt'</width>
+				<x>'302.0 pt'</x>
+				<y>'544.0 pt'</y>
+			</String>
+			<String>
+				<Align>'center'</Align>
+				<Comment>''</Comment>
+				<expr>'amount_due: %s' % self.Record['amount_due']</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<fontName>"FreeSans"</fontName>
+				<fontSize>28</fontSize>
+				<Height>'30.7623762376 pt'</Height>
+				<Show>self.Record['amount_due']</Show>
+				<width>'260 pt'</width>
+				<x>'302.0 pt'</x>
+				<y>'504.0 pt'</y>
+			</String>
+			<Rectangle>
+				<Comment>'copy badge'</Comment>
+				<Height>'204.0 pt'</Height>
+				<Show>not self.Record["bod"]</Show>
+				<strokeWidth>1</strokeWidth>
+				<vAnchor>"top"</vAnchor>
+				<width>'280.0 pt'</width>
+				<x>'293.0 pt'</x>
+				<y>'584.0 pt'</y>
+			</Rectangle>
+			<String>
+				<Align>'center'</Align>
+				<Comment>'copy badge'</Comment>
+				<expr>self.name</expr>
+				<FontColor>(0,0,0)</FontColor>
+				<fontName>"FreeSans"</fontName>
+				<fontSize>28</fontSize>
+				<Height>'30.7623762376 pt'</Height>
+				<width>'260 pt'</width>
+				<x>'300.0 pt'</x>
+				<y>'474.0 pt'</y>
+			</String>
+			<String>
+				<align>"right"</align>
+				<Comment>'copy badge'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.6633663366 pt'</Height>
+				<width>'51.0 pt'</width>
+				<x>'504.9 pt'</x>
+				<y>'394.0 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'218.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'218.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'103.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'103.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'103.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-11.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-11.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-11.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-126.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-126.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.name</expr>
+				<FontName>"FreeSans"</FontName>
+				<FontSize>12</FontSize>
+				<Height>14</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-126.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'204.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'204.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'89.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'89.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'89.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-25.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-25.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-25.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-140.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-140.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line1</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-140.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'190.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'190.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'75.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'75.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'75.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-39.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-39.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-39.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-154.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-154.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.badge_line2</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-154.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'175.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'175.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'60.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'60.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'60.2 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-54.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-54.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-54.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'14.0 pt'</x>
+				<y>'-169.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'213.0 pt'</x>
+				<y>'-169.8 pt'</y>
+			</String>
+			<String>
+				<Align>"left"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.email</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'131.0 pt'</width>
+				<x>'412.0 pt'</x>
+				<y>'-169.8 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'350.0 pt'</x>
+				<y>'235.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'549.0 pt'</x>
+				<y>'235.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'151.0 pt'</x>
+				<y>'120.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'350.0 pt'</x>
+				<y>'120.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'549.0 pt'</x>
+				<y>'120.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'151.0 pt'</x>
+				<y>'5.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'350.0 pt'</x>
+				<y>'5.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'549.0 pt'</x>
+				<y>'5.2 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'151.0 pt'</x>
+				<y>'-109.8 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'350.0 pt'</x>
+				<y>'-109.8 pt'</y>
+			</String>
+			<String>
+				<Align>"center"</Align>
+				<Comment>'copy biz'</Comment>
+				<expr>self.id</expr>
+				<Height>'14.0 pt'</Height>
+				<Rotation>0</Rotation>
+				<width>'51.0 pt'</width>
+				<x>'549.0 pt'</x>
+				<y>'-109.8 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'214.0 pt'</x>
+				<y>'232.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'413.0 pt'</x>
+				<y>'232.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'15.0 pt'</x>
+				<y>'117.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'214.0 pt'</x>
+				<y>'117.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'413.0 pt'</x>
+				<y>'117.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'15.0 pt'</x>
+				<y>'2.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'214.0 pt'</x>
+				<y>'2.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'413.0 pt'</x>
+				<y>'2.7 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'15.0 pt'</x>
+				<y>'-112.3 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'214.0 pt'</x>
+				<y>'-112.3 pt'</y>
+			</String>
+			<String>
+				<Comment>'copy biz'</Comment>
+				<expr>"PyCon 2009"</expr>
+				<FontName>"NimbusSanL-Bold"</FontName>
+				<FontSize>14</FontSize>
+				<Height>'16.0 pt'</Height>
+				<ScalePercent>(160.0, 100.0)</ScalePercent>
+				<width>'136.0 pt'</width>
+				<x>'413.0 pt'</x>
+				<y>'-112.3 pt'</y>
+			</String>
+		</Objects>
+	</detail>
+	<pageFooter>
+		<Objects />
+	</pageFooter>
+	<PageForeground>
+		<Objects />
+	</PageForeground>
+	<TestCursor>
+		<record last_name="&quot;Ceduto&quot;" attendee_type="&quot;tutorial_regular&quot;" reviewer="True" id="1" session_chair="False" sprints="None" city="&quot;&quot;" first_name="&quot;Pamaco&quot;" state="&quot;&quot;" speaker="False" company_name="&quot;Mopamo Corp.&quot;" include_in_delegate_listing="True" food_preference="&quot;kosher&quot;" tutorials="&quot;[web2py]&quot;" email="&quot;pamaco@mopamo.com&quot;" zip_code="&quot;58392&quot;" phone_number="None" hotel="&quot;Hyatt Regency&quot;" badge_line1="&quot;&quot;" badge_line2="&quot;&quot;" address1="&quot;&quot;" address2="&quot;&quot;" barcode="open(&apos;images/sample_barcode.png&apos;,&apos;rb&apos;).read()" t_shirt_size="&quot;man/3xlarge&quot;" personal_home_page="&quot;http://www.mopamo.com&quot;" name="&quot;pamaco0&quot;" country="&quot;Liechtenstein&quot;" longitude="0.0" company_home_page="&quot;http://www.mopamo.com&quot;" amount_due="0.0" bod="False" />
+	</TestCursor>
+</Report>

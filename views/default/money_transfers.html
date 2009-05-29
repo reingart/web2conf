@@ -1,0 +1,24 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Money Transfers')}}</h2>
+<h3>{{=T('From')}}</h3>
+<ul>
+{{for t in transfers_from:}}
+<li>${{=t.amount}} {{=t.description}} [{{=t.id}}]</li>
+{{pass}}
+</ul>
+<h3>{{=T('To')}}</h3>
+<ul>
+{{for t in transfers_to:}}
+<li>${{=t.amount}} {{=t.description}} [{{=t.id}}]</li>
+{{pass}}
+</ul>
+</div>
+
+<div class="frame">
+<h2>{{=T('Transfers Balance From')}}</h2>
+{{=T('Type in the box the tokens of the people you want to pay the balance from. You can insert multiple tokens separated by a comma. They can find their tokens on the [PAY NOW] page.')}}
+{{=form}}
+</div>
+

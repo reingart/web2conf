@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+*~
+#*
+models/0_override.py
+databases/*
+sessions/*
+errors/*
+cache/*
+uploads/*
+models/0_override.py

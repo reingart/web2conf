@@ -1,0 +1,68 @@
+{{extend 'layout.html'}}
+
+<h2>Impersonating {{=person.first_name}} {{=person.last_name}}</h2>
+
+<div class="frame">
+<h2>{{=T('Time to Pay!')}}</h2>
+<p>
+<table width="70%">
+<tr><td>{{=T('Your donation')}}</td><td style="text-align:right">${{='%.2f'%person.donation_to_PSF}}</td><td>+</td></tr>
+<tr><td>{{=T('Your conference fees')}}</td><td style="text-align:right">${{='%.2f'%(person.amount_billed-person.donation_to_PSF)}}</td><td>+</td></tr>
+{{if session.amount_added:}}
+<tr><td>{{=T("Other people's conference fees")}}</td><td style="text-align:right">${{='%.2f'%person.amount_added}}</td><td>+</td></tr>
+{{pass}}
+{{if session.amount_subtracted:}}
+<tr><td>{{=T('Amount paid for you by somebody else')}}</td><td style="text-align:right">${{='%.2f'%person.amount_subtracted}}</td><td>-</td></tr>
+{{pass}}
+<tr><td>{{=T('Amount paid by you')}} (*)</td><td style="text-align:right">${{='%.2f'%person.amount_paid}}</td><td>-</td></tr>
+<tr><td>{{=T('Your current balance')}}</td><td style="text-align:right">${{='%.2f'%balance}}</td><td>=</td></tr>
+</table>
+<center>
+{{=pay}}
+</center>
+<i>(*) {{=T('Please note that a sumitted payment may take time to be processed. It may take up to one hour to process a payment. Do not pay twice unless your payment is explicitly declined. You can find the status of your payments below.')}}</i>
+<br />
+{{=A(T("Add/remove tutorials"),_href=URL(r=request,f='profile'))}}<br />
+{{=A(T("Pay by check"),_href=URL(r=request,f='pay_check'))}}<br />
+{{=A(T("Somebody else will pay for me"),_href=URL(r=request,f='pay_other_info'))}}<br />
+{{=A(T("Pay for somebody else"),_href=URL(r=request,f='pay_other'))}}<br />
+{{=A(T("Register and pay for somebody else"),_href=URL(r=request,f='register_other'))}}<br />
+</p>
+
+{{if transfers_in:}}
+<h2>{{=T("Other people's conference fees")}}</h2>
+<table>
+{{for transfer in transfers_in:}}
+<tr><td>{{=transfer.description}}</td><td style="text-align:right">${{='%.2f'%transfer.amount}}</td><td>
+{{if transfer.approved:}}APPROVED{{else:}}<span style="color:red">PENDING</span>{{pass}}</td><td>[{{=A(T('cancel'),_href=URL(r=request,f='cancel_transfer2',args=[person.id,transfer.id]))}}]</td>
+</tr>
+{{pass}}
+</table>
+{{pass}}
+
+{{if transfers_out:}}
+<h2>{{=T("Amount paid for you by somebody else")}}</h2>
+<table>
+{{for transfer in transfers_out:}}
+<tr><td>{{=transfer.description}}</td><td style="text-align:right">${{='%.2f'%transfer.amount}}</td><td>
+{{if transfer.approved:}}APPROVED{{else:}}<span style="color:red">PENDING</span>{{pass}}</td><td>[{{=A(T('cancel'),_href=URL(r=request,f='cancel_transfer2',args=[person.id,transfer.id]))}}]</td>
+</tr>
+{{pass}}
+</table>
+{{pass}}
+
+{{if payments:}}
+<h2>{{=T("List of submitted payments")}}</h2>
+<i>{{=T('If you have pending payments (SUBMITTED status), reload this page to check for status updates. The amount due will be updated when the payment is CHARGED.')}}</i>
+<table>
+{{for payment in payments:}}
+{{if payment.status=='PRE-PROCESSING': continue}}
+<tr><td>{{=payment.method}} {{=payment.created_on}}</td><td style="text-align:right">${{='%.2f'%payment.amount}}</td><td>{{=payment.status}}</td>
+<td>{{=payment.order_id}}</td>
+</tr>
+{{pass}}
+</table>
+{{pass}}
+
+
+</div>

@@ -1,0 +1,28 @@
+{{extend 'layout.html'}}
+
+<script>
+$(document).ready(function(){
+$('TR TD:first').attr('width','150px');
+});
+</script>
+
+<div class="frame">
+<h2>{{=T('Registration Form')}}</h2>
+<p><font color='green'>{{=B(T('Registering or paying for others?))}}
+<br/>{{=B(T('Create a non-attending registration for yourself first!'))}}</font></p>
+<i>{{=T('After completing this form you will receive a verification message by email. Follow the link therein, login with the email/password you chose below and you will be redirected to a payment form. You will be able to pay by credit card using Google Checkout. Register as non-attending in order to register and pay for other people.')}}</i>
+{{=form}}
+<p><b>Notes:</b></p>
+<p id="footnote1"><b>[1]</b> This information will be encoded on your badge and can be provided to sponsors and exhibitors in the expo hall. These fields are optional unless otherwise noted. Mailing address information is required to send receipts for PSF donations.</p>
+</div>
+
+<script>
+var regex=/[^\w\s]+/g
+var do_nickname=1;
+function update_nickname() { if(do_nickname) { $('#t2_person_name').val(($('#t2_person_first_name').val()+' '+$('#t2_person_last_name').val()).replace(regex,function(m) {return ''})) } }
+$(document).ready(function() {
+$('#t2_person_first_name').keyup(update_nickname);
+$('#t2_person_last_name').keyup(update_nickname);
+$('#t2_person_name').keyup(function() {do_nickname=0;});
+});
+</script>

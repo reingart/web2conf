@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Talk Proposal')}}</h2>
+[{{=A('edit',_href=t2.action('update_talk',t2.id))}}]
+[{{=A('review',_href=t2.action('review_talk',t2.id))}}]
+{{=item}}
+</div>
+
+{{if attachments:}}
+<div class="frame">
+<h2>{{=T('Attachments')}}</h2>
+{{=attachments}}
+</div>
+{{pass}}
+
+<div class="frame">
+<h2>{{=T('Comments')}}</h2>
+{{=comments}}
+</div>

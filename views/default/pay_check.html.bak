@@ -1,0 +1,22 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>Alternate Payment Methods</h2>
+<h3>Check</h3>
+<p>
+{{=T('If you wish to pay by check, please send a check drawn on a US bank for US$%0.2f payable to:' % session.balance)}}
+<DIV CLASS="indented"><b>Python Software Foundation</b></DIV><br/>
+{{=T('and mail it to:')}}
+<DIV CLASS="indented"><pre>
+Pycon2009 -
+Python Software Foundation
+P.O. Box 848
+Hampton, NH 03843
+USA
+</pre></DIV>
+{{=T("Attach")}} {{=A(T("this invoice"),_href=URL(r=request,f='invoice'))}} {{=T("to your payment")}}.
+</p>
+<p>
+{{=T("Your balance will be updated when the check is received and cashed.")}}
+</p>
+</div>

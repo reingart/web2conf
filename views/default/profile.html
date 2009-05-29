@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+
+<script>
+$(document).ready(function(){
+$('TR TD:first').attr('width','150px');
+});
+</script>
+
+<div class="frame">
+<h2>{{=T('Edit your profile and preferences')}}</h2>
+{{=form}}
+<p><b>Notes:</b></p>
+<p id="footnote1"><b>[1]</b>
+{{=T('This information will be encoded on your badge and can be provided to sponsors and exhibitors in the expo hall. These fields are optional unless otherwise noted. Mailing address information is required to send receipts for PSF donations.')}}
+</p>
+<p id="footnote2"><b>[2]</b>
+{{=T('The Financial Aid request process is described here:')}} {{=XML(str(A('Financial Aid',_href='http://us.pycon.org/2009/registration/financial-aid')))}}.
+<br>&nbsp&nbsp&nbsp&nbsp {{=T('If you intend to apply, please use the ')}}{{=A(T('Financial Aid Online Application'), _href=URL(r=request,f='fa_app'))}}.
+</p>
+</div>

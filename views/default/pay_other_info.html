@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>Can somebody else pay my fees?</h2>
+<p>
+{{=T('Yes. Give them your "payment token":')}} <b>{{='%i-%s' % (person.id,person.pay_token.upper())}}</b>
+</p>
+</div>

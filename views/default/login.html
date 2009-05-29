@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Login')}}</h2>
+{{=form}}
+<br/>
+{{=A('lost your password?',_href=t2.action('password'))}}
+<br/>
+{{=A('need to register?',_href=t2.action('register'))}}
+</div>

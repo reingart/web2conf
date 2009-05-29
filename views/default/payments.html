@@ -1,0 +1,28 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Payments')}}</h2>
+<table>
+<tr>
+<th>Id</th>
+<th>Date</th>
+<th>From</th>
+<th>Amount</th>
+<th>Method</th>
+<th>Status</th>
+<th>Order Id</th>
+</tr>
+{{for p in payments:}}
+<tr>
+<td>{{=p.payment.id}}</td>
+<td>{{=p.payment.created_on.strftime('%d-%b-%Y')}}</td>
+<td>{{=A(p.t2_person.name,_href=URL(r=request,f='impersonate',args=p.t2_person.id))}}</td>
+<td style="text-align:right">${{='%.2f' % p.payment.amount}}</td>
+<td>{{=p.payment.method}}</td>
+<td style="color: {{='green' if p.payment.status=='CHARGED' else 'red' if p.payment.status.find('CANCELLED')>=0 or p.payment.status.find('DECLINED')>=0 else 'yellow'}}">{{=p.payment.status}}</td>
+<td>{{=p.payment.order_id}}</td>
+</tr>
+<tr><td></td><td colspan="6">{{=p.payment.invoice}}</td></tr>
+{{pass}}
+</table>
+</div>

@@ -1,0 +1,12 @@
+<html><body>
+<hr />
+<h1>{{=response.title}} Invoice</h2>
+<hr />
+<table>
+<tr><td>Date:</td><td>{{=t2.now}}</td></tr>
+<tr><td>User ID:</td><td>{{=auth.user.id}}</td></tr>
+<tr><td>Name:</td><td>{{=auth.user.first_name+' '+auth.user.last_name}}</td></tr>
+<tr><td>Balance:</td><td>${{=balance}}</td></tr>
+</table>
+<hr />
+</body></html>
