@@ -1,20 +1,22 @@
-body { margin: 0; font-family: Helvetica, sans-serif; font-size: 13px; color: #787878; background: url('media/img01.jpg') repeat-x left top; }
-h1, h2, h3 { margin: 0; letter-spacing: .15em; font-family: Helvetica, sans-serif; padding: 10px; }
+body { margin: 0; font-size: 90%; font-family: DejaVu Sans, Droid Sans, Verdana, sans-serif; color: #787878; background:#FFCC77; }
+h1, h2, h3 { margin: 0; letter-spacing: .025em; padding: 10px 0 10px 0; color: #787878; }
 h1 { font-size: 1.8em; }
 h2 { font-size: 1.4em; }
 h3 { font-size: 1em; }
-p, ul, ol { margin-top: 0; line-height: 180%; }
+p, ul, ol { margin-top: 0; line-height: 180%; color: black; }
 ul, ol { }
 a { text-decoration: none; color: #f34d00; }
 a:hover { background: none; }
 /* Header */
 
-#header { width: 920px; height: 98px; margin: 0 auto; }
+#header { width: 100%; height: 90px; margin: 0 auto;  background:#FFCC77;}
+    
 /* Logo */
 
 #logo { float: left; width: 600px; }
-#logo h1 { float: left; padding-top: 20px; font-size: 3.2em; }
-#logo p { float: left; margin: 0; padding: 30px 0 0 2px; font: 1.6em Helvetica, sans-serif; }
+#logo img { display: block; float: left; vertical-align: middle; padding: 0 0.25em 0;  }
+#logo h1 { color: black; font-size: 1.4em; font-weight: bold; letter-spacing: 0; padding: 0.50em 0 0.25em; margin: 0 0 0 0; text-align: center}
+#logo p {  color: black; font-size: ºem; font-weight: bold; text-align: center; line-height: 180%; padding: 0 0 0 0; margin: 0 0 0 0 }
 #logo a { background: none; text-decoration: none; color: #5F882C; }
 /* Search */
 
@@ -25,18 +27,19 @@ a:hover { background: none; }
 #search-submit { display: none; }
 /* Menu */
 
-#menu { width: 920px; height: 50px; margin: 0 auto; }
+#menu { width: 100%; height: 2.3em; margin: 0 auto; border-top: 1px solid #d60; border-bottom: 1px solid #e70; color: #eee; background: #f93; padding: 0 0.5em;}
 #menu ul { margin: 0; margin-right: 30px; padding: 0; list-style: none; line-height: normal; }
-#menu li { float: left; }
-#menu a { padding: 5px 20px 5px 20px; text-decoration: none; font-family: Helvetica, sans-serif; font-size: 14px; font-weight: normal; color: #FFFFFF; }
-#menu a:hover, #menu .current_page_item a { background-color: #566316; opacity: 0.50}
+#menu li { float: left;  margin: 0.25em 0.25em; border: 1px solid #e70; }
+#menu a { letter-spacing: 0.05em; border: 1px solid #fb7; text-decoration: none; padding: 0.25em 0.75em; background: #fa4; color: #420; }
+#menu a:hover, #menu .current_page_item a { color: #000; background: #fb6; border: 1px solid #fd9; }    
+
 /* Page */
 
-#page { width: 920px; margin: 0 auto; padding-top: 15px; }
+#page { width: 920px; margin: 0 auto; padding: 15px 15px 15px 15px; }
 /* Content */
 
 #content { float: left; width: 720px; }
-.frame { background: white; border: 2px solid #aaaaaa; padding: 10px; }
+.frame { background: white; border: 1px solid #ea6; padding: 10px; color: #5C5C5C;}
 .frame .title { padding: 15px 0 5px 20px; color: #5C5C5C; }
 .frame .title a { background: none; color: #5C5C5C; }
 .frame .meta { padding: 2px 20px; border-top: 1px dashed #D2D4C9; border-bottom: 1px dashed #D2D4C9; text-align: left; font-family: Helvetica, sans-serif; font-size: 9px; }
@@ -45,9 +48,19 @@ a:hover { background: none; }
 
 /* Sidebar */
 
-#sidebar { float: right; width: 180px; border-bottom: 1px dashed #D2D4C9; color: #787878; }
-#sidebar ul { margin: 0; padding: 0; list-style: none; }
-table tr td { text-align: left; vertical-align: top; }
+#sidebar { float: right; width: 180px; background: white;
+    border: 1px solid #ea7;
+    border-bottom: 1px solid #e83;
+    padding: 1px;
+    margin: 0; }
+#sidebar ul {     margin: 0 0.25em;
+    list-style: none;
+    padding: 0 0.25em 0.25em 0; }
+    
+table tr td { text-align: left; vertical-align: top; color: black;}
+
+
+
 #calendar { }
 #calendar_wrap { padding: 20px; }
 #calendar table { width: 100%; }
@@ -55,8 +68,10 @@ table tr td { text-align: left; vertical-align: top; }
 #calendar #next { text-align: right; }
 /* Footer */
 
-#footer { width: 100%; height: 50px; margin: 0 auto; padding: 40px 0; background: #90BF4D url('media/img02.jpg') left top; font-family: Helvetica, sans-serif; color: #416110; }
-#footer p { margin: 0; line-height: normal; font-size: 11px; text-align: center; }
+
+#footer { width: 100%; height: 50px; margin: 0 auto;  background:#FFCC77; padding: 40px 0; color: #416110;
+    border-top: 1px solid #ccc; }
+#footer p { margin: 0; padding:0 ; line-height: normal; font-size: 11px; text-align: center; color: black;}
 #footer a { color: #FFFFFF; }
 .flash { position: absolute; top: 0px; right: 20%; width: 60%; height: 50px; opacity: 0.75; margin: 0 auto; text-align: center; clear: both; border: 1px #000000 solid; color: black; font-size: 12pt; padding: 100px 10px 10px 10px; cursor: pointer; background: white; }
 div.error { background-color: red; color: white; padding: 3px }
@@ -65,42 +80,42 @@ div.error { background-color: red; color: white; padding: 3px }
 .tag_on, .tag_on:hover { color: white; background-color:#79A73B; padding: 5px 5px 5px 5px }
 .tag_off, .tag_off:hover { color:black; background-color: #dddddd; padding: 5px 5px 5px 5px }
 /*** ESSENTIAL STYLES ***/
-.sf-menu, .sf-menu * { margin:			0; padding:		0; list-style:		none; }
-.sf-menu { line-height:	1.0; }
-.sf-menu ul { position:		absolute; top:			-999em; width:			10em; /* left offset of submenus need to match (see below) */ }
-.sf-menu ul li { width:			100%; }
-.sf-menu li:hover { visibility:		inherit; /* fixes IE7 'sticky bug' */ }
-.sf-menu li { float:			left; position:		relative; }
-.sf-menu a { display:		block; position:		relative; }
+.sf-menu, .sf-menu * { margin:          0; padding:     0; list-style:      none; }
+.sf-menu { line-height: 1.0; }
+.sf-menu ul { position:     absolute; top:          -999em; width:          10em; /* left offset of submenus need to match (see below) */ }
+.sf-menu ul li { width:         100%; }
+.sf-menu li:hover { visibility:     inherit; /* fixes IE7 'sticky bug' */ }
+.sf-menu li { float:            left; position:     relative; }
+.sf-menu a { display:       block; position:        relative; }
 .sf-menu li:hover ul,
-.sf-menu li.sfHover ul { left:			0; top:			2.5em; /* match top ul list item height */
-	z-index:		99; }
+.sf-menu li.sfHover ul { left:          0; top:         2.5em; /* match top ul list item height */
+    z-index:        99; }
 ul.sf-menu li:hover li ul,
-ul.sf-menu li.sfHover li ul { top:			-999em; }
+ul.sf-menu li.sfHover li ul { top:          -999em; }
 ul.sf-menu li li:hover ul,
-ul.sf-menu li li.sfHover ul { left:			10em; /* match ul width */
-	top:			0; }
+ul.sf-menu li li.sfHover ul { left:         10em; /* match ul width */
+    top:            0; }
 ul.sf-menu li li:hover li ul,
-ul.sf-menu li li.sfHover li ul { top:			-999em; }
+ul.sf-menu li li.sfHover li ul { top:           -999em; }
 ul.sf-menu li li li:hover ul,
-ul.sf-menu li li li.sfHover ul { left:			10em; /* match ul width */
-	top:			0; }
+ul.sf-menu li li li.sfHover ul { left:          10em; /* match ul width */
+    top:            0; }
 /*** DEMO SKIN ***/
-.sf-menu { float:			left; margin-bottom:	1em; }
-.sf-menu a { padding: 		.2em 1em; text-decoration:none; }
+.sf-menu { float:           left; margin-bottom:    1em; }
+.sf-menu a { padding:       .2em 1em; text-decoration:none; }
 .sf-menu a, .sf-menu a:visited { /* visited pseudo selector so IE6 applies text colour*/
-	color:			#13a; }
-.sf-menu li { background:		transparent; }
-.sf-menu li li { background:		#79A73B; opacity: 0.8; }
-.sf-menu li li li { background:		#9AAEDB; }
+    color:          #13a; }
+.sf-menu li { background:       transparent; }
+.sf-menu li li { background:        #79A73B; opacity: 0.8; }
+.sf-menu li li li { background:     #9AAEDB; }
 .sf-menu li:hover, .sf-menu li.sfHover,
-.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active { background:		transparent; }
+.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active { background:     transparent; }
 /*** arrows **/
-.sf-menu a.sf-with-ul { #padding-right: 	2.25em; #min-width:		1px; /* trigger IE7 hasLayout so spans position accurately */ }
-.sf-sub-indicator { position:		absolute; display:		block; right:			.75em; top:			1.05em; /* IE6 only */
-	width:			10px; height:			10px; text-indent: 	-999em; overflow:		hidden; background: no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */ }
+.sf-menu a.sf-with-ul { #padding-right:     2.25em; #min-width:     1px; /* trigger IE7 hasLayout so spans position accurately */ }
+.sf-sub-indicator { position:       absolute; display:      block; right:           .75em; top:         1.05em; /* IE6 only */
+    width:          10px; height:           10px; text-indent:  -999em; overflow:       hidden; background: no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */ }
 a > .sf-sub-indicator { /* give all except IE6 the correct values */
-	top:			.8em; background-position: 0 -100px; /* use translucent arrow for modern browsers*/ }
+    top:            .8em; background-position: 0 -100px; /* use translucent arrow for modern browsers*/ }
 /* apply hovers to modern browsers */
 a:focus > .sf-sub-indicator,
 a:hover > .sf-sub-indicator,
@@ -120,11 +135,11 @@ li.sfHover > a > .sf-sub-indicator { background-position: -10px -100px; /* arrow
 .sf-shadow ul { background: no-repeat bottom right; padding: 0 8px 9px 0; -moz-border-radius-bottomleft: 17px; -moz-border-radius-topright: 17px; -webkit-border-top-right-radius: 17px; -webkit-border-bottom-left-radius: 17px; }
 .sf-shadow ul.sf-shadow-off { background: transparent; }
 /*** adding sf-vertical in addition to sf-menu creates a vertical menu ***/
-.sf-vertical, .sf-vertical li { width:	10em; }
+.sf-vertical, .sf-vertical li { width:  10em; }
 /* this lacks ul at the start of the selector, so the styles from the main CSS file override it where needed */
 .sf-vertical li:hover ul,
-.sf-vertical li.sfHover ul { left:	10em; /* match ul width */
-	top:	0; }
+.sf-vertical li.sfHover ul { left:  10em; /* match ul width */
+    top:    0; }
 /*** alter arrow directions ***/
 .sf-vertical .sf-sub-indicator { background-position: -10px 0; }
 /* IE6 gets solid image only */
@@ -138,34 +153,34 @@ li.sfHover > a > .sf-sub-indicator { background-position: -10px -100px; /* arrow
 .sf-vertical li:hover > a > .sf-sub-indicator,
 .sf-vertical li.sfHover > a > .sf-sub-indicator { background-position: -10px 0; /* arrow hovers for modern browsers*/ }
 /*** adding the class sf-navbar in addition to sf-menu creates an all-horizontal nav-bar menu ***/
-.sf-navbar { background:		#BDD2FF; height:			2.5em; padding-bottom:	2.5em; position:		relative; }
-.sf-navbar li { background:		#AABDE6; position:		static; }
-.sf-navbar a { border-top:		none; }
-.sf-navbar li ul { width:			44em; /*IE6 soils itself without this*/ }
-.sf-navbar li li { background:		#BDD2FF; position:		relative; }
-.sf-navbar li li ul { width:			13em; }
-.sf-navbar li li li { width:			100%; }
-.sf-navbar ul li { width:			auto; float:			left; }
-.sf-navbar a, .sf-navbar a:visited { border:			none; }
-.sf-navbar li.current { background:		#BDD2FF; }
+.sf-navbar { background:        #BDD2FF; height:            2.5em; padding-bottom:  2.5em; position:        relative; }
+.sf-navbar li { background:     #AABDE6; position:      static; }
+.sf-navbar a { border-top:      none; }
+.sf-navbar li ul { width:           44em; /*IE6 soils itself without this*/ }
+.sf-navbar li li { background:      #BDD2FF; position:      relative; }
+.sf-navbar li li ul { width:            13em; }
+.sf-navbar li li li { width:            100%; }
+.sf-navbar ul li { width:           auto; float:            left; }
+.sf-navbar a, .sf-navbar a:visited { border:            none; }
+.sf-navbar li.current { background:     #BDD2FF; }
 .sf-navbar li:hover,
 .sf-navbar li.sfHover,
 .sf-navbar li li.current,
-.sf-navbar a:focus, .sf-navbar a:hover, .sf-navbar a:active { background:		#BDD2FF; }
+.sf-navbar a:focus, .sf-navbar a:hover, .sf-navbar a:active { background:       #BDD2FF; }
 .sf-navbar ul li:hover,
 .sf-navbar ul li.sfHover,
 ul.sf-navbar ul li:hover li,
 ul.sf-navbar ul li.sfHover li,
-.sf-navbar ul a:focus, .sf-navbar ul a:hover, .sf-navbar ul a:active { background:		#D1DFFF; }
+.sf-navbar ul a:focus, .sf-navbar ul a:hover, .sf-navbar ul a:active { background:      #D1DFFF; }
 ul.sf-navbar li li li:hover,
 ul.sf-navbar li li li.sfHover,
 .sf-navbar li li.current li.current,
-.sf-navbar ul li li a:focus, .sf-navbar ul li li a:hover, .sf-navbar ul li li a:active { background:		#E6EEFF; }
+.sf-navbar ul li li a:focus, .sf-navbar ul li li a:hover, .sf-navbar ul li li a:active { background:        #E6EEFF; }
 ul.sf-navbar .current ul,
 ul.sf-navbar ul li:hover ul,
-ul.sf-navbar ul li.sfHover ul { left:			0; top:			2.5em; /* match top ul list item height */ }
-ul.sf-navbar .current ul ul { top: 			-999em; }
-.sf-navbar li li.current > a { font-weight:	bold; }
+ul.sf-navbar ul li.sfHover ul { left:           0; top:         2.5em; /* match top ul list item height */ }
+ul.sf-navbar .current ul ul { top:          -999em; }
+.sf-navbar li li.current > a { font-weight: bold; }
 /*** point all arrows down ***/
 /* point right for anchors in subs */
 .sf-navbar ul .sf-sub-indicator { background-position: -10px -100px; }
@@ -221,89 +236,89 @@ ul.sf-navbar .current ul ul { top: 			-999em; }
 .CP_hour { padding:1px; font-family:Arial,Helvetica,sans-serif; font-size:9px; white-space:nowrap; cursor:pointer; width:35px; }
 .CP_minute { padding:1px; font-family:Arial,Helvetica,sans-serif; font-size:9px; white-space:nowrap; cursor:pointer; width:auto; }
 .CP_over { background-color:#fff; }
-	.multiSelect {
-		width: 9.9em;
-		font-family: Arial, Helvetica, sans-serif;
-		position: relative;
-		height: 22px;
-		padding: 0;
-		margin: -.05em 0 0 0;
-		border: 0;
-	}
-	.multiSelect .title {
-		background-color: #fff;
-		border: 1px solid #999;
-		padding: 0;
-		margin: 0;
-		cursor: default;
-		min-width: 9.8em;
-	}
-	.multiSelect div.title {
-		position: absolute;
-		z-index: 104;
-	}
-	.multiSelect div.title-open {
-		border-bottom: 1px solid #fff;
-	}
-	.multiSelect .title {
-		font-size: .8em;
-		height: 1.3em;
-		line-height: 1.2em;
-		overflow: hidden;
-		padding: .3em 1.1em .1em .5em;
-		background: white url(images/multiselect.gif) no-repeat top right;
-	}
-	.multiSelect .title:hover {
-		background: white url(images/multiselect-hover.gif) no-repeat top right;
-	}
-	.multiSelectContent {
-		position: absolute;
-		z-index: 106;
-		min-height: 1em;
-		background: #e9f3f8;
-		padding: .1em;
-		display: block;
-		font-size: 75%;
-		margin-top: -1px;
-		border: 1px solid #999;
-	}
-	.collapsed {
-		display: none;
-	}
-	.multiSelectContent ul {
-		overflow: auto;
-		min-height: 1em;
-		min-width: 20em;
-		margin: 0;
-		padding: 0;
-	}
-	.multiSelectContent li {
-		cursor: pointer;
-		cursor: hand;
-		margin: 0 0 .2em 0;
-		list-style:none;
-	}
-	.multiSelectContent li:hover {
-		background: #ddd;
-	}
-	.arc90_multiselect {
-		width: 12.5em;
-		height: 1.35em;
-		visibility: hidden;
-	}
-	.a9selectall {
-		border-bottom: 1px solid #ccc;
-	}
+    .multiSelect {
+        width: 9.9em;
+        font-family: Arial, Helvetica, sans-serif;
+        position: relative;
+        height: 22px;
+        padding: 0;
+        margin: -.05em 0 0 0;
+        border: 0;
+    }
+    .multiSelect .title {
+        background-color: #fff;
+        border: 1px solid #999;
+        padding: 0;
+        margin: 0;
+        cursor: default;
+        min-width: 9.8em;
+    }
+    .multiSelect div.title {
+        position: absolute;
+        z-index: 104;
+    }
+    .multiSelect div.title-open {
+        border-bottom: 1px solid #fff;
+    }
+    .multiSelect .title {
+        font-size: .8em;
+        height: 1.3em;
+        line-height: 1.2em;
+        overflow: hidden;
+        padding: .3em 1.1em .1em .5em;
+        background: white url(images/multiselect.gif) no-repeat top right;
+    }
+    .multiSelect .title:hover {
+        background: white url(images/multiselect-hover.gif) no-repeat top right;
+    }
+    .multiSelectContent {
+        position: absolute;
+        z-index: 106;
+        min-height: 1em;
+        background: #e9f3f8;
+        padding: .1em;
+        display: block;
+        font-size: 75%;
+        margin-top: -1px;
+        border: 1px solid #999;
+    }
+    .collapsed {
+        display: none;
+    }
+    .multiSelectContent ul {
+        overflow: auto;
+        min-height: 1em;
+        min-width: 20em;
+        margin: 0;
+        padding: 0;
+    }
+    .multiSelectContent li {
+        cursor: pointer;
+        cursor: hand;
+        margin: 0 0 .2em 0;
+        list-style:none;
+    }
+    .multiSelectContent li:hover {
+        background: #ddd;
+    }
+    .arc90_multiselect {
+        width: 12.5em;
+        height: 1.35em;
+        visibility: hidden;
+    }
+    .a9selectall {
+        border-bottom: 1px solid #ccc;
+    }
 
-	/* Styles for page layout */
-	DIV.examples {
-		margin: 0 0 2em 0;
-		width: 17em;
-		border: 1px solid #e9e9e9;
-		padding: .3em;
-	}
+    /* Styles for page layout */
+    DIV.examples {
+        margin: 0 0 2em 0;
+        width: 17em;
+        border: 1px solid #e9e9e9;
+        padding: .3em;
+    }
 
-	DIV.examples LABEL.examples {
-		display: block;
-		margin: 0 0 .2em 0;
-	}
+    DIV.examples LABEL.examples {
+        display: block;
+        margin: 0 0 .2em 0;
+    }

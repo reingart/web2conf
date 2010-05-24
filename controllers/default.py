@@ -4,73 +4,12 @@
 
 from gluon.sqlhtml import form_factory
 
-session.manager=(auth.user and auth.user.email in MANAGERS)
-
-response.menu=[['Main',False,t2.action('index')]]
-
-if not auth.user:
-    response.menu.append([T('Register'),False,t2.action('register')])
-
-if CONFERENCE_URL:
-    response.menu.append([T('Conference'),False,CONFERENCE_URL])
-
-submenu_info=[
-        [T('Companies'),False,t2.action('companies')],
-        [T('Attendees'),False,t2.action('attendees')],
-        [T('Charts'),False,t2.action('charts')],
-        [T('Maps'),False,t2.action('maps')],
-]
-if ENABLE_TALKS:
-   submenu_info.append([T('Accepted Talks'),False,t2.action('accepted_talks')])
-   submenu_info.append([T('Proposed Talks'),False,t2.action('proposed_talks')])
-
-response.menu.append([T('Stats'),False,'#',submenu_info])
-response.menu.append([T('About'),False,t2.action('about')])
-
-if auth.user:
-    response.menu.append([T('Expenses'),True,URL(r=request,c='expenses',f='index')])
-    response.menu.append([T('Profile'),False,t2.action('profile')])
-    response.menu.append([T('Logout'),False,t2.action('logout')])
-else:
-    response.menu.append([T('Login'),False,t2.action('login')])
-
-#############################################
-# Insert Manage sub-menu item
-#############################################    
-
-if auth.user and session.manager:
-    submenu=[
-        [T('Financials'),False,t2.action('financials')],
-        [T('Payments'),False,t2.action('payments')],
-        # [T('CSV for Badges'),False,t2.action('badges')],
-        [T('Attendee Mail-List'),False, t2.action('maillist')],
-        [T('Badges'),False,t2.action('badge','auth_user')],
-        [T('Tutorials'),False,t2.action('list_by_tutorial')],
-        # [T('Tutorials+food'),False,t2.action('by_tutorial_csv')],
-        [T('FA-CSV'),False,t2.action('fa_csv')],
-        [T('FA-(email all)'),False,t2.action('fa_email_all')]
-    ]
-    submenu+=[['[%s]' % (table if not table[:3]=='t2_' else table[3:]),
-               False,t2.action('create',table)] for table in db.tables]
-    response.menu.append([T('Manage'),False,'#',submenu])
-
-#############################################
-# Insert Login and Logout menu items
-#############################################
-
-response.sidebar=[]
-if auth.user and ENABLE_TALKS:
-    talks=[(t.title,t2.action('display_talk',t.id)) \
-           for t in db(db.talk.created_by==auth.user.id).select()]
-    talks.append(('Propose talk',t2.action('propose_talk')))
-    response.sidebar.append(['Your Talks',talks])
-
 #############################################
 # The main public page
 #############################################
 
 def index():
-    return dict()
+    return plugin_flatpage()
 
 #############################################
 # Manage Authentication
@@ -138,51 +77,10 @@ def fa_app():
 @auth.requires_login()
 def pay():
     person=db(db.auth_user.id==auth.user.id).select()[0]
-    transfers_in,transfers_out,payments=update_pay(person)
-    charged_payments=[row for row in payments if row.status.lower()=='charged']
-    pending_payments=[row for row in payments if row.status.lower()=='submitted']
-    ### this is HORRIBLE but las minute change asked by Kurt
-    ### donations is (name,email,amount)
-    ### amounts is (name,email,conference_fees)
-    ### contained in this one payment
-    if not charged_payments:
-          donations=[(person.first_name+' '+person.last_name,person.id,person.donation_to_PSF)]
-          amounts=[(row.auth_user.first_name+' '+row.auth_user.last_name,row.auth_user.id,row.money_transfer.amount) for row in transfers_in]
-          amounts.append((person.first_name+' '+person.last_name,person.id,person.amount_billed-donations[0][2]))
-    else:
-          last_payment_datetime=person.created_on
-          for payment in charged_payments:
-              if payment.created_on>last_payment_datetime:
-                  last_payment_datetime=payment.created_on
-          donations=[]
-          amounts=[(row.auth_user.first_name+' '+row.auth_user.last_name,row.auth_user.id,row.money_transfer.amount) for row in transfers_in if row.money_transfer.created_on>last_payment_datetime]
-          samounts=sum([row[2] for row in amounts])
-          amounts.append((person.first_name+' '+person.last_name,person.id,session.balance-samounts))
-    ### build invoice here
-    invoice=build_invoice(person,donations,amounts).encode('string-escape')
-    session.payment_id=db.payment.insert(status='PRE-PROCESSING',from_person=auth.user.id,method='Google Checkout',created_on=t2.now,amount=session.balance,invoice=invoice)
-    payment=gmodel.checkout_shopping_cart_t()
-    payment.shopping_cart=gmodel.shopping_cart_t(items=[])
     balance=session.balance
-    #### for debug only charge cards by 1 dollar
-    #balance=0.10
-    ### end debug
-    payment.shopping_cart.items.append(
-        gmodel.item_t(merchant_item_id = session.payment_id,
-                      name             = str(T('Fees')),
-                      description      = invoice + ' [payment_id=%s]' % session.payment_id,
-                      unit_price= gmodel.price_t(value=balance,currency='USD'),
-                      quantity         = 1))
-    next=HOST_NEXT
-    payment.checkout_flow_support=gmodel.checkout_flow_support_t(
-        continue_shopping_url=next,request_buyer_phone_number=False)
-    prepared = l2controller.prepare_order(payment)
-    transfers_in=[row.money_transfer for row in transfers_in]
-    if balance<=0.0: pay=H2(T('No payment due at this time'))
-    elif not pending_payments: pay=XML(prepared.html())
-    else: pay=H2(T('Your payment is being processed... (read below)'))
-    return dict(person=person,transfers_in=transfers_in,
-                transfers_out=transfers_out,payments=payments,
+    pay=H2(T('No payment due at this time'))
+    return dict(person=person,transfers_in=[],
+                transfers_out=[],payments=[],
                 pay=pay,balance=balance)
 
 @auth.requires_login()
@@ -209,8 +107,8 @@ def proposed_talks():
 def accepted_talks():
     db.talk['represent']=lambda talk: A('%s by %s' % (talk.title,talk.authors),
        _href=URL(r=request,f='talk_info',args=[talk.id]))
-    talks=db(db.talk.status=='accepted').select(orderby=db.talk.title)
-    return dict(talks=talks)
+    rows=db((db.talk.status=='accepted')&(db.auth_user.id==db.talk.created_by)).select(orderby=db.talk.title)
+    return dict(rows=rows)
 
 @auth.requires_login()
 def propose_talk():
@@ -225,7 +123,7 @@ def update_talk():
                      ondelete=lambda form: redirect(URL(r=request,f='index')))
     return dict(form=form)
 
-@auth.requires_login()
+#@auth.requires_login()
 def display_talk(): 
     item=t2.display(db.talk)
     comments=t2.comments(db.talk)
@@ -276,7 +174,7 @@ def attendees():
                   orderby=db.auth_user.first_name|db.auth_user.last_name)
     return dict(rows=rows)
 
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+##@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def charts():    
     cn=[]
     colors=['#ff0000','#ff0033','#ff0066','#ff0099','#ff00cc','#ff00ff',
@@ -301,7 +199,7 @@ def charts():
         for k,item in enumerate(sorted(TUTORIALS.keys())):
                 cn.append((TUTORIALS[item],colors[k],cn2[item]))
                 k+=1
-    chart_tutorials=t2.barchart(cn,label_width=150)
+    chart_tutorials=None #t2.barchart(cn,label_width=150)
     def colorize(d):
         s=[(m,n) for n,m in d.items()]
         s.sort()
@@ -309,22 +207,30 @@ def charts():
         t=[(x[1],colors[i % len(colors)],x[0]) for i,x in enumerate(s)]
         return t2.barchart(t,label_width=150)   
     country={}
+    city={}
     food_preference={}
     t_shirt_size={}
     attendee_type={}
+    installfest_os={}
     for row in db().select(db.auth_user.ALL):
         country[row.country]=country.get(row.country,0)+1
-        food_preference[row.food_preference]=food_preference.get(row.food_preference,0)+1
-        t_shirt_size[row.t_shirt_size]=t_shirt_size.get(row.t_shirt_size,0)+1
+        city[row.city.lower()]=city.get(row.city.lower(),0)+1
+        installfest_os[row.installfest_os]=installfest_os.get(row.installfest_os,0)+1
+        #food_preference[row.food_preference]=food_preference.get(row.food_preference,0)+1
+        #t_shirt_size[row.t_shirt_size]=t_shirt_size.get(row.t_shirt_size,0)+1
         attendee_type[row.attendee_type]=attendee_type.get(row.attendee_type,0)+1
     chart_country=colorize(country)
-    chart_food_preference=colorize(food_preference)
-    chart_t_shirt_size=colorize(t_shirt_size)
-    chart_attendee_type=colorize(attendee_type)
+    chart_city=colorize(city)
+    chart_installfest_os=colorize(installfest_os)
+    chart_food_preference=None #colorize(food_preference)
+    chart_t_shirt_size=None #colorize(t_shirt_size)
+    chart_attendee_type=None #colorize(attendee_type)
     return dict(chart_tutorials=chart_tutorials,
                 chart_country=chart_country,
                 chart_food_preference=chart_food_preference,
                 chart_t_shirt_size=chart_t_shirt_size,
+                chart_city=chart_city,
+                chart_installfest_os=chart_installfest_os,
                 chart_attendee_type=chart_attendee_type)
 
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
@@ -414,7 +320,7 @@ def update():
          t2.redirect('index')
     table=request.args[0]
     if table=='auth_user':
-        db[table]['exposes']=db.auth_user.exposes[:-1]
+        ##db[table]['exposes']=db.auth_user.exposes[:-1]
         form=t2.update(db[table],next='impersonate/[id]')
     else:
         db[table]['exposes']=db[table].fields
@@ -435,9 +341,9 @@ def badge():
     # this is for t2.search; it will start with person.name contains, which is good
     #   (will disable searching by id - oh well ;-)
     db[table]['displays']=db[table].fields[1:]
-    db[table]['represent']=lambda item: A(item.id,' :	',
+    db[table]['represent']=lambda item: A(item.id,' :   ',
         item[db[table].fields[1]],
-	_href=URL(r=request, c='badge', f='badge_pdf', args=[table, item.id]))
+    _href=URL(r=request, c='badge', f='badge_pdf', args=[table, item.id]))
     search=t2.search(db[table])
     return dict(search=search)
 

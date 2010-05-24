@@ -17,7 +17,7 @@
 <i>{{=T("Here is a partial list of conference attendees, showing everyone who wished to make their attendance public.")}}</i>
 {{else:}}<i>{{=T('Below is the complete list, as accessible to managers only.')}}</i>{{pass}}<br/><br/>
 <table>
-<tr><th width="200px">Name</th><th>Company</th>
+<tr><th width="200px">{{=T("Name")}}</th><th>{{=T("Company")}}</th>
 {{if session.manager:}}<td><b>Email</b></td>{{pass}}
 </tr>
 {{for row in rows:}}

@@ -15,7 +15,7 @@ T.current_languages=['en','en-us','en-bg']
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
 # DEV_TEST=True   # settings suitable for development work
-DEV_TEST=False   # Deployed settings
+DEV_TEST=True # Deployed settings
 
 if DEV_TEST:
     DBURI='sqlite://development.db'
@@ -28,17 +28,21 @@ else:
     DBURI='sqlite://production.db'
     DBPOOLS=0
 
-response.title='web2conf'
-response.subtitle='conference management system'
-response.footer='you@somewhere.com'
-response.keywords='conference, web2py'
-response.description='amde with web2py'
+response.title='FLISOL 2010 - González Catán'
+response.subtitle=''
+response.footer="""<p>InstallFest <a href="http://www.flisol.info/">FLISOL</a> <b>24 de abril de 2010</b> - <a href="http://www.institutopascal.edu.ar/">Instituto Superior Tecnológico Blaise Pascal</a><br/>
+<a href="http://www.flisol.info/FLISOL2010/Argentina/Gonzalez_Catan">http://www.flisol.info/FLISOL2010/Argentina/Gonzalez_Catan</a> - flisol@institutopascal.edu.ar</p>"""
+response.keywords='festival, instalación, software libre, gonzalez catán, flisol'
+response.description='Hecho con web2py'
+
+# Establecer para utilizar una contraseña predeterminada (simplificando la registración)
+REGISTRATION_PASSWORD = ""
 
 # MANAGERS are set in 0_private.py - here just to ensure definition
-MANAGERS=['mdipierro@cs.depaul.edu']
+MANAGERS=['reingart@gmail.com']
 
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
-GOOGLEMAP_KEY=''
+GOOGLEMAP_KEY='ABQIAAAANoGcCJcC-46KzN8dgwAVFxTPyXYvjXw76EZSLUYLo9tkfjfYfxQ0ezEEIEFWs3ZxdFD06cDjtRU7zw'
 
 # The following GOOGLE items set in 0_private.py - here to ensure defaults:
 GOOGLE_MERCHANT_ID=''
@@ -65,58 +69,22 @@ FACUTOFF_DATE=datetime.datetime(2009,2,24,6,0,0)
 ### fix this ...
 if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
    ATTENDEE_TYPES=(
-     ('corporate_early',T('Corporate/Government (early), $450')),
-     ('hobbyist_early',T('Hobbyist (early), $250')),
-     ('student_early',T('Student (early), $150')),
-     ('tutorial_early',T('Tutorials Only (early), $80')),
-     ('non_attending',T('Not Attending, $0')),
+     ('gratis',T('Gratuito, $0')),
    )
 elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
    ATTENDEE_TYPES=(
-     ('corporate_regular',T('Corporate/Government (regular), $550')),
-     ('hobbyist_regular',T('Hobbyist (regular), $350')),
-     ('student_regular',T('Student (regular), $200')),
-     ('tutorial_regular',T('Tutorials Only (regular), $100')),
-     ('non_attending',T('Not Attending, $0')),
+     ('gratis',T('Gratuito, $0')),
    )
 else:
    ATTENDEE_TYPES=(
-     ('corporate_onsite',T('Corporate/Government (on site), $650')),
-     ('hobbyist_onsite',T('Hobbyist (on site), $450')),
-     ('student_onsite',T('Student (on site), $250')),
-     ('tutorial_onsite',T('Tutorials Only (on site), $120')),
-     ('non_attending',T('Not Attending, $0')),
+     ('gratis',T('Gratuito, $0')),
    )
 if session.manager:
    ATTENDEE_TYPES=(
-     ('corporate_early',T('Corporate/Government (early), $450')),
-     ('hobbyist_early',T('Hobbyist (early), $250')),
-     ('student_early',T('Student (early), $150')),
-     ('tutorial_early',T('Tutorials Only (early), $80')),
-     ('corporate_regular',T('Corporate/Government (regular), $550')),
-     ('hobbyist_regular',T('Hobbyist (regular), $350')),
-     ('student_regular',T('Student (regular), $200')),
-     ('tutorial_regular',T('Tutorials Only (regular), $100')),
-     ('corporate_onsite',T('Corporate/Government (on site), $650')),
-     ('hobbyist_onsite',T('Hobbyist (on site), $450')),
-     ('student_onsite',T('Student (on site), $250')),
-     ('tutorial_onsite',T('Tutorials Only (on site), $120')),
-     ('non_attending',T('Not Attending, $0')),
+     ('gratis',T('Gratuito, $0')),
    )
 ATTENDEE_TYPE_COST=dict(
-     corporate_early=450.0,
-     hobbyist_early=250.0,
-     student_early=150.0,
-     tutorial_early=80.0,
-     corporate_regular=550.0,
-     hobbyist_regular=350.0,
-     student_regular=200.0,
-     tutorial_regular=100.0,
-     corporate_onsite=650.0,
-     hobbyist_onsite=450.0,
-     student_onsite=250.0,
-     tutorial_onsite=120.0,
-     non_attending=0.0,
+     gratis=0.0,
    )
 ATTENDEE_TYPE_COST[None]=0.0
 
@@ -200,13 +168,14 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-TALK_CATEGORIES=('Python 3.0','Django','web2py')
+TALK_CATEGORIES=('Ubuntu','ArchLinux','OpenSolaris','Python','PostgreSQL','Wine','KVM','Virtualbox')
+TALK_LEVELS=(T("Beginner"),T("Intermediate"),T("Advanced"))
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= not DEV_TEST
-EMAIL_SERVER=''
+EMAIL_SERVER='localhost:25'
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER=''
+EMAIL_SENDER='flisol@institutopascal.edu.ar'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
@@ -214,7 +183,7 @@ FA_EMAIL_TO=EMAIL_SENDER
 
 # for testing:
 #  disable recaptcha by setting DEV_TEST at the top of this file:
-DO_RECAPTCHA= not DEV_TEST
+DO_RECAPTCHA= False #not DEV_TEST
 # RECAPTCHA public and private keys are set in 0_private.py
 #  - here to ensure defaults:
 RECAPTCHA_PUBLIC_KEY=''
@@ -222,12 +191,12 @@ RECAPTCHA_PRIVATE_KEY=''
 
 ENABLE_TALKS=True
 
-if DEV_TEST:	# for local development
+if False and DEV_TEST:    # for local development
     HOST='localhost:8000'
     HOST_NEXT='localhost:8000'
 else:
-    HOST='http://us.pycon.org/2009/'
-    HOST_NEXT='http://us.pycon.org/2009'
+    HOST='http://www.institutopascal.edu.ar/flisol2010'
+    HOST_NEXT='http://www.institutopascal.edu.ar/flisol2010'
 
 HOTELS=('unknown','Hyatt Regency','Crowne Plaza','other','none')
 
@@ -235,30 +204,21 @@ HOTELS=('unknown','Hyatt Regency','Crowne Plaza','other','none')
 TRUETYPE_PATH='/usr/share/fonts/truetype/freefont'
 GSFONTS_PATH='/usr/share/fonts/type1/gsfonts/'
 
-EMAIL_VERIFY_SUBJECT="web2conf Registration - Confirm"
-EMAIL_VERIFY_BODY="""                                              
-Dear Registrant,
+EMAIL_VERIFY_SUBJECT=T("%s Registration Confirmation") % response.title
+EMAIL_VERIFY_BODY=T("""                                              
+Dear Attendee,
 
-In order to complete your registration:
+To proceed with your registration and verify your email, click on the following link:
 
-1) Verify your email by clicking on the following link
+%s
 
-https://us.pycon.org/2009/register/default/verify?key=%(registration_key)s
+--
+%s
+""") % ("http://%s%s/%%(key)s" % (request.env.http_host, URL(r=request,f='verify')), response.title)
 
-2) Login                                                                        
-
-3) If you have a balance due, click on the [PAY] button on top of the page and you will be redirected to a secure credit card payment method provided by GoogleCheckout.
-
-You will be able to change your profile and preferences (food preferences and tutorials, for example) even after you pay your fees.
-
-If you plan to register other people and/or pay for them, you may want to add their balance before you submit your payment.
-
-The web2conf Staff
-"""
-
-PASSWORD_RETRIEVE_SUBJECT=" Registration - Password"
-PASSWORD_RETRIEVE_BODY="Your new password is %(password)s"
+PASSWORD_RETRIEVE_SUBJECT=T("%s Registration Password") % response.title
+PASSWORD_RETRIEVE_BODY=T("Your new password is %(password)s")
 INVOICE_HEADER = "This is a Conference Invoice!!!"
 
 CONFERENCE_URL=None
-CONFERENCE_COORDS=14,50
+CONFERENCE_COORDS=-34.769458,-58.649536

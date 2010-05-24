@@ -1,15 +1,32 @@
 {{extend 'layout.html'}}
 
 <div class="frame">
+
 <h2>{{=T('Accepted Talks')}}</h2>
 
-<ul>
-{{for talk in talks:}}
-{{=LI(A(talk.title,_href=URL(r=request,f='display_talk',args=talk.id)))}}
-{{pass}}
-</ul>
+{{for row in rows:}}
+{{talk=row.talk}}
+{{author=row.auth_user}}
+<h3 style="padding-top: 1em; >{{=A(talk.title,_href=URL(r=request,f='display_talk',args=talk.id))}}</h3>
+  <span style="padding-left: 3em;  font-weight: bold;"> 
+ {{=A(talk.authors,_href=author.personal_home_page)}} ({{=A(author.company_name,_href=author.company_home_page)}})</td>
+  <sup><a onclick="jQuery('{{="#bio%s"% talk.id}}').slideToggle()">bio</a></sup> <br/>
+  </span> 
 
-{{if not talks:}}
+  <div id="{{="bio%s"% talk.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume}}</div>     
+  <span style="padding-left: 3em; font-weight: bold;">{{=talk.duration}}{{=T("min")}} {{=talk.level}}</span><br/> 
+  <span style="padding-left: 3em; font-weight: bold;"> 
+    Categorias: {{=talk.categories}}
+  </span> 
+  <div style="padding-left: 3em;">{{=talk.abstract}}</div> 
+  <span style="padding-left: 3em; font-weight: bold; font-size: smaller"><a onclick="jQuery('{{="#description%s"% talk.id}}').slideToggle()">Más información...</a><br/>
+  </span> 
+  <div id="{{="description%s"% talk.id}}" style="display: none; padding-left: 4em; font-size: smaller">{{=XML(talk.description)}}</div>  
+
+{{pass}}
+
+
+{{if not rows:}}
 No talks accepted yet
 {{pass}}
 

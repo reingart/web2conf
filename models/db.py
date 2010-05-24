@@ -2,14 +2,16 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 exec('from applications.%s.modules.t2 import T2, COUNTRIES' % request.application)
-exec('import applications.%s.modules.gchecky.model as gmodel' % request.application)
-exec('import applications.%s.modules.gchecky.controller as gcontroller' % request.application)
+##exec('import applications.%s.modules.gchecky.model as gmodel' % request.application)
+##exec('import applications.%s.modules.gchecky.controller as gcontroller' % request.application)
+
+migrate = False
 
 if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
 else:
-    db=SQLDB(DBURI,pools=DBPOOLS)
+    db=SQLDB(DBURI)
 
 PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 
@@ -20,46 +22,6 @@ except: pass
 #### end cleanup sessions
 
 
-#### redefine IS_IN_SET to make many2many work with version 1.55.3, not required in trunk and 1.56
-class IS_IN_SET3:
-    def __init__(self, theset, labels=None, error_message='value not allowed!',multiple=False,person_id=0):
-        self.multiple=multiple
-        self.theset = [str(item) for item in theset]
-        if isinstance(theset,dict): self.labels=theset.values()
-        else: self.labels=labels
-        self.error_message = error_message
-        self.person_id=person_id
-    def options(self):
-        if not self.labels:
-            return [(k, k) for i, k in enumerate(self.theset)]
-        return [(k, self.labels[i]) for i, k in enumerate(self.theset)]
-    def __call__(self, value):
-        if self.multiple:
-            values=re.compile("[\w\-:]+").findall(str(value))
-            if len([x[0] for x in values if x[0]=='1'])>1 or \
-               len([x[0] for x in values if x[0]=='2'])>1 or \
-               len([x[0] for x in values if x[0]=='3'])>1 or \
-               len([x[0] for x in values if x[0]=='4'])>1:
-                return (value,T('You can only choose one tutorial per each session'))
-        else: values=[value]
-        for item in values:
-            m=db(db.auth_user.id!=self.person_id)(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
-            if m>=TUTORIALS_CAPS[item]: return (value, "%s is full" % TUTORIALS[item])
-        failures=[x for x in values if not x in self.theset]
-        if failures: return (value, self.error_message)
-        if self.multiple: return ('|%s|'%'|'.join(values),None)
-        return (value, None)
-### end redefine IS_IN_DB
-
-### workaroud a bug in 1.55.2
-def password_widget(field,value):
-    id='%s_%s' % (field._tablename,field.name)
-    if value: value='********'
-    return INPUT(_type='password', _id=id,
-                      _name=field.name,_value=value,_class=field.type,
-                      requires=field.requires)
-###
-
 ######################################
 ### PERSON
 ######################################
@@ -68,79 +30,80 @@ db.define_table('auth_user',
     db.Field('first_name',length=128,label=T('First Name')),
     db.Field('last_name',length=128,label=T('Last Name')),
     db.Field('email',length=128),
-    db.Field('password','password',default='',widget=password_widget,readable=False),
-    db.Field('address1',length=128,label=T('Mailing Address Line 1'),default=''),
-    db.Field('address2',length=128,label=T('Mailing Address Line 2'),default=''),
+    db.Field('password','password',default=REGISTRATION_PASSWORD,label=T('Password'),writable=(REGISTRATION_PASSWORD==""),readable=False),
+    db.Field('address',length=255,label=T('Mailing Address'),default=''),
     db.Field('city',label=T('City'),default=''),
-    db.Field('state',label=T('State'),default=''),
-    db.Field('country',default=''),
-    db.Field('zip_code',label=T('Zip/Postal Code'),default=''),
+    db.Field('state',label=T('State'),default='Buenos Aires'),
+    db.Field('country',label=T('Country'),default='Argentina'),
+    db.Field('zip_code',label=T('Zip/Postal Code'),default=''),    
     db.Field('phone_number',label=T('Phone Number')),
-    db.Field('badge_line1',label=T('Badge Line 1'),default=''),
-    db.Field('badge_line2',label=T('Badge Line 2'),default=''),
+    db.Field('include_in_delegate_listing','boolean',default=True,label=T('Include in Delegates List')),
     db.Field('personal_home_page',length=128,label=T('Personal Home Page'),default=''),
     db.Field('company_name',label=T('Company Name'),default=''),
     db.Field('company_home_page',length=128,label=T('Company Home Page'),default=''),
-    db.Field('hotel',label=T('Hotel where Staying'),default=''),
-    db.Field('include_in_delegate_listing','boolean',default=True,label=T('Include in Delegates List')),
-    db.Field('food_preference',label=T('Food Preference')),
-    db.Field('t_shirt_size',label=T('T-shirt Size')),
-    db.Field('sprints',label=T('Attending Sprints')),
-    db.Field('attendee_type',label=T('Registration Type')),
-    db.Field('donation_to_PSF','double',default=0.0,label=T('Donation to PSF')),
-    db.Field('tutorials','text',label=T('Tutorials')),
-    db.Field('discount_coupon',length=64,label=T('Discount Coupon')),
-    db.Field('amount_billed','double',default=0.0,writable=False),
-    db.Field('amount_added','double',default=0.0,writable=False),
-    db.Field('amount_subtracted','double',default=0.0,writable=False),
-    db.Field('amount_paid','double',default=0.0,writable=False),
-    db.Field('amount_due','double',default=0.0,writable=False),
-    db.Field('speaker','boolean',default=False,writable=False),
-    db.Field('session_chair','boolean',default=False,writable=False),
-    db.Field('manager','boolean',default=True,writable=False),
-    db.Field('reviewer','boolean',default=True,writable=False),
-    db.Field('latitude','double',default=0.0,writable=False),
-    db.Field('longitude','double',default=0.0,writable=False),
-    db.Field('checkout_status','string',default=None,writable=False),
-    db.Field('pay_token','string',default=str(uuid.uuid4())[:4],writable=False),
-    db.Field('registration_key',length=64,default='',writable=False),
-    db.Field('created_by_ip',writable=False,default=request.client),
-    db.Field('created_on','datetime',writable=False,default=request.now))
+    db.Field('attendee_type',label=T('Registration Type'),default=ATTENDEE_TYPES[0][0],readable=False,writable=False),
+    db.Field('discount_coupon',length=64,label=T('Discount Coupon'), readable=False,writable=False),
+    db.Field('donation','double',default=0.0,label=T('Donation to PSF'),readable=False,writable=False),
+    db.Field('tutorials','text',label=T('Tutorials'),readable=False,writable=False),
+    db.Field('amount_billed','double',default=0.0,readable=False,writable=False),
+    db.Field('amount_added','double',default=0.0,readable=False,writable=False),
+    db.Field('amount_subtracted','double',default=0.0,readable=False,writable=False),
+    db.Field('amount_paid','double',default=0.0,readable=False,writable=False),
+    db.Field('amount_due','double',default=0.0,readable=False,writable=False),
+    db.Field('installfest_os','string',label=T('InstallFest Operating System'),default="(no necesito instalación)"),
+    db.Field('installfest_hardware','text',label=T('InstallFest Hardware')),
+    db.Field('resume','text',label=T('Resume (CV)'),readable=False,writable=False),
+    db.Field('speaker','boolean',default=False,readable=False,writable=False),
+    db.Field('session_chair','boolean',default=False,readable=False,writable=False),
+    db.Field('manager','boolean',default=True,readable=False,writable=False),
+    db.Field('reviewer','boolean',default=True,readable=False,writable=False),
+    db.Field('latitude','double',default=0.0,readable=False,writable=False),
+    db.Field('longitude','double',default=0.0,readable=False,writable=False),
+    db.Field('registration_key',length=64,default='',readable=False,writable=False),
+    db.Field('created_by_ip',readable=False,writable=False,default=request.client),
+    db.Field('created_on','datetime',readable=False,writable=False,default=request.now),
+    migrate=migrate)
 
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
 db.auth_user.email.comment=T('(required)')
-db.auth_user.password.comment=T('(required)')
-db.auth_user.address1.comment=XML(str(T('(address required for PSF donation receipt; also see %s)',A('[1]',_href='#footnote1'))))
+db.auth_user.password.comment=T('new for this site (required)')
+
 db.auth_user.zip_code.comment=T('(also used for attendee mapping)')
-footnote1=XML(str(T('(see %s)',A('[1]',_href='#footnote1'))))
-db.auth_user.phone_number.comment=footnote1
-db.auth_user.personal_home_page.comment=footnote1
-db.auth_user.company_name.comment=footnote1
-db.auth_user.company_home_page.comment=footnote1
-db.auth_user.attendee_type.comment=T('(If paying for others but not attending yourself, register yourself as "Not Attending")')
-db.auth_user.tutorials.comment=SPAN(T('('), A('tutorial info',_target='_blank',_href='/2009/tutorials/schedule/'), T('; first tutorial costs $120, additional tutorials cost $80)'))
-db.auth_user.donation_to_PSF.comment=A('About the Python Software Foundation',_href='http://www.python.org/psf/',_target='_blank')
+
+db.auth_user.company_name.comment=T('corporation, university, user group, etc.')
+
+db.auth_user.include_in_delegate_listing.comment=T('If checked, your Name, Company and Location will be displayed publicly')
+db.auth_user.resume.comment=T('Short Biography and references (for authors)')
+
+db.auth_user.installfest_os.requires=IS_IN_SET(['(no necesito instalación)', 'Ubuntu','Debian','ArchLinux','OpenSolaris'])
+db.auth_user.installfest_os.comment=XML(str(T('Seleccionar la distribución que desea instalar (ver %s)',A('[1]',_href='#footnote1'))))
+db.auth_user.installfest_hardware.comment=T('Detallar un inventario del equipo, a efectos del ingreso al recinto y facilitar la instalación. Incluir: Placa de red, video, sonido, módem (marcas, modelos, configuración); CPU (Procesador); Memoria RAM')
 
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
-db.auth_user.address1.requires=[IS_LENGTH(128)]
-db.auth_user.city.requires=[IS_LENGTH(32)]
-db.auth_user.state.requires=[IS_LENGTH(32)]
-db.auth_user.zip_code.requires=[IS_LENGTH(32)]
+
+##db.auth_user.accept_conditions.comment=XML(str(T('(see %s)',A('[1]',_href='#footnote1'))))
+db.auth_user.city.comment=XML(str(T('(see %s)',A('[2]',_href='#footnote2'))))
 
 auth=Auth(globals(),db)                      # authentication/authorization
 
-
-auth=Auth(globals(),db)
 auth.settings.table_user=db.auth_user
 auth.define_tables()
+auth.settings.login_url=URL(r=request,c='default', f='login')
+auth.settings.verify_email_next = URL(r=request,c='default', f='index')
+auth.settings.create_user_groups = False
+
 if EMAIL_SERVER:
     mail=Mail()                                  # mailer
     mail.settings.server=EMAIL_SERVER
     mail.settings.sender=EMAIL_SENDER
     mail.settings.login=EMAIL_AUTH
     auth.settings.mailer=mail                    # for user email verification
+    auth.settings.registration_requires_verification = EMAIL_VERIFICATION
+    auth.messages.verify_email_subject = EMAIL_VERIFY_SUBJECT
+    auth.messages.verify_email = EMAIL_VERIFY_BODY
+    
 if RECAPTCHA_PUBLIC_KEY:
     auth.setting.captcha=Recaptcha(request,RECAPTCHA_PUBLIC_KEY,RECAPTCHA_PRIVATE_KEY)
 auth.define_tables()
@@ -159,24 +122,9 @@ require_address()
 
 db.auth_user.email.requires=[IS_LENGTH(128),IS_EMAIL(),IS_NOT_IN_DB(db,'auth_user.email')]
 db.auth_user.password.requires=[IS_NOT_EMPTY(),CRYPT()]
-#db.auth_user.password_again.requires=[
-#    IS_EXPR('value==%s'%repr(request.vars.password),
-#    error_message='passwords do not match'),CRYPT()]
-db.auth_user.phone_number.requires=IS_NULL_OR(IS_MATCH('^(((\+?\d\d?)?(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$'))
 db.auth_user.personal_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]
 db.auth_user.company_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]
-db.auth_user.food_preference.requires=IS_IN_SET(FOOD_PREFERENCES,FOOD_PREFERENCES_LABELS)
 db.auth_user.country.requires=IS_IN_SET(COUNTRIES)
-db.auth_user.hotel.requires=IS_IN_SET(HOTELS)
-db.auth_user.t_shirt_size.requires=IS_IN_SET(T_SHIRT_SIZES,T_SHIRT_SIZES_LABELS)
-db.auth_user.sprints.requires=IS_IN_SET(('unsure','no','1','2','3','4'),
-                              (T('Unsure'),T('No'),T('1 Day'),T('2 Days'),T('3 Days'),T('4 Days')))
-ATTENDEE_TYPES_KEYS=[x[0] for x in ATTENDEE_TYPES]
-ATTENDEE_TYPES_LABELS=[x[1] for x in ATTENDEE_TYPES]
-db.auth_user.attendee_type.requires=IS_IN_SET(ATTENDEE_TYPES_KEYS,ATTENDEE_TYPES_LABELS)
-
-db.auth_user.discount_coupon.requires=\
-    [IS_NULL_OR(IS_IN_DB(db,'coupon.name','%(name)s'))]
 db.auth_user.created_by_ip.requires=\
     IS_NOT_IN_DB(db(db.auth_user.created_on>PAST),'auth_user.created_by_ip')
 db.auth_user.registration_key.default=str(uuid.uuid4())
@@ -193,7 +141,8 @@ db.define_table('payment',
    db.Field('status',length=64),
    db.Field('invoice','text'),
    db.Field('created_on','datetime',default=now),
-   db.Field('modified_on','datetime',default=now))
+   db.Field('modified_on','datetime',default=now),
+    migrate=migrate)
 
 db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
 
@@ -205,7 +154,8 @@ db.define_table('money_transfer',
    db.Field('approved','boolean',default=False),
    db.Field('created_on','datetime',default=now),
    db.Field('modified_on','datetime',default=now),
-   db.Field('created_by',db.auth_user))
+   db.Field('created_by',db.auth_user),
+   migrate=migrate)
 
 db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
 db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
@@ -219,36 +169,45 @@ db.define_table('coupon',
     db.Field('person','integer',default=None),
     db.Field('comment','text', default='#--- Change this when you distribute: ---#\n To Who:  \nPurpose:  '),
     db.Field('discount','double',default=100.0),
-    db.Field('auto_match_registration', 'boolean', default=True))
+    db.Field('auto_match_registration', 'boolean', default=True),
+    migrate=migrate)
 db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]'))
 
 #db.coupon.represent=lambda row: SPAN(row.id,row.name,row.amount,row.description)
+
+def wysiwyg(field,value):
+    return DIV(field.name,TEXTAREA(_name=field.name, _cols="70", value=value, _id="wysiwyg"))
+
 
 ######################################
 ### MANAGE TALKS
 ######################################
 
 db.define_table('talk',
-    db.Field('authors',default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
-    db.Field('title'),
-    db.Field('duration','integer',default=30),
-    db.Field('cc',length=512),
-    db.Field('abstract','text'),
-    db.Field('description','text'),
-    db.Field('categories','text'),
-    db.Field('scheduled_datetime','datetime',writable=False),
-    db.Field('status',default='pending',writable=False),
-    db.Field('score','double',default=None,writable=False),
-    db.Field('created_by','integer',writable=False,default=auth.user.id if auth.user else 0),
-    db.Field('created_on','datetime',writable=False,default=request.now),
-    db.Field('created_signature',writable=False,
+    db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
+    db.Field('title',label=T("Title")),
+    db.Field('duration','integer',label=T("Duration"),default=60),
+    db.Field('cc',label=T("cc"),length=512),
+    db.Field('abstract','text',label=T("Abstract")),
+    db.Field('description','text',label=T("Description"),widget=wysiwyg),
+    db.Field('categories','text',label=T("Categories")),
+    db.Field('level','text',label=T("Level")),
+    db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
+    db.Field('status',default='pending',label=T("Status"),writable=False,readable=False),
+    db.Field('score','double',label=T("Score"),default=None,writable=False),
+    db.Field('created_by','integer',label=T("Created By"),writable=False,default=auth.user.id if auth.user else 0),
+    db.Field('created_on','datetime',label=T("Created On"),writable=False,default=request.now),
+    db.Field('created_signature',label=T("Created Signature"),writable=False,
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
-    db.Field('modified_by','integer',writable=False,default=auth.user.id if auth.user else 0),
-    db.Field('modified_on','datetime',writable=False,default=request.now,update=request.now))
+    db.Field('modified_by','integer',label=T("Modified By"),writable=False,default=auth.user.id if auth.user else 0),
+    db.Field('modified_on','datetime',label=T("Modified On"),writable=False,default=request.now,update=request.now),
+    migrate=migrate)
 
+db.talk.description.display=lambda value: XML(value)
 db.talk.title.requires=IS_NOT_IN_DB(db,'talk.title')
 db.talk.authors.requires=IS_NOT_EMPTY()
 db.talk.status.requires=IS_IN_SET(['pending','accepted','rejected'])
+db.talk.level.requires=IS_IN_SET(TALK_LEVELS)
 db.talk.abstract.requires=IS_NOT_EMPTY()
 db.talk.description.requires=IS_NOT_EMPTY()
 db.talk.categories.widget=lambda s,v:T2.tag_widget(s,v,TALK_CATEGORIES)
@@ -257,7 +216,7 @@ db.talk.represent=lambda talk: \
    A('[%s] %s' % (talk.status,talk.title),
      _href=URL(r=request,f='display_talk',args=[talk.id]))
 
-db.define_table('talk_archived',db.talk,db.Field('parent_talk',db.talk))
+db.define_table('talk_archived',db.talk,db.Field('parent_talk',db.talk), migrate=migrate)
 
 #### yarko ---< F/A (financial aid) forms >----
 db.define_table( 'fa',
@@ -300,7 +259,7 @@ db.define_table( 'fa',
    #   sprint leaders, developers critical to a sprint, super-enthusiastic sprint newbies
    #   who will give 110% for their project, or people doing public service work with Python)."
    db.Field( 'rationale', 'text', default='' ),
-   )
+   migrate=migrate)
 
 db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
 
@@ -315,9 +274,6 @@ db.fa.minimum_amount_requested.comment= XML(str(T('(%s)',A('instructions',_href=
 db.fa.rationale.comment= XML(str(T('(%s)',A('instructions',_href='#rationale'))))
 #### ---< END: F/A forms >---
 
-#### fixup jquery multiselect if present
-MS='multiSelect-options-auth_user_tutorials[]'
-if request.vars.has_key(MS): request.vars.tutorials=request.vars[MS]
 #### end fixup
 ######
 # include and customize t2
@@ -325,12 +281,11 @@ if request.vars.has_key(MS): request.vars.tutorials=request.vars[MS]
 
 t2=T2(request,response,session,cache,T,db)
 
-db.auth_user.tutorials.requires=IS_IN_SET3([x[0] for x in TUTORIALS_LIST],[x[1] for x in TUTORIALS_LIST],multiple=True,person_id=auth.user.id if auth.user else None)
-
 db.define_table( 'expense_form',
     db.Field( 'person', db.auth_user ),
     db.Field( 'event','string', length=20, default='PyCon 09'),
     db.Field( 'created_on','datetime'),
+    migrate=migrate,
 )
 
 db.expense_form.person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
@@ -345,7 +300,7 @@ db.define_table( 'expense_item',
     db.Field( 'serial_no', 'string', length=30, default='' ),
     db.Field( 'location', 'text', default='' ),
     db.Field( 'amount', 'double', default='0.00'),
-    )
+    migrate=migrate)
 
 db.expense_item.exp_form.requires=IS_IN_DB(db,'expense_form.person','%(id)s')
 
