@@ -15,7 +15,7 @@ Released   : 20080425
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="{{=response.keywords}}" />
 <meta name="description" content="{{=response.description}}" />
-<link rel="icon" href="{{=URL(r=request,c='static',f='favicon.ico')}}" type="image/x-icon">
+<link rel="icon" href="{{=URL(r=request,c='static',f='img/favicon.ico')}}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{=URL(r=request,c='static',f='style.css')}}" />
 {{include 'web2py_ajax.html'}}
 <script src="{{=URL(r=request,c='static',f='scripts/sfmenu.js')}}"></script>
@@ -29,21 +29,22 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
 </head>
 <body>
 <div id="header">
-  <div id="logo">
-    <img alt="logo" src="{{=URL(r=request,c='static',f='logo.png')}}"/>
-    <h1>{{=response.title}}</h1>
-    <p>Festival latinoamericano de Instalación de Software Libre</p>
-  </div>
-  <div id="search">
-    <form method="get" action="http://www.google.com/search">
-      <fieldset>
-        <input id="search-text" type="text" name="as_q" value="" size="15"/>
-        <input type="hidden" name="as_sitesearch" value="{{=request.env.http_host}}">
-        <input type="submit" id="search-submit" value="Search" />
-      </fieldset>
-      <span style="color: #ffffff; font-size: smaller;">{{=T("Language")}}: <a href="?lang=es" style="color: #ffffff; font-size: smaller;">Español</a>, <a href="?lang=pt" style="color: #ffffff; font-size: smaller;">Português</a>, <a href="?lang=en" style="color: #ffffff; font-size: smaller">English</a></a>
-    </form>
-  </div>
+  <div id="header-container"> 
+  <div id="logo"> 
+  <a href="http://python.org.ar/pyar/Eventos"><img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0" style="vertical-align: text-bottom;"></a> 
+  <a href="http://python.org.ar/pyar/Eventos"><span style="color: #ffffff; font-variant: small-caps; font-size: 1.3em; ">{{=response.title}}</span></a> 
+  </div> 
+  <div id="search"> 
+    <form method="get" action="http://www.google.com/search"> 
+      <fieldset> 
+        <input id="search-text" type="text" name="as_q" value="" size="15"/> 
+        <input type="hidden" name="as_sitesearch" value="us.pycon.org"> 
+        <input type="submit" id="search-submit" value="Search" /> 
+      </fieldset> 
+      <span style="color: #ffffff;">{{=T("Language")}}: <a href="?lang=es" style="color: #ffffff;">Español</a> - <a href="?lang=en" style="color: #ffffff;">English</a></a>
+    </form> 
+  </div> 
+  </div> 
 </div>
 <div id="menu">
   {{=t2.menu(response.menu)}}
@@ -63,7 +64,7 @@ except: pass
     {{if session.balance is not None and session.balance>0 and not request.function=='pay':}}, {{=T('You have not paid for your registration; the cost is')}} ${{=T('%0.2f' % session.balance)}} [{{=A(T('pay now'),_href=t2.action('pay'))}}]
     {{elif session.balance is not None and session.balance<0 and not request.function=='pay':}}, {{=T('You have a credit of')}} ${{=T('%0.2f' % -session.balance)}} [{{=A(T('info'),_href=t2.action('pay'))}}]{{pass}}</h3>{{pass}}
     {{include}}
-    <br/><div class="frame"><h2>{{=T("About")}} {{=response.title}}</h2>{{=XML(response.footer)}}</div>
+    <br/><div class="frame"><h2>{{=T('About')}} {{=response.title}}</h2>{{=XML(response.footer)}}</div>
   </div>
   {{if response.sidebar:}}
   <div id="sidebar">  
@@ -85,19 +86,30 @@ except: pass
     </ul>
   </div>
   {{pass}}
+  {{if response.sponsors:}}
+  <div id="sidebar">  
+    <ul>
+      {{for sponsor_level in ('Organiza', 'Auspicia'): }}
+      <li>
+         <h2>{{=sponsor_level}}</h2>
+         <ul>   
+         {{for sponsor in response.sponsors[sponsor_level]: }}
+            <li>
+              <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, sponsor_level))}}</p>
+            </li>
+          {{pass}}
+        </ul>
+      </li>
+      {{pass}}
+    </ul>
+  </div>
+  {{pass}}
   <div style="clear: both;">&nbsp;</div>
   </div>
+
+
   <div id="footer">
-    <p><a href="http://www.web2py.com.ar"><img src="{{=URL(r=request,c='static',f='media/web2py_powered.png')}}" /></a></p>
+    <h2 align="center"><a href="http://www.web2py.com.ar"><img alt="web2py" src="{{=URL(r=request,c='static',f='/media/web2py_logor.png')}}" border="0" />&nbsp&nbsp<sup>POWERED</sup></a></h2>
   </div>
-  <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-15712735-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
 </body>
 </html>

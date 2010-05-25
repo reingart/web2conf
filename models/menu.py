@@ -13,9 +13,8 @@ else:
     submenu_conf=[
         [T('About'),True,URL(r=request,c='conference',f='about')],
         [T('Venue'),True,URL(r=request,c='conference',f='venue')],
-        [T('Software'),True,URL(r=request,c='conference',f='software')],
         [T('Schedule'),True,URL(r=request,c='conference',f='schedule')],
-        [T('Communities'),True,URL(r=request,c='conference',f='communities')],
+        [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')],
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
     ]
@@ -71,3 +70,16 @@ if auth.user and ENABLE_TALKS:
            for t in db(db.talk.created_by==auth.user.id).select()]
     talks.append((T('Propose talk'),URL(r=request,c='default',f='propose_talk')))
     response.sidebar.append([T('Your Talks'),talks])
+
+#############################################
+# Insert Sponsors Logo
+#############################################
+
+sponsors=db(db.sponsor.id>0).select(orderby=db.sponsor.number)
+response.sponsors={}
+for sponsor in sponsors:
+    response.sponsors.setdefault(sponsor.level, []).append(sponsor)
+
+#randomize sponsors...
+import random
+random.shuffle(response.sponsors[str(SPONSOR_LEVELS[1])])

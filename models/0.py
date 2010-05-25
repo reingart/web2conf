@@ -1,3 +1,5 @@
+T.force("es")
+
 ######################################
 ### PARAMETERS
 ######################################
@@ -28,21 +30,19 @@ else:
     DBURI='sqlite://production.db'
     DBPOOLS=0
 
-response.title='FLISOL 2010 - González Catán'
+response.title='PyDay 2010 Rafaela'
 response.subtitle=''
-response.footer="""<p>InstallFest <a href="http://www.flisol.info/">FLISOL</a> <b>24 de abril de 2010</b> - <a href="http://www.institutopascal.edu.ar/">Instituto Superior Tecnológico Blaise Pascal</a><br/>
-<a href="http://www.flisol.info/FLISOL2010/Argentina/Gonzalez_Catan">http://www.flisol.info/FLISOL2010/Argentina/Gonzalez_Catan</a> - flisol@institutopascal.edu.ar</p>"""
-response.keywords='festival, instalación, software libre, gonzalez catán, flisol'
+response.footer="""1º Jornada de Python en Rafaela (Santa Fé) el <b>8 de Mayo de 2010</b> (organizado por el <a href="http://www.python.org.ar/">PyAr</a>). <br/>
+Más Información: <a href="http://python.org.ar/pyar/Eventos/Conferencias/PyDayRafaela2010">http://python.org.ar/pyar/Eventos/Conferencias/PyDayRafaela2010</a>&nbsp;
+<a href="http://groups.google.com.ar/group/pyday-rafaela">pyday-rafaela@googlegroups.com</a>"""
+response.keywords='python, software libre, rafaela, santa fe, pyday'
 response.description='Hecho con web2py'
 
-# Establecer para utilizar una contraseña predeterminada (simplificando la registración)
-REGISTRATION_PASSWORD = ""
-
 # MANAGERS are set in 0_private.py - here just to ensure definition
-MANAGERS=['reingart@gmail.com']
+MANAGERS=['reingart@gmail.com','arielrossanigo@gmail.com', 'orfi.sch@gmail.com']
 
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
-GOOGLEMAP_KEY='ABQIAAAANoGcCJcC-46KzN8dgwAVFxTPyXYvjXw76EZSLUYLo9tkfjfYfxQ0ezEEIEFWs3ZxdFD06cDjtRU7zw'
+GOOGLEMAP_KEY='ABQIAAAANoGcCJcC-46KzN8dgwAVFxT6XE-lxwVPNlbMdWFn2DGVIqUZFhQMr6CiRDFIUJyTv8-jnBb3GfV8qQ'
 
 # The following GOOGLE items set in 0_private.py - here to ensure defaults:
 GOOGLE_MERCHANT_ID=''
@@ -168,14 +168,16 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-TALK_CATEGORIES=('Ubuntu','ArchLinux','OpenSolaris','Python','PostgreSQL','Wine','KVM','Virtualbox')
+TALK_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
 TALK_LEVELS=(T("Beginner"),T("Intermediate"),T("Advanced"))
 
+SPONSOR_LEVELS=(T("Organizer"),T("Sponsor"))
+
 # verify by email, unless running a developer test:
-EMAIL_VERIFICATION= not DEV_TEST
+EMAIL_VERIFICATION= True #not DEV_TEST
 EMAIL_SERVER='localhost:25'
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='flisol@institutopascal.edu.ar'
+EMAIL_SENDER='pyday-rafaela@googlegroups.com'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
@@ -191,12 +193,12 @@ RECAPTCHA_PRIVATE_KEY=''
 
 ENABLE_TALKS=True
 
-if False and DEV_TEST:    # for local development
+if True and DEV_TEST:    # for local development
     HOST='localhost:8000'
     HOST_NEXT='localhost:8000'
 else:
-    HOST='http://www.institutopascal.edu.ar/flisol2010'
-    HOST_NEXT='http://www.institutopascal.edu.ar/flisol2010'
+    HOST=''
+    HOST_NEXT=''
 
 HOTELS=('unknown','Hyatt Regency','Crowne Plaza','other','none')
 
@@ -221,4 +223,4 @@ PASSWORD_RETRIEVE_BODY=T("Your new password is %(password)s")
 INVOICE_HEADER = "This is a Conference Invoice!!!"
 
 CONFERENCE_URL=None
-CONFERENCE_COORDS=-34.769458,-58.649536
+CONFERENCE_COORDS=-31.2597103,-61.4510078

@@ -17,7 +17,7 @@ def email_invoice(payment_id,order_id,timestamp,total,person,invoice):
               subject='Payment Invoice [%s]' % order_id,
               message=body)
 
-if request.function in ['notify','pay']:
+if False and request.function in ['notify','pay']:
     import uuid
 
     class Level2Controller(gcontroller.Controller):

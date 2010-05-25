@@ -1,0 +1,37 @@
+/*** set the width and height to match your images **/
+
+#slideshow {
+    position:relative;
+    height:350px;
+    width: 400px;
+    margin: 0 auto 0 auto;
+    text-align: center; 
+}
+
+#slideshow DIV {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:8;
+    opacity:0.0;
+    height: 350px;
+    width: 400px;
+    background-color: #FFF;
+}
+
+#slideshow DIV.active {
+    z-index:10;
+    opacity:1.0;
+}
+
+#slideshow DIV.last-active {
+    z-index:9;
+}
+
+#slideshow DIV IMG {
+    height: 300px;
+    width: 400px;
+    display: block;
+    border: 0;
+    margin-bottom: 10px;
+}

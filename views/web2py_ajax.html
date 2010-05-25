@@ -39,4 +39,15 @@ try { $("input.time").clockpick({
      starthour:0, endhour:23, showminutes:true, military:true
 }); } catch(e) {};
 });
-//--></script>
+//--></script>{{
+pass
+for _k,_file in enumerate(response.files or []):
+  if _file in response.files[:_k] or 'plugin_t2' in _file:
+     continue
+  elif _file[-4:].lower()=='.css':}}
+     <link href="{{=_file}}" rel="stylesheet" type="text/css" charset="utf-8" />{{
+  elif _file[-3:].lower()=='.js':}}
+     <script src="{{=_file}}" type="text/javascript"></script>{{
+  pass
+pass
+}}

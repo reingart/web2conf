@@ -9,6 +9,8 @@ from gluon.sqlhtml import form_factory
 #############################################
 
 def index():
+    response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
+    response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
     return plugin_flatpage()
 
 #############################################
@@ -29,6 +31,7 @@ def register():
                 
 def password():
     return dict(form=auth.retrieve_password(next='login'))
+        
 
 @auth.requires_login()
 def logout(): auth.logout(next='index')
@@ -44,7 +47,7 @@ def profile():
         db.auth_user.discount_coupon.writable=False
     form=crud.update(db.auth_user,auth.user.id,
                      onaccept=update_person,
-                     next='pay')
+                     next='index')
     return dict(form=form)
 
 
@@ -97,7 +100,24 @@ def cancel_transfer():
 #############################################
 
 @auth.requires_login()
-def download(): return response.download(request,db)
+def download(): 
+    return response.download(request,db)
+
+###@cache(request.env.path_info,60,cache.disk)
+def fast_download():
+    # very basic security:
+    if not request.args(0).startswith("sponsor.logo") and not request.args(0).startswith("t2_attachment.file"): 
+        return download()
+    if 'filename' in request.vars:
+        response.headers["Content-Disposition"] = "attachment; filename=%s" % request.vars['filename'] 
+
+    # remove/add headers that prevent/favors caching
+    del response.headers['Cache-Control']
+    del response.headers['Pragma']
+    del response.headers['Expires']
+    filename = os.path.join(request.folder,'uploads',request.args(0))
+    response.headers['Last-Modified'] = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime(os.path.getmtime(filename)))
+    return response.stream(open(filename,'rb'))
 
 @auth.requires_login()
 def proposed_talks():
@@ -107,8 +127,13 @@ def proposed_talks():
 def accepted_talks():
     db.talk['represent']=lambda talk: A('%s by %s' % (talk.title,talk.authors),
        _href=URL(r=request,f='talk_info',args=[talk.id]))
-    rows=db((db.talk.status=='accepted')&(db.auth_user.id==db.talk.created_by)).select(orderby=db.talk.title)
-    return dict(rows=rows)
+    query=(db.talk.status=='accepted')&(db.auth_user.id==db.talk.created_by)
+    rows=db(query).select(orderby=db.talk.scheduled_datetime)
+    attachments=db(db.t2_attachment.table_name=='talk').select()     
+    attachs = {}
+    for attach in attachments:
+        attachs.setdefault(attach.record_id, []).append(attach) 
+    return dict(rows=rows,attachs=attachs)
 
 @auth.requires_login()
 def propose_talk():
@@ -123,12 +148,12 @@ def update_talk():
                      ondelete=lambda form: redirect(URL(r=request,f='index')))
     return dict(form=form)
 
-#@auth.requires_login()
+@auth.requires_login()
 def display_talk(): 
     item=t2.display(db.talk)
     comments=t2.comments(db.talk)
-    rows=db(db.talk.id==auth.user.id).select()
-    if rows and rows[0].created_by==auth.user.id:
+    rows=db(db.talk.id==request.args[0]).select()
+    if session.manager or (rows and rows[0].created_by==auth.user.id):
         writable=True
     else:
         writable=False
@@ -142,7 +167,7 @@ def talk_info():
 @auth.requires_login()
 def review_talk(): 
     item=t2.display(db.talk)
-    rows=db(db.talk.id==auth.user.id).select()
+    rows=db(db.talk.id==request.args[0]).select()
     if session.reviewer and rows and not rows[0].created_by==auth.user.id:
         writable=True
     else:
@@ -174,7 +199,7 @@ def attendees():
                   orderby=db.auth_user.first_name|db.auth_user.last_name)
     return dict(rows=rows)
 
-##@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def charts():    
     cn=[]
     colors=['#ff0000','#ff0033','#ff0066','#ff0099','#ff00cc','#ff00ff',
@@ -200,38 +225,50 @@ def charts():
                 cn.append((TUTORIALS[item],colors[k],cn2[item]))
                 k+=1
     chart_tutorials=None #t2.barchart(cn,label_width=150)
-    def colorize(d):
+    def colorize(d,sort_key=lambda x:x):
         s=[(m,n) for n,m in d.items()]
-        s.sort()
+        s.sort(key=sort_key)
         s.reverse()
+            
         t=[(x[1],colors[i % len(colors)],x[0]) for i,x in enumerate(s)]
         return t2.barchart(t,label_width=150)   
     country={}
     city={}
+    state={}
     food_preference={}
     t_shirt_size={}
     attendee_type={}
-    installfest_os={}
+    registration_date={}
+    certificates={}
     for row in db().select(db.auth_user.ALL):
         country[row.country]=country.get(row.country,0)+1
         city[row.city.lower()]=city.get(row.city.lower(),0)+1
-        installfest_os[row.installfest_os]=installfest_os.get(row.installfest_os,0)+1
+        state[row.state.lower()]=state.get(row.state.lower(),0)+1
         #food_preference[row.food_preference]=food_preference.get(row.food_preference,0)+1
         #t_shirt_size[row.t_shirt_size]=t_shirt_size.get(row.t_shirt_size,0)+1
         attendee_type[row.attendee_type]=attendee_type.get(row.attendee_type,0)+1
+        registration_date[row.created_on.date()]=registration_date.get(row.created_on.date(),0)+1
+        certificates[row.certificate]=certificates.get(row.certificate,0)+1
     chart_country=colorize(country)
+    chart_state=colorize(state)
     chart_city=colorize(city)
-    chart_installfest_os=colorize(installfest_os)
     chart_food_preference=None #colorize(food_preference)
     chart_t_shirt_size=None #colorize(t_shirt_size)
     chart_attendee_type=None #colorize(attendee_type)
+    chart_registration_date=colorize(registration_date,sort_key=lambda x: x[1]) #colorize(attendee_type)
+    chart_certificates=colorize(certificates) #colorize(attendee_type)
+
+
     return dict(chart_tutorials=chart_tutorials,
                 chart_country=chart_country,
                 chart_food_preference=chart_food_preference,
                 chart_t_shirt_size=chart_t_shirt_size,
                 chart_city=chart_city,
-                chart_installfest_os=chart_installfest_os,
-                chart_attendee_type=chart_attendee_type)
+                chart_state=chart_state,
+                chart_attendee_type=chart_attendee_type,
+                chart_registration_date=chart_registration_date,
+                chart_certificates=chart_certificates
+                )
 
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def maps():
@@ -278,6 +315,22 @@ def maillist():
     buggy_newline='\r\n'
     # rec renders column header I don't want:
     return str(rec).partition('\n')[-1].replace(buggy_newline,',\n')
+
+@auth.requires_login()
+def attendees_csv():
+    '''
+    Create a comma-separated mail list of attendees;
+    could expand to create many different lists.
+    '''
+    if not session.manager: t2.redirect('index')
+    rec=db((db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')).select(db.auth_user.first_name, db.auth_user.last_name, db.auth_user.dni, db.auth_user.certificate,db.auth_user.email,orderby=db.auth_user.last_name)
+    response.headers['Content-Type']='text/csv'
+    ## BUG: (yarko:) str calls csv-writer,
+    ##   which on both Ubuntu & Win returns \r\n for newline; need to find & fix
+    buggy_newline='\r\n'
+    # rec renders column header I don't want:
+    return str(rec).partition('\n')[-1].replace(buggy_newline,',\n').decode('utf8').encode('latin1')
+
 
 @auth.requires_login()
 def financials():

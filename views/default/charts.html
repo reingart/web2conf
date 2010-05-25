@@ -1,13 +1,23 @@
 {{extend 'layout.html'}}
 
 <div class="frame">
-<h2>City</h2>
+<h2>{{=T('City')}}</h2>
 {{=chart_city}}
 <br /><br />
 
-<h2>InstallFest OS</h2>
-{{=chart_installfest_os}}
+<h2>{{=T('State')}}</h2>
+{{=chart_state}}
 <br /><br />
+
+{{if session.manager:}}
+<h2>{{=T('Registration date')}}</h2>
+{{=chart_registration_date}}
+<br /><br />
+
+<h2>{{=T('Certificate')}}</h2>
+{{=chart_certificates}}
+<br /><br />
+{{pass}}
 
 <h2>Tutorials</h2>
 {{=chart_tutorials or T("Nobody registered for tutorials")}}

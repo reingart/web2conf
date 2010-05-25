@@ -21,6 +21,9 @@ try: [os.unlink(os.path.join(ps,f)) for f in os.listdir(ps) if os.stat(os.path.j
 except: pass
 #### end cleanup sessions
 
+def wysiwyg(field,value):
+    return DIV(field.name,TEXTAREA(_name=field.name, _cols="70", value=value, _id="wysiwyg"))
+
 
 ######################################
 ### PERSON
@@ -30,10 +33,12 @@ db.define_table('auth_user',
     db.Field('first_name',length=128,label=T('First Name')),
     db.Field('last_name',length=128,label=T('Last Name')),
     db.Field('email',length=128),
-    db.Field('password','password',default=REGISTRATION_PASSWORD,label=T('Password'),writable=(REGISTRATION_PASSWORD==""),readable=False),
+    db.Field('password','password',default='',label=T('Password'),readable=False,writable=False),
+    db.Field('dni','integer'),
+    db.Field('certificate','boolean',default=False,label=T('I want a certificate of attendance')),
     db.Field('address',length=255,label=T('Mailing Address'),default=''),
-    db.Field('city',label=T('City'),default=''),
-    db.Field('state',label=T('State'),default='Buenos Aires'),
+    db.Field('city',label=T('City'),default='Rafaela'),
+    db.Field('state',label=T('State'),default='Santa Fe'),
     db.Field('country',label=T('Country'),default='Argentina'),
     db.Field('zip_code',label=T('Zip/Postal Code'),default=''),    
     db.Field('phone_number',label=T('Phone Number')),
@@ -50,9 +55,7 @@ db.define_table('auth_user',
     db.Field('amount_subtracted','double',default=0.0,readable=False,writable=False),
     db.Field('amount_paid','double',default=0.0,readable=False,writable=False),
     db.Field('amount_due','double',default=0.0,readable=False,writable=False),
-    db.Field('installfest_os','string',label=T('InstallFest Operating System'),default="(no necesito instalación)"),
-    db.Field('installfest_hardware','text',label=T('InstallFest Hardware')),
-    db.Field('resume','text',label=T('Resume (CV)'),readable=False,writable=False),
+    db.Field('resume','text',label=T('Resume (CV)'),readable=True,writable=True),
     db.Field('speaker','boolean',default=False,readable=False,writable=False),
     db.Field('session_chair','boolean',default=False,readable=False,writable=False),
     db.Field('manager','boolean',default=True,readable=False,writable=False),
@@ -67,32 +70,30 @@ db.define_table('auth_user',
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
 db.auth_user.email.comment=T('(required)')
-db.auth_user.password.comment=T('new for this site (required)')
+db.auth_user.password.comment=T('(required)')
+
+db.auth_user.dni.comment=T('(required if you need a certificate)')
+db.auth_user.certificate.comment=XML(A(str(T('Certificate cost is $5.-')) + '[2]',_href='#footnote2'))
 
 db.auth_user.zip_code.comment=T('(also used for attendee mapping)')
 
 db.auth_user.company_name.comment=T('corporation, university, user group, etc.')
 
-db.auth_user.include_in_delegate_listing.comment=T('If checked, your Name, Company and Location will be displayed publicly')
+#db.auth_user.include_in_delegate_listing.comment=T('If checked, your Name, Company and Location will be displayed publicly')
+db.auth_user.include_in_delegate_listing.comment=XML(A(str(T('If checked, your Name, Company and Location will be displayed publicly')) + '[1]',_href='#footnote1'))
 db.auth_user.resume.comment=T('Short Biography and references (for authors)')
 
-db.auth_user.installfest_os.requires=IS_IN_SET(['(no necesito instalación)', 'Ubuntu','Debian','ArchLinux','OpenSolaris'])
-db.auth_user.installfest_os.comment=XML(str(T('Seleccionar la distribución que desea instalar (ver %s)',A('[1]',_href='#footnote1'))))
-db.auth_user.installfest_hardware.comment=T('Detallar un inventario del equipo, a efectos del ingreso al recinto y facilitar la instalación. Incluir: Placa de red, video, sonido, módem (marcas, modelos, configuración); CPU (Procesador); Memoria RAM')
 
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 
-##db.auth_user.accept_conditions.comment=XML(str(T('(see %s)',A('[1]',_href='#footnote1'))))
-db.auth_user.city.comment=XML(str(T('(see %s)',A('[2]',_href='#footnote2'))))
-
 auth=Auth(globals(),db)                      # authentication/authorization
+
+db.auth_user.password.requires=CRYPT(auth.settings.hmac_key)
 
 auth.settings.table_user=db.auth_user
 auth.define_tables()
-auth.settings.login_url=URL(r=request,c='default', f='login')
-auth.settings.verify_email_next = URL(r=request,c='default', f='index')
-auth.settings.create_user_groups = False
+auth.settings.login_url=URL(r=request,f='login')
 
 if EMAIL_SERVER:
     mail=Mail()                                  # mailer
@@ -175,10 +176,6 @@ db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(name)s [%(id)
 
 #db.coupon.represent=lambda row: SPAN(row.id,row.name,row.amount,row.description)
 
-def wysiwyg(field,value):
-    return DIV(field.name,TEXTAREA(_name=field.name, _cols="70", value=value, _id="wysiwyg"))
-
-
 ######################################
 ### MANAGE TALKS
 ######################################
@@ -194,6 +191,7 @@ db.define_table('talk',
     db.Field('level','text',label=T("Level")),
     db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
     db.Field('status',default='pending',label=T("Status"),writable=False,readable=False),
+    db.Field('video',length=128,label=T('Video'),default=''),
     db.Field('score','double',label=T("Score"),default=None,writable=False),
     db.Field('created_by','integer',label=T("Created By"),writable=False,default=auth.user.id if auth.user else 0),
     db.Field('created_on','datetime',label=T("Created On"),writable=False,default=request.now),
@@ -217,6 +215,22 @@ db.talk.represent=lambda talk: \
      _href=URL(r=request,f='display_talk',args=[talk.id]))
 
 db.define_table('talk_archived',db.talk,db.Field('parent_talk',db.talk), migrate=migrate)
+
+
+######################################
+### Sponsorship
+######################################
+
+db.define_table( 'sponsor',
+   db.Field('name',label=T("Name"),requires=IS_NOT_IN_DB(db,'sponsor.name')),
+   db.Field('number','integer',requires=IS_NOT_EMPTY(),label=T("Number")),
+   db.Field('level','string',requires=IS_IN_SET(SPONSOR_LEVELS)),
+   db.Field('logo','upload'),
+   db.Field('url','string',requires=IS_URL()),   
+   db.Field('contact','string',requires=IS_EMAIL(),label=T("Contact")),   
+   db.Field('alt','string',requires=IS_NOT_EMPTY()),
+)
+
 
 #### yarko ---< F/A (financial aid) forms >----
 db.define_table( 'fa',

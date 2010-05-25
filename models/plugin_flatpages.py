@@ -1,16 +1,6 @@
 # coding: utf8
-
-# flatpages plugin: dynamic wiki/html user editable pages (with page history, preview, format convertion and internationalization)
-# autor: 2009 Mariano Reingart <reingart@gmail.com>
-# license: same as web2py
-# based on:
-# * web2py2-wiki: https://code.launchpad.net/~reingart/web2py-wiki/spanish-site
-# * http://www.web2pyslices.com/main/slices/take_slice/54
-# usage (in controller.py): def index(): return plugin_flatpage() 
-# look at view plugin_flatpages.html for further customization
-# install module html2text.py for html to markdown format conversion to work
-# create a auth_group "plugin_flatpages" and grant permission to users via auth_membership
-# add ?lang=es links if you want to provide language selection to users ('es' or others)
+# intente algo como
+##flatpages=DAL("sqlite://plugin_flatpages.db")
 
 from gluon.contrib.markdown import WIKI
 
@@ -89,6 +79,7 @@ def plugin_flatpage():
         if rows:
             title = rows[0].plugin_flatpage.title
             subtitle = rows[0].plugin_flatpage.subtitle
+            #body = BEAUTIFY(rows)
             body = TABLE(TR(TH(T("Id")),TH(T("Title")),TH(T("Subtitle")),TH(T("Date")),TH(T("User"))),
                     *[TR(TD(A(row.plugin_flatpage.id, _href=URL(r=request,vars={'id': row.plugin_flatpage.id}))),
                          TD(row.plugin_flatpage.title),TD(row.plugin_flatpage.subtitle),
@@ -132,6 +123,9 @@ def plugin_flatpage():
 
         if form.accepts(request.vars, session):
             if request.vars.action=='save':
+                ##if form.vars.format == 'WIKI':
+                ##    from html2text import 
+                ##    form.vars.body = html2text.html2text(form.vars.body)
                 page_id = db.plugin_flatpage.insert(
                    controller=request.controller,
                    function=request.function,
@@ -151,9 +145,9 @@ def plugin_flatpage():
                 response.flash = T("Page Preview")
         else:
             if form.errors:
-                response.flash = T("Errors!")
+                response.flash = "Errors!"
             else:
-                response.flash = T("Edit Page")
+                response.flash = "Edit Page"
             body = ""
     else:
         form = FORM(INPUT(_type='hidden', _name='action', _id='action', _value="edit"),
