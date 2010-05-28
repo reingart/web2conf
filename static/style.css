@@ -1,1045 +1,313 @@
-BODY
-{
-    margin: 0;
-    font-family: Helvetica, sans-serif;
-    font-size: 13px;
-    color: #787878;
-    background: url(media/img01.jpg) repeat-x left top;
-}
-H1, H2, H3
-{
-    margin: 0;
-    letter-spacing: 0.15em;
-    font-family: Helvetica, sans-serif;
-    padding: 10px;
-    color: #787878;
-}
-H1
-{
-    font-size: 1.8em;
-}
-H2
-{
-    font-size: 1.4em;
-}
-H3
-{
-    font-size: 1em;
-}
-P, UL, OL
-{
-    margin-top: 0;
-    line-height: 180%;
-    color: #787878;
-}
-UL, OL
-{
-}
-A
-{
-    text-decoration: none;
-    color: #005B9C;
-}
-A:hover
-{
-    background: none;
-}
-/*Header
+body { margin: 0; font-family: Helvetica, sans-serif; font-size: 13px; color: #787878; background: url('media/img01.jpg') repeat-x left top; }
+h1, h2, h3 { margin: 0; letter-spacing: .15em; font-family: Helvetica, sans-serif; padding: 10px; }
+h1 { font-size: 1.8em; }
+h2 { font-size: 1.4em; }
+h3 { font-size: 1em; }
+p, ul, ol { margin-top: 0; line-height: 180%; }
+ul, ol { }
+a { text-decoration: none; color: #f34d00; }
+a:hover { background: none; }
+/* Header */
 
-#header { width: 1680px; height: 198px; margin: 0 auto; }
-*/
-#header-container
-{
-    background-color: #369;
-    padding-left: 0px;
-    padding-top: 0px;
-    padding-right: 600px;
-    height: 198px
-    border: 0px solid #000000;
-    /*+placement:shift 0px;*/
-    position: relative;
-    left: 0px;
-    top: 0;
-}
-#header
-{
-    width: 1680px;
-    height: 86px;
-    margin: 0 auto;
-    padding: 5px 0 5px 10px;
-    background-image: url(img/mastbg3.gif);
-}
-/*Logo*/
-#logo
-{
-    float: left;
-    /*width: 650px;*/
-    width: 950px;
-    margin: 4px;
-    padding: 0 38px 0 0;
-    color: #ECD569;
-    font-weight: bold;
-    font-size: xx-large;
-    font-family: Verdana;
-    height: 65px;
-    /*+placement:shift;*/
-    /*position: relative;*/
-    position: absolute;
-    left: 2;
-    top: 2;
-}
-#logo H1
-{
-    float: left;
-    padding-top: 20px;
-    font-size: 3.2em;
-}
-#logo P
-{
-    float: left;
-    margin: 0px 0 0;
-    padding: 0px 0 0 2px;
-    color: #FFFFFF; font-variant: small-caps; font-size: 1em; 
-    /*+placement:margin-auto 160px -72px;*/
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    left: 64px;
-    top: -72px;
-}
-/* */
-#logo A
-{
-    background: none;
-    text-decoration: none;
-    color: #5F882C;
-}
-/*Search*/
-#search
-{
-    float: right;
-    width: 200px;
-    padding-top: 16px;
-}
-#search FORM
-{
-    width: 160px;
-    height: 41px;
-    margin: 0;
-    padding: 15px 0 0 10px;
-    /*+placement:shift -175px -20px;*/
-    position: relative;
-    left: -175px;
-    top: -20px;
-}
-#search FIELDSET
-{
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-#search-text
-{
-    border: none;
-    text-transform: lowercase;
-    border: 1px solid #FFFFFF;
-    padding: 3px;
-    font: bold 1em Helvetica, sans-serif;
-    color: #5C5C5C;
-}
-#search-submit
-{
-    display: none;
-}
-/*Menu*/
-#menu
-{
-    width: 920px;
-    height: 50px;
-    margin: 0 auto;
-    /*[empty]background-color:;*/
-}
-#menu UL
-{
-    margin: 0;
-    margin-right: 30px;
-    padding: 0;
-    list-style: none;
-    line-height: normal;
-    /*[empty]background-color:;*/
-}
-#menu LI
-{
-    float: left;
-}
-#menu A
-{
-    padding: 5px 20px;
-    text-decoration: none;
-    font-family: Helvetica, sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    color: #FFFFFF;
-}
-#menu A:hover, #menu .current_page_item A
-{
-    background-color: #5AE;
-    opacity: 0.90;
-}
-/*Page*/
-#page
-{
-    width: 920px;
-    margin: 0 auto;
-    padding-top: 15px;
-}
-/*Content*/
-#content
-{
-    float: left;
-    width: 720px;
-}
-.frame
-{
-    background: #FFFFFF;
-    color: #000000;
-    border: 2px solid #AAAAAA;
-    padding: 10px;
-}
-.frame .title
-{
-    padding: 15px 0 5px 20px;
-    color: #5C5C5C;
-}
-.frame .title A
-{
-    background: none;
-    color: #5C5C5C;
-}
-.frame .meta
-{
-    padding: 2px 20px;
-    border-top: 1px dashed #D2D4C9;
-    border-bottom: 1px dashed #D2D4C9;
-    text-align: left;
-    font-family: Helvetica, sans-serif;
-    font-size: 9px;
-}
-.frame .entry
-{
-    padding: 20px;
-    text-align: justify;
-}
-.frame .indented
-{
-    padding-left: 50pt;
-    padding-right: 50pt;
-}
-/*Sidebar*/
-#sidebar
-{
-    float: right;
-    width: 180px;
-    border-bottom: 1px dashed #D2D4C9;
-    color: #787878;
-    text-align: center;
-}
-#sidebar UL
-{
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-#sidebar P
-{
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
+#header { width: 920px; height: 98px; margin: 0 auto; }
+/* Logo */
 
-TABLE TR TD
-{
-    text-align: left;
-    vertical-align: top;
-}
-#calendar
-{
-}
-#calendar_wrap
-{
-    padding: 20px;
-}
-#calendar TABLE
-{
-    width: 100%;
-}
-#calendar TBODY TD
-{
-    text-align: center;
-}
-#calendar #next
-{
-    text-align: right;
-}
-/*Footer*/
-#footer
-{
-    width: 100%;
-    height: 50px;
-    margin: 0 auto;
-    padding: 40px 0;
-    background: #90BF4D url(media/img02.jpg) left top;
-    font-family: Helvetica, sans-serif;
-    color: #416110;
-}
-#footer P
-{
-    margin: 0;
-    line-height: normal;
-    font-size: 11px;
-    text-align: center;
-}
-#footer A
-{
-    color: #FFFFFF;
-}
-.flash
-{
-    position: absolute;
-    top: 0px;
-    right: 20%;
-    width: 60%;
-    height: 50px;
-    opacity: 0.75;
-    margin: 0 auto;
-    text-align: center;
-    clear: both;
-    border: 1px solid #000000;
-    color: #000000;
-    font-size: 12pt;
-    padding: 100px 10px 10px;
-    cursor: pointer;
-    background: #FFFFFF;
-}
-DIV.error
-{
-    background-color: #FF0000;
-    color: #FFFFFF;
-    padding: 3px;
-}
-.tag_row
-{
-    height: 20px;
-    padding: 5px;
-}
-.tag_col
-{
-    padding: 0px 5px 0px 0px;
-}
-.tag_on, .tag_on:hover
-{
-    color: #FFFFFF;
-    background-color: #79A73B;
-    padding: 5px;
-}
-.tag_off, .tag_off:hover
-{
-    color: #000000;
-    background-color: #DDDDDD;
-    padding: 5px;
-}
+#logo { float: left; width: 690px; margin:0; padding:0;}
+#logo img { float: left; vertical-align: text-bottom; height: 90px; width: 204px; margin:0; padding:0;}
+#logo h1 { width: 690px;  text-align: center; margin: 0 0 0 0; padding: 20px 0px 0 0px; font-size: 1.6em; line-height:75%; letter-spacing:0px; font-weight: bold; color: #83ac5a; }
+#logo p {width: 690px; text-align: center; margin: 0; padding: 15px 0 0 2px; font: 1.2em Helvetica, sans-serif; font-weight: bold; color: #83ac5a; }
+#logo a { background: none; text-decoration: none; color: #5F882C; }
+/* Search */
+
+#search { float: right; width: 200px; padding-top: 16px; }
+#search form { width: 230px; height: 41px; margin: 0; padding: 15px 0 0 10px; }
+#search fieldset { margin: 0; padding: 0; border: none; }
+#search-text { border: none; text-transform: lowercase; border: 1px #8DBC4A solid; padding: 3px; font: bold 1.0em Helvetica, sans-serif; color: #5C5C5C; }
+#search-submit { display: none; }
+/* Menu */
+
+#menu { width: 920px; height: 50px; margin: 0 auto; }
+#menu ul { margin: 0; margin-right: 30px; padding: 0; list-style: none; line-height: normal; }
+#menu li { float: left; }
+#menu a { padding: 5px 20px 5px 20px; text-decoration: none; font-family: Helvetica, sans-serif; font-size: 14px; font-weight: normal; color: #FFFFFF; }
+#menu a:hover, #menu .current_page_item a { background-color: #566316; opacity: 0.50}
+/* Page */
+
+#page { width: 920px; margin: 0 auto; padding-top: 15px; }
+/* Content */
+
+#content { float: left; width: 720px; }
+.frame { background: white; border: 2px solid #aaaaaa; padding: 10px; }
+.frame .title { padding: 15px 0 5px 20px; color: #5C5C5C; }
+.frame .title a { background: none; color: #5C5C5C; }
+.frame .meta { padding: 2px 20px; border-top: 1px dashed #D2D4C9; border-bottom: 1px dashed #D2D4C9; text-align: left; font-family: Helvetica, sans-serif; font-size: 9px; }
+.frame .entry { padding: 20px 20px; text-align: justify; }
+.frame .indented {padding-left: 50pt; padding-right: 50pt; }
+
+/* Sidebar */
+
+#sidebar { float: right; width: 180px; border-bottom: 1px dashed #D2D4C9; color: #787878; text-align: center; }
+#sidebar ul { margin: 0; padding: 0; list-style: none; }
+#sidebar p { margin: 0; padding: 0; list-style: none; }
+
+
+table tr td { text-align: left; vertical-align: top; }
+#calendar { }
+#calendar_wrap { padding: 20px; }
+#calendar table { width: 100%; }
+#calendar tbody td { text-align: center; }
+#calendar #next { text-align: right; }
+/* Footer */
+
+#footer { width: 100%; height: 50px; margin: 0 auto; padding: 40px 0; background: #90BF4D url('media/img02.jpg') left top; font-family: Helvetica, sans-serif; color: #416110; }
+#footer p { margin: 0; line-height: normal; font-size: 11px; text-align: center; }
+#footer a { color: #FFFFFF; }
+.flash { position: absolute; top: 0px; right: 20%; width: 60%; height: 50px; opacity: 0.75; margin: 0 auto; text-align: center; clear: both; border: 1px #000000 solid; color: black; font-size: 12pt; padding: 100px 10px 10px 10px; cursor: pointer; background: white; }
+div.error { background-color: red; color: white; padding: 3px }
+.tag_row { height: 20px; padding: 5px 5px 5px 5px }
+.tag_col { padding: 0px 5px 0px 0px }
+.tag_on, .tag_on:hover { color: white; background-color:#79A73B; padding: 5px 5px 5px 5px }
+.tag_off, .tag_off:hover { color:black; background-color: #dddddd; padding: 5px 5px 5px 5px }
 /*** ESSENTIAL STYLES ***/
-.sf-menu, .sf-menu *
-{
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.sf-menu
-{
-    line-height: 1;
-}
-.sf-menu UL
-{
-    position: absolute;
-    top: -999em;
-    width: 10em;
-/*left offset of submenus need to match (see below)*/
-}
-.sf-menu UL LI
-{
-    width: 100%;
-}
-.sf-menu LI:hover
-{
-    visibility: inherit;
-/*fixes IE7 'sticky bug'*/
-}
-.sf-menu LI
-{
-    float: left;
-    position: relative;
-}
-.sf-menu A
-{
-    display: block;
-    position: relative;
-}
-.sf-menu LI:hover UL, .sf-menu LI.sfHover UL
-{
-    left: 0;
-    top: 2.5em;
-/*match top ul list item height*/
-    z-index: 99;
-}
-UL.sf-menu LI:hover LI UL, UL.sf-menu LI.sfHover LI UL
-{
-    top: -999em;
-}
-UL.sf-menu LI LI:hover UL, UL.sf-menu LI LI.sfHover UL
-{
-    left: 10em;
-/*match ul width*/
-    top: 0;
-}
-UL.sf-menu LI LI:hover LI UL, UL.sf-menu LI LI.sfHover LI UL
-{
-    top: -999em;
-}
-UL.sf-menu LI LI LI:hover UL, UL.sf-menu LI LI LI.sfHover UL
-{
-    left: 10em;
-/*match ul width*/
-    top: 0;
-}
+.sf-menu, .sf-menu * { margin:          0; padding:     0; list-style:      none; }
+.sf-menu { line-height: 1.0; }
+.sf-menu ul { position:     absolute; top:          -999em; width:          10em; /* left offset of submenus need to match (see below) */ }
+.sf-menu ul li { width:         100%; }
+.sf-menu li:hover { visibility:     inherit; /* fixes IE7 'sticky bug' */ }
+.sf-menu li { float:            left; position:     relative; }
+.sf-menu a { display:       block; position:        relative; }
+.sf-menu li:hover ul,
+.sf-menu li.sfHover ul { left:          0; top:         2.5em; /* match top ul list item height */
+    z-index:        99; }
+ul.sf-menu li:hover li ul,
+ul.sf-menu li.sfHover li ul { top:          -999em; }
+ul.sf-menu li li:hover ul,
+ul.sf-menu li li.sfHover ul { left:         10em; /* match ul width */
+    top:            0; }
+ul.sf-menu li li:hover li ul,
+ul.sf-menu li li.sfHover li ul { top:           -999em; }
+ul.sf-menu li li li:hover ul,
+ul.sf-menu li li li.sfHover ul { left:          10em; /* match ul width */
+    top:            0; }
 /*** DEMO SKIN ***/
-.sf-menu
-{
-    float: left;
-    margin-bottom: 1em;
-}
-.sf-menu A
-{
-    padding: 0.2em 1em;
-    text-decoration: none;
-}
-.sf-menu A, .sf-menu A:visited
-{
-/*visited pseudo selector so IE6 applies text colour*/
-    color: #13A;
-}
-.sf-menu LI
-{
-    background: transparent;
-}
-.sf-menu LI LI
-{
-    background: #58C;
-    opacity: 0.8;
-}
-.sf-menu LI LI LI
-{
-    background: #69E;
-}
-.sf-menu LI:hover, .sf-menu LI.sfHover, .sf-menu A:focus, .sf-menu A:hover, .sf-menu A:active
-{
-    background: transparent;
-}
+.sf-menu { float:           left; margin-bottom:    1em; }
+.sf-menu a { padding:       .2em 1em; text-decoration:none; }
+.sf-menu a, .sf-menu a:visited { /* visited pseudo selector so IE6 applies text colour*/
+    color:          #13a; }
+.sf-menu li { background:       transparent; }
+.sf-menu li li { background:        #79A73B; opacity: 0.8; }
+.sf-menu li li li { background:     #9AAEDB; }
+.sf-menu li:hover, .sf-menu li.sfHover,
+.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active { background:     transparent; }
 /*** arrows **/
-.sf-menu A.sf-with-ul
-{
-    #padding-right: 2.25em;
-    #min-width: 1px;
-/*trigger IE7 hasLayout so spans position accurately*/
-}
-.sf-sub-indicator
-{
-    position: absolute;
-    display: block;
-    right: 0.75em;
-    top: 1.05em;
-/*IE6 only*/
-    width: 10px;
-    height: 10px;
-    text-indent: -999em;
-    overflow: hidden;
-    background: no-repeat -10px -100px;
-/*8-bit indexed alpha png. IE6 gets solid image only*/
-}
-A>.sf-sub-indicator
-{
-/*give all except IE6 the correct values*/
-    top: 0.8em;
-    background-position: 0 -100px;
-/*use translucent arrow for modern browsers*/
-}
-/*apply hovers to modern browsers*/
-A:focus>.sf-sub-indicator, A:hover>.sf-sub-indicator, A:active>.sf-sub-indicator, LI:hover>A>.sf-sub-indicator, LI.sfHover>A>.sf-sub-indicator
-{
-    background-position: -10px -100px;
-/*arrow hovers for modern browsers*/
-}
-/*point right for anchors in subs*/
-.sf-menu UL .sf-sub-indicator
-{
-    background-position: -10px 0;
-}
-.sf-menu UL A>.sf-sub-indicator
-{
-    background-position: 0 0;
-}
-/*apply hovers to modern browsers*/
-.sf-menu UL A:focus>.sf-sub-indicator, .sf-menu UL A:hover>.sf-sub-indicator, .sf-menu UL A:active>.sf-sub-indicator, .sf-menu UL LI:hover>A>.sf-sub-indicator, .sf-menu UL LI.sfHover>A>.sf-sub-indicator
-{
-    background-position: -10px 0;
-/*arrow hovers for modern browsers*/
-}
+.sf-menu a.sf-with-ul { #padding-right:     2.25em; #min-width:     1px; /* trigger IE7 hasLayout so spans position accurately */ }
+.sf-sub-indicator { position:       absolute; display:      block; right:           .75em; top:         1.05em; /* IE6 only */
+    width:          10px; height:           10px; text-indent:  -999em; overflow:       hidden; background: no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */ }
+a > .sf-sub-indicator { /* give all except IE6 the correct values */
+    top:            .8em; background-position: 0 -100px; /* use translucent arrow for modern browsers*/ }
+/* apply hovers to modern browsers */
+a:focus > .sf-sub-indicator,
+a:hover > .sf-sub-indicator,
+a:active > .sf-sub-indicator,
+li:hover > a > .sf-sub-indicator,
+li.sfHover > a > .sf-sub-indicator { background-position: -10px -100px; /* arrow hovers for modern browsers*/ }
+/* point right for anchors in subs */
+.sf-menu ul .sf-sub-indicator { background-position: -10px 0; }
+.sf-menu ul a > .sf-sub-indicator { background-position: 0 0; }
+/* apply hovers to modern browsers */
+.sf-menu ul a:focus > .sf-sub-indicator,
+.sf-menu ul a:hover > .sf-sub-indicator,
+.sf-menu ul a:active > .sf-sub-indicator,
+.sf-menu ul li:hover > a > .sf-sub-indicator,
+.sf-menu ul li.sfHover > a > .sf-sub-indicator { background-position: -10px 0; /* arrow hovers for modern browsers*/ }
 /*** shadows for all but IE6 ***/
-.sf-shadow UL
-{
-    background: no-repeat bottom right;
-    padding: 0 8px 9px 0;
-    -moz-border-radius-bottomleft: 17px;
-    -moz-border-radius-topright: 17px;
-    -webkit-border-top-right-radius: 17px;
-    -webkit-border-bottom-left-radius: 17px;
-}
-.sf-shadow UL.sf-shadow-off
-{
-    background: transparent;
-}
+.sf-shadow ul { background: no-repeat bottom right; padding: 0 8px 9px 0; -moz-border-radius-bottomleft: 17px; -moz-border-radius-topright: 17px; -webkit-border-top-right-radius: 17px; -webkit-border-bottom-left-radius: 17px; }
+.sf-shadow ul.sf-shadow-off { background: transparent; }
 /*** adding sf-vertical in addition to sf-menu creates a vertical menu ***/
-.sf-vertical, .sf-vertical LI
-{
-    width: 10em;
-}
-/*this lacks ul at the start of the selector, so the styles from the main CSS file override it where needed*/
-.sf-vertical LI:hover UL, .sf-vertical LI.sfHover UL
-{
-    left: 10em;
-/*match ul width*/
-    top: 0;
-}
+.sf-vertical, .sf-vertical li { width:  10em; }
+/* this lacks ul at the start of the selector, so the styles from the main CSS file override it where needed */
+.sf-vertical li:hover ul,
+.sf-vertical li.sfHover ul { left:  10em; /* match ul width */
+    top:    0; }
 /*** alter arrow directions ***/
-.sf-vertical .sf-sub-indicator
-{
-    background-position: -10px 0;
-}
-/*IE6 gets solid image only*/
-.sf-vertical A>.sf-sub-indicator
-{
-    background-position: 0 0;
-}
-/*use translucent arrow for modern browsers
-hover arrow direction for modern browsers*/
-.sf-vertical A:focus>.sf-sub-indicator, .sf-vertical A:hover>.sf-sub-indicator, .sf-vertical A:active>.sf-sub-indicator, .sf-vertical LI:hover>A>.sf-sub-indicator, .sf-vertical LI.sfHover>A>.sf-sub-indicator
-{
-    background-position: -10px 0;
-/*arrow hovers for modern browsers*/
-}
-/*** adding the class sf-navbar in addition to sf-menu creates an all-horizontal nav-bar menu ***/
-.sf-navbar
-{
-    background: #BDD2FF;
-    height: 2.5em;
-    padding-bottom: 2.5em;
-    position: relative;
-}
-.sf-navbar LI
-{
-    background: #AABDE6;
-    position: static;
-}
-.sf-navbar A
-{
-    border-top: none;
-}
-.sf-navbar LI UL
-{
-    width: 44em;
-/*IE6 soils itself without this*/
-}
-.sf-navbar LI LI
-{
-    background: #BDD2FF;
-    position: relative;
-}
-.sf-navbar LI LI UL
-{
-    width: 13em;
-}
-.sf-navbar LI LI LI
-{
-    width: 100%;
-}
-.sf-navbar UL LI
-{
-    width: auto;
-    float: left;
-}
-.sf-navbar A, .sf-navbar A:visited
-{
-    border: none;
-}
-.sf-navbar LI.current
-{
-    background: #BDD2FF;
-}
-.sf-navbar LI:hover, .sf-navbar LI.sfHover, .sf-navbar LI LI.current, .sf-navbar A:focus, .sf-navbar A:hover, .sf-navbar A:active
-{
-    background: #BDD2FF;
-}
-.sf-navbar UL LI:hover, .sf-navbar UL LI.sfHover, UL.sf-navbar UL LI:hover LI, UL.sf-navbar UL LI.sfHover LI, .sf-navbar UL A:focus, .sf-navbar UL A:hover, .sf-navbar UL A:active
-{
-    background: #D1DFFF;
-}
-UL.sf-navbar LI LI LI:hover, UL.sf-navbar LI LI LI.sfHover, .sf-navbar LI LI.current LI.current, .sf-navbar UL LI LI A:focus, .sf-navbar UL LI LI A:hover, .sf-navbar UL LI LI A:active
-{
-    background: #E6EEFF;
-}
-UL.sf-navbar .current UL, UL.sf-navbar UL LI:hover UL, UL.sf-navbar UL LI.sfHover UL
-{
-    left: 0;
-    top: 2.5em;
-/*match top ul list item height*/
-}
-UL.sf-navbar .current UL UL
-{
-    top: -999em;
-}
-.sf-navbar LI LI.current>A
-{
-    font-weight: bold;
-}
-/*** point all arrows down **
-point right for anchors in subs*/
-.sf-navbar UL .sf-sub-indicator
-{
-    background-position: -10px -100px;
-}
-.sf-navbar UL A>.sf-sub-indicator
-{
-    background-position: 0 -100px;
-}
-/*apply hovers to modern browsers*/
-.sf-navbar UL A:focus>.sf-sub-indicator, .sf-navbar UL A:hover>.sf-sub-indicator, .sf-navbar UL A:active>.sf-sub-indicator, .sf-navbar UL LI:hover>A>.sf-sub-indicator, .sf-navbar UL LI.sfHover>A>.sf-sub-indicator
-{
-    background-position: -10px -100px;
-/*arrow hovers for modern browsers*/
-}
-/*** remove shadow on first submenu ***/
-.sf-navbar>LI>UL
-{
-    background: transparent;
-    padding: 0;
-    -moz-border-radius-bottomleft: 0;
-    -moz-border-radius-topright: 0;
-    -webkit-border-top-right-radius: 0;
-    -webkit-border-bottom-left-radius: 0;
-}
-.calendar
-{
-    position: relative;
-    display: none;
-    border-top: 2px solid #FFF;
-    border-right: 2px solid #000;
-    border-bottom: 2px solid #000;
-    border-left: 2px solid #FFF;
-    font-size: 11px;
-    color: #000;
-    cursor: default;
-    background: #D4D0C8;
-    font-family: tahoma, verdana, sans-serif;
-}
-.calendar TABLE
-{
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-    font-size: 11px;
-    color: #000;
-    cursor: default;
-    background: #D4D0C8;
-    font-family: tahoma, verdana, sans-serif;
-}
-.calendar .button
-{
-    text-align: center;
-    padding: 1px;
-    border-top: 1px solid #FFF;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    border-left: 1px solid #FFF;
-}
-.calendar .nav
-{
-    background: transparent;
-}
-.calendar THEAD .title
-{
-    font-weight: bold;
-    padding: 1px;
-    border: 1px solid #000;
-    background: #848078;
-    color: #FFF;
-    text-align: center;
-}
-.calendar THEAD .name
-{
-    border-bottom: 1px solid #000;
-    padding: 2px;
-    text-align: center;
-    background: #F4F0E8;
-}
-.calendar THEAD .weekend
-{
-    color: #F00;
-}
-.calendar THEAD .hilite
-{
-    border-top: 2px solid #FFF;
-    border-right: 2px solid #000;
-    border-bottom: 2px solid #000;
-    border-left: 2px solid #FFF;
-    padding: 0;
-    background-color: #E4E0D8;
-}
-.calendar THEAD .active
-{
-    padding: 2px 0 0 2px;
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-    background-color: #C4C0B8;
-}
-.calendar TBODY .day
-{
-    width: 2em;
-    text-align: right;
-    padding: 2px 4px 2px 2px;
-}
-.calendar TBODY .day.othermonth
-{
-    font-size: 80%;
-    color: #AAA;
-}
-.calendar TBODY .day.othermonth.oweekend
-{
-    color: #FAA;
-}
-.calendar TABLE .wn
-{
-    padding: 2px 3px 2px 2px;
-    border-right: 1px solid #000;
-    background: #F4F0E8;
-}
-.calendar TBODY .rowhilite TD
-{
-    background: #E4E0D8;
-}
-.calendar TBODY .rowhilite TD.wn
-{
-    background: #D4D0C8;
-}
-.calendar TBODY TD.hilite
-{
-    padding: 1px 3px 1px 1px;
-    border-top: 1px solid #FFF;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    border-left: 1px solid #FFF;
-}
-.calendar TBODY TD.active
-{
-    padding: 2px 2px 0;
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-}
-.calendar TBODY TD.selected
-{
-    font-weight: bold;
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-    padding: 2px 2px 0;
-    background: #E4E0D8;
-}
-.calendar TBODY TD.weekend
-{
-    color: #F00;
-}
-.calendar TBODY TD.today
-{
-    font-weight: bold;
-    color: #00F;
-}
-.calendar TBODY .disabled
-{
-    color: #999;
-}
-.calendar TBODY .emptycell
-{
-    visibility: hidden;
-}
-.calendar TBODY .emptyrow
-{
-    display: none;
-}
-.calendar TFOOT .ttip
-{
-    background: #F4F0E8;
-    padding: 1px;
-    border: 1px solid #000;
-    background: #848078;
-    color: #FFF;
-    text-align: center;
-}
-.calendar TFOOT .hilite
-{
-    border-top: 1px solid #FFF;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    border-left: 1px solid #FFF;
-    padding: 1px;
-    background: #E4E0D8;
-}
-.calendar TFOOT .active
-{
-    padding: 2px 0 0 2px;
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-}
-.calendar .combo
-{
-    position: absolute;
-    display: none;
-    width: 4em;
-    top: 0;
-    left: 0;
-    cursor: default;
-    border-top: 1px solid #FFF;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    border-left: 1px solid #FFF;
-    background: #E4E0D8;
-    font-size: 90%;
-    padding: 1px;
-    z-index: 100;
-}
-.calendar .combo .label, .calendar .combo .label-IEfix
-{
-    text-align: center;
-    padding: 1px;
-}
-.calendar .combo .label-IEfix
-{
-    width: 4em;
-}
-.calendar .combo .active
-{
-    background: #C4C0B8;
-    padding: 0;
-    border-top: 1px solid #000;
-    border-right: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    border-left: 1px solid #000;
-}
-.calendar .combo .hilite
-{
-    background: #048;
-    color: #FEA;
-}
-.calendar TD.time
-{
-    border-top: 1px solid #000;
-    padding: 1px 0;
-    text-align: center;
-    background-color: #F4F0E8;
-}
-.calendar TD.time .hour, .calendar TD.time .minute, .calendar TD.time .ampm
-{
-    padding: 0 3px 0 4px;
-    border: 1px solid #889;
-    font-weight: bold;
-    background-color: #FFF;
-}
-.calendar TD.time .ampm
-{
-    text-align: center;
-}
-.calendar TD.time .colon
-{
-    padding: 0 2px 0 3px;
-    font-weight: bold;
-}
-.calendar TD.time SPAN.hilite
-{
-    border-color: #000;
-    background-color: #766;
-    color: #FFF;
-}
-.calendar TD.time SPAN.active
-{
-    border-color: #F00;
-    background-color: #000;
-    color: #0F0;
-}
-#CP_hourcont
-{
-    padding: 0;
-    position: absolute;
-    border: 1px dashed #666;
-    background-color: #EEE;
-    display: none;
-}
-#CP_minutecont
-{
-    background-color: #DDD;
-    padding: 1px;
-    position: absolute;
-    width: 45px;
-    display: none;
-}
-.floatleft
-{
-    float: left;
-}
-.CP_hour
-{
-    padding: 1px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 9px;
-    white-space: nowrap;
-    cursor: pointer;
-    width: 35px;
-}
-.CP_minute
-{
-    padding: 1px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 9px;
-    white-space: nowrap;
-    cursor: pointer;
-    width: auto;
-}
-.CP_over
-{
-    background-color: #FFF;
-}
-.multiSelect
-{
-    width: 9.9em;
-    font-family: Arial, Helvetica, sans-serif;
-    position: relative;
-    height: 22px;
-    padding: 0;
-    margin: -0.05em 0 0;
-    border: 0;
-}
-.multiSelect .title
-{
-    background-color: #FFF;
-    border: 1px solid #999;
-    padding: 0;
-    margin: 0;
-    cursor: default;
-    min-width: 9.8em;
-}
-.multiSelect DIV.title
-{
-    position: absolute;
-    z-index: 104;
-}
-.multiSelect DIV.title-open
-{
-    border-bottom: 1px solid #FFF;
-}
-.multiSelect .title
-{
-    font-size: 0.8em;
-    height: 1.3em;
-    line-height: 1.2em;
-    overflow: hidden;
-    padding: 0.3em 1.1em 0.1em 0.5em;
-    background: #FFFFFF url(images/multiselect.gif) no-repeat top right;
-}
-.multiSelect .title:hover
-{
-    background: #FFFFFF url(images/multiselect-hover.gif) no-repeat top right;
-}
-.multiSelectContent
-{
-    position: absolute;
-    z-index: 106;
-    min-height: 1em;
-    background: #E9F3F8;
-    padding: 0.1em;
-    display: block;
-    font-size: 75%;
-    margin-top: -1px;
-    border: 1px solid #999;
-}
-.collapsed
-{
-    display: none;
-}
-.multiSelectContent UL
-{
-    overflow: auto;
-    min-height: 1em;
-    min-width: 20em;
-    margin: 0;
-    padding: 0;
-}
-.multiSelectContent LI
-{
-    cursor: pointer;
-    cursor: hand;
-    margin: 0 0 0.2em;
-    list-style: none;
-}
-.multiSelectContent LI:hover
-{
-    background: #DDD;
-}
-.arc90_multiselect
-{
-    width: 12.5em;
-    height: 1.35em;
-    visibility: hidden;
-}
-.a9selectall
-{
-    border-bottom: 1px solid #CCC;
-}
-/*Styles for page layout*/
-DIV.examples
-{
-    margin: 0 0 2em;
-    width: 17em;
-    border: 1px solid #E9E9E9;
-    padding: 0.3em;
-}
-DIV.examples LABEL.examples
-{
-    display: block;
-    margin: 0 0 0.2em;
-}
+.sf-vertical .sf-sub-indicator { background-position: -10px 0; }
+/* IE6 gets solid image only */
+.sf-vertical a > .sf-sub-indicator { background-position: 0 0; }
+/* use translucent arrow for modern browsers*/
 
-a.headerlink {
-    color: white;
-    font-size: 0.8em;
-    padding: 0 4px 0 4px;
-    text-decoration: none;
-}
- 
-a.headerlink:hover {
-    color: #c60f0f;
-}
+/* hover arrow direction for modern browsers*/
+.sf-vertical a:focus > .sf-sub-indicator,
+.sf-vertical a:hover > .sf-sub-indicator,
+.sf-vertical a:active > .sf-sub-indicator,
+.sf-vertical li:hover > a > .sf-sub-indicator,
+.sf-vertical li.sfHover > a > .sf-sub-indicator { background-position: -10px 0; /* arrow hovers for modern browsers*/ }
+/*** adding the class sf-navbar in addition to sf-menu creates an all-horizontal nav-bar menu ***/
+.sf-navbar { background:        #BDD2FF; height:            2.5em; padding-bottom:  2.5em; position:        relative; }
+.sf-navbar li { background:     #AABDE6; position:      static; }
+.sf-navbar a { border-top:      none; }
+.sf-navbar li ul { width:           44em; /*IE6 soils itself without this*/ }
+.sf-navbar li li { background:      #BDD2FF; position:      relative; }
+.sf-navbar li li ul { width:            13em; }
+.sf-navbar li li li { width:            100%; }
+.sf-navbar ul li { width:           auto; float:            left; }
+.sf-navbar a, .sf-navbar a:visited { border:            none; }
+.sf-navbar li.current { background:     #BDD2FF; }
+.sf-navbar li:hover,
+.sf-navbar li.sfHover,
+.sf-navbar li li.current,
+.sf-navbar a:focus, .sf-navbar a:hover, .sf-navbar a:active { background:       #BDD2FF; }
+.sf-navbar ul li:hover,
+.sf-navbar ul li.sfHover,
+ul.sf-navbar ul li:hover li,
+ul.sf-navbar ul li.sfHover li,
+.sf-navbar ul a:focus, .sf-navbar ul a:hover, .sf-navbar ul a:active { background:      #D1DFFF; }
+ul.sf-navbar li li li:hover,
+ul.sf-navbar li li li.sfHover,
+.sf-navbar li li.current li.current,
+.sf-navbar ul li li a:focus, .sf-navbar ul li li a:hover, .sf-navbar ul li li a:active { background:        #E6EEFF; }
+ul.sf-navbar .current ul,
+ul.sf-navbar ul li:hover ul,
+ul.sf-navbar ul li.sfHover ul { left:           0; top:         2.5em; /* match top ul list item height */ }
+ul.sf-navbar .current ul ul { top:          -999em; }
+.sf-navbar li li.current > a { font-weight: bold; }
+/*** point all arrows down ***/
+/* point right for anchors in subs */
+.sf-navbar ul .sf-sub-indicator { background-position: -10px -100px; }
+.sf-navbar ul a > .sf-sub-indicator { background-position: 0 -100px; }
+/* apply hovers to modern browsers */
+.sf-navbar ul a:focus > .sf-sub-indicator,
+.sf-navbar ul a:hover > .sf-sub-indicator,
+.sf-navbar ul a:active > .sf-sub-indicator,
+.sf-navbar ul li:hover > a > .sf-sub-indicator,
+.sf-navbar ul li.sfHover > a > .sf-sub-indicator { background-position: -10px -100px; /* arrow hovers for modern browsers*/ }
+/*** remove shadow on first submenu ***/
+.sf-navbar > li > ul { background: transparent; padding: 0; -moz-border-radius-bottomleft: 0; -moz-border-radius-topright: 0; -webkit-border-top-right-radius: 0; -webkit-border-bottom-left-radius: 0; }
+.calendar { position:relative; display:none; border-top:2px solid #fff; border-right:2px solid #000; border-bottom:2px solid #000; border-left:2px solid #fff; font-size:11px; color:#000; cursor:default; background:#d4d0c8; font-family:tahoma,verdana,sans-serif; }
+.calendar table { border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; font-size:11px; color:#000; cursor:default; background:#d4d0c8; font-family:tahoma,verdana,sans-serif; }
+.calendar .button { text-align:center; padding:1px; border-top:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #fff; }
+.calendar .nav { background:transparent }
+.calendar thead .title { font-weight:bold; padding:1px; border:1px solid #000; background:#848078; color:#fff; text-align:center; }
+.calendar thead .name { border-bottom:1px solid #000; padding:2px; text-align:center; background:#f4f0e8; }
+.calendar thead .weekend { color:#f00; }
+.calendar thead .hilite { border-top:2px solid #fff; border-right:2px solid #000; border-bottom:2px solid #000; border-left:2px solid #fff; padding:0; background-color:#e4e0d8; }
+.calendar thead .active { padding:2px 0 0 2px; border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; background-color:#c4c0b8; }
+.calendar tbody .day { width:2em; text-align:right; padding:2px 4px 2px 2px; }
+.calendar tbody .day.othermonth { font-size:80%; color:#aaa; }
+.calendar tbody .day.othermonth.oweekend { color:#faa; }
+.calendar table .wn { padding:2px 3px 2px 2px; border-right:1px solid #000; background:#f4f0e8; }
+.calendar tbody .rowhilite td { background:#e4e0d8; }
+.calendar tbody .rowhilite td.wn { background:#d4d0c8; }
+.calendar tbody td.hilite { padding:1px 3px 1px 1px; border-top:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #fff; }
+.calendar tbody td.active { padding:2px 2px 0 2px; border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; }
+.calendar tbody td.selected { font-weight:bold; border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; padding:2px 2px 0 2px; background:#e4e0d8; }
+.calendar tbody td.weekend { color:#f00; }
+.calendar tbody td.today { font-weight:bold; color:#00f; }
+.calendar tbody .disabled { color:#999; }
+.calendar tbody .emptycell { visibility:hidden; }
+.calendar tbody .emptyrow { display:none; }
+.calendar tfoot .ttip { background:#f4f0e8; padding:1px; border:1px solid #000; background:#848078; color:#fff; text-align:center; }
+.calendar tfoot .hilite { border-top:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #fff; padding:1px; background:#e4e0d8; }
+.calendar tfoot .active { padding:2px 0 0 2px; border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; }
+.calendar .combo { position:absolute; display:none; width:4em; top:0; left:0; cursor:default; border-top:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #fff; background:#e4e0d8; font-size:90%; padding:1px; z-index:100; }
+.calendar .combo .label,.calendar .combo .label-IEfix { text-align:center; padding:1px; }
+.calendar .combo .label-IEfix { width:4em; }
+.calendar .combo .active { background:#c4c0b8; padding:0; border-top:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; border-left:1px solid #000; }
+.calendar .combo .hilite { background:#048; color:#fea; }
+.calendar td.time { border-top:1px solid #000; padding:1px 0; text-align:center; background-color:#f4f0e8; }
+.calendar td.time .hour,.calendar td.time .minute,.calendar td.time .ampm { padding:0 3px 0 4px; border:1px solid #889; font-weight:bold; background-color:#fff; }
+.calendar td.time .ampm { text-align:center; }
+.calendar td.time .colon { padding:0 2px 0 3px; font-weight:bold; }
+.calendar td.time span.hilite { border-color:#000; background-color:#766; color:#fff; }
+.calendar td.time span.active { border-color:#f00; background-color:#000; color:#0f0; }
+#CP_hourcont { padding:0; position:absolute; border:1px dashed #666; background-color:#eee; display:none; }
+#CP_minutecont { background-color:#ddd; padding:1px; position:absolute; width:45px; display:none; }
+.floatleft { float:left; }
+.CP_hour { padding:1px; font-family:Arial,Helvetica,sans-serif; font-size:9px; white-space:nowrap; cursor:pointer; width:35px; }
+.CP_minute { padding:1px; font-family:Arial,Helvetica,sans-serif; font-size:9px; white-space:nowrap; cursor:pointer; width:auto; }
+.CP_over { background-color:#fff; }
+    .multiSelect {
+        width: 9.9em;
+        font-family: Arial, Helvetica, sans-serif;
+        position: relative;
+        height: 22px;
+        padding: 0;
+        margin: -.05em 0 0 0;
+        border: 0;
+    }
+    .multiSelect .title {
+        background-color: #fff;
+        border: 1px solid #999;
+        padding: 0;
+        margin: 0;
+        cursor: default;
+        min-width: 9.8em;
+    }
+    .multiSelect div.title {
+        position: absolute;
+        z-index: 104;
+    }
+    .multiSelect div.title-open {
+        border-bottom: 1px solid #fff;
+    }
+    .multiSelect .title {
+        font-size: .8em;
+        height: 1.3em;
+        line-height: 1.2em;
+        overflow: hidden;
+        padding: .3em 1.1em .1em .5em;
+        background: white url(images/multiselect.gif) no-repeat top right;
+    }
+    .multiSelect .title:hover {
+        background: white url(images/multiselect-hover.gif) no-repeat top right;
+    }
+    .multiSelectContent {
+        position: absolute;
+        z-index: 106;
+        min-height: 1em;
+        background: #e9f3f8;
+        padding: .1em;
+        display: block;
+        font-size: 75%;
+        margin-top: -1px;
+        border: 1px solid #999;
+    }
+    .collapsed {
+        display: none;
+    }
+    .multiSelectContent ul {
+        overflow: auto;
+        min-height: 1em;
+        min-width: 20em;
+        margin: 0;
+        padding: 0;
+    }
+    .multiSelectContent li {
+        cursor: pointer;
+        cursor: hand;
+        margin: 0 0 .2em 0;
+        list-style:none;
+    }
+    .multiSelectContent li:hover {
+        background: #ddd;
+    }
+    .arc90_multiselect {
+        width: 12.5em;
+        height: 1.35em;
+        visibility: hidden;
+    }
+    .a9selectall {
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Styles for page layout */
+    DIV.examples {
+        margin: 0 0 2em 0;
+        width: 17em;
+        border: 1px solid #e9e9e9;
+        padding: .3em;
+    }
+
+    DIV.examples LABEL.examples {
+        display: block;
+        margin: 0 0 .2em 0;
+    }

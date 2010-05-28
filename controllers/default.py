@@ -9,8 +9,8 @@ from gluon.sqlhtml import form_factory
 #############################################
 
 def index():
-    response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
-    response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
+    ##response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
+    ##response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
     return plugin_flatpage()
 
 #############################################

@@ -81,5 +81,5 @@ for sponsor in sponsors:
     response.sponsors.setdefault(sponsor.level, []).append(sponsor)
 
 #randomize sponsors...
-import random
-random.shuffle(response.sponsors[str(SPONSOR_LEVELS[1])])
+##import random
+##random.shuffle(response.sponsors[str(SPONSOR_LEVELS[1])])

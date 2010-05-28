@@ -5,7 +5,7 @@ exec('from applications.%s.modules.t2 import T2, COUNTRIES' % request.applicatio
 ##exec('import applications.%s.modules.gchecky.model as gmodel' % request.application)
 ##exec('import applications.%s.modules.gchecky.controller as gcontroller' % request.application)
 
-migrate = False
+migrate = True
 
 if is_gae:
     db=GQLDB()

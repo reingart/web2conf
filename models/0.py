@@ -12,7 +12,7 @@ else:
     is_gae=True
 
 VERSION=0.5
-T.current_languages=['en','en-us','en-bg']
+T.current_languages=['es','es-ar','es-es']
 
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
@@ -30,13 +30,11 @@ else:
     DBURI='sqlite://production.db'
     DBPOOLS=0
 
-response.title='PyDay 2010 Rafaela'
-response.subtitle=''
-response.footer="""1º Jornada de Python en Rafaela (Santa Fé) el <b>8 de Mayo de 2010</b> (organizado por el <a href="http://www.python.org.ar/">PyAr</a>). <br/>
-Más Información: <a href="http://python.org.ar/pyar/Eventos/Conferencias/PyDayRafaela2010">http://python.org.ar/pyar/Eventos/Conferencias/PyDayRafaela2010</a>&nbsp;
-<a href="http://groups.google.com.ar/group/pyday-rafaela">pyday-rafaela@googlegroups.com</a>"""
-response.keywords='python, software libre, rafaela, santa fe, pyday'
-response.description='Hecho con web2py'
+response.title='JRSL'
+response.subtitle='San Luis, Argentina.'
+response.footer='info@jornadasregionales.org'
+response.keywords='conference, jornadas, JRSL, Jornadas Regionales, Software Libre, Free Software, San Luis'
+response.description='Jornadas Regionales de Software Libre 2010'
 
 # MANAGERS are set in 0_private.py - here just to ensure definition
 MANAGERS=['reingart@gmail.com','arielrossanigo@gmail.com', 'orfi.sch@gmail.com']
@@ -171,7 +169,7 @@ COST_SECOND_TUTORIAL=80.0
 TALK_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
 TALK_LEVELS=(T("Beginner"),T("Intermediate"),T("Advanced"))
 
-SPONSOR_LEVELS=(T("Organizer"),T("Sponsor"))
+SPONSOR_LEVELS=("Organizer",)
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
