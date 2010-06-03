@@ -14,7 +14,7 @@
         var map = new GMap2(document.getElementById("map"));
         map.addControl(new GSmallMapControl());
         map.addControl(new GMapTypeControl());
-        map.setCenter(new GLatLng({{=x0}},{{=y0}}), 5);
+        map.setCenter(new GLatLng({{=x0}},{{=y0}}), 2);
         // Create a base icon for all of our markers that specifies the
         // shadow, icon dimensions, etc.
         var baseIcon = new GIcon();
@@ -45,7 +45,7 @@
         }
         {{for row in rows:}}{{if row.latitude and row.longitude:}}
           var point = new GLatLng({{=row.latitude}},{{=row.longitude}});
-          map.addOverlay(createMarker(point, 0, "{{=(row.first_name+' '+row.last_name).replace('"',"'")}}"));
+          map.addOverlay(createMarker(point, 0, "{{=row.include_in_delegate_listing and ( row.first_name+' '+row.last_name).replace('"',"'") or ''}}"));
         {{pass}}{{pass}}
      }
     }

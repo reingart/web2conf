@@ -1,4 +1,7 @@
-T.force("es")
+# set user selected language (default spanish)
+if request.vars.lang: session.lang=request.vars.lang
+T.force(session.lang or "es")
+
 
 ######################################
 ### PARAMETERS
@@ -12,7 +15,7 @@ else:
     is_gae=True
 
 VERSION=0.5
-T.current_languages=['es','es-ar','es-es']
+##T.current_languages=['es','es-ar','es-es']
 
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
@@ -32,15 +35,15 @@ else:
 
 response.title='JRSL'
 response.subtitle='San Luis, Argentina.'
-response.footer='info@jornadasregionales.org'
+response.footer='<b>Más información:</b> <a href="http://wiki.jornadasregionales.org/">wiki.jornadasregionales.org</a> - info@jornadasregionales.org'
 response.keywords='conference, jornadas, JRSL, Jornadas Regionales, Software Libre, Free Software, San Luis'
 response.description='Jornadas Regionales de Software Libre 2010'
 
 # MANAGERS are set in 0_private.py - here just to ensure definition
-MANAGERS=['reingart@gmail.com','arielrossanigo@gmail.com', 'orfi.sch@gmail.com']
+MANAGERS=['reingart@gmail.com','malaniz@code4life.com.ar']
 
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
-GOOGLEMAP_KEY='ABQIAAAANoGcCJcC-46KzN8dgwAVFxT6XE-lxwVPNlbMdWFn2DGVIqUZFhQMr6CiRDFIUJyTv8-jnBb3GfV8qQ'
+GOOGLEMAP_KEY='ABQIAAAAD3I2hE4jmkeymGlYmvvpCRQZU72Tq1l8c0mXrEv4HycGRvgEAxTNpE8MpZFJaMclBAF4VwhMGF0Cvg'
 
 # The following GOOGLE items set in 0_private.py - here to ensure defaults:
 GOOGLE_MERCHANT_ID=''
@@ -87,95 +90,26 @@ ATTENDEE_TYPE_COST=dict(
 ATTENDEE_TYPE_COST[None]=0.0
 
 TUTORIALS_LIST=(
-('11','Hands on Python I (Wednesday AM, March 25)'),
-('12','Faster Python Programs through Optimization (Wednesday AM, March 25)'),
-('13','Application Development with IronPython (Wednesday AM, March 25)'),
-('14','Using Twisted Deferreds (Wednesday AM, March 25)'),
-('15','Beginning TurboGears (Wednesday AM, March 25)'),
-('16','Introduction to the Google App Engine (Wednesday AM, March 25)'),
-('17','Easy Concurrency with Kamaelia (Wednesday AM, March 25)'),
-('18','Working with Excel Files in Python (Wednesday AM, March 25)'),
-
-('21','Hands on Python II (Wednesday PM, March 25)'),
-('22','Django in the Real World (Wednesday PM, March 25)'),
-('23','Eggs and Buildout Development (Wednesday PM, March 25)'),
-('24','Geographic Information Systems in Python (Wednesday PM, March 25)'),
-('25','Intermediate TurboGears (Wednesday PM, March 25)'),
-('26','A Courious Course on Coroutines and Concurrency (Wednesday PM, March 25)'),
-('27','Building Real-Time Network Apps with Twisted and Orbited (Wednesday PM, March 25)'),
-('28','Introduction to Functional Web Testing With Twill and Selenium (Wednesday PM, March 25)'),
-
-('31','Python 401: Some Advanced Topics (Thursday AM, March 26)'),
-('32','py.Test I: rapid testing with minimal effort (Thursday AM, March 26)'),
-('33','ToscaWidgets: Test Driven Modular Ajax (Thursday AM, March 26)'),
-('34','Introduction to SQLAlchemy (Thursday AM, March 26)'),
-('35','Hands on with Trac Plugins (Thursday AM, March 26)'),
-('36','Data Storage in Python (Thursday AM, March 26)'),
-('37','Python 101 (Thursday AM, March 26)'),
-('38','Scrape the Web (Thursday AM, March 26)'),
-
-('41','Introduction to OOP (Thursday PM, March 26)'),
-('42','py.Test II: cross-platform and distributed testing (Thursday PM, March 26)'),
-('43','Python for Teachers (Thursday PM, March 26)'),
-('44','Advanced SQLAlchemy (Thursday PM, March 26)'),
-('45','Using repoze.bfg Web Framework (Thursday PM, March 26)'),
-('46','A Tour of the Python Standard Library (Thursday PM, March 26)'),
-('47','Python 102 (Thursday PM, March 26)'),
-('48','Internet Programming with Python (Thursday PM, March 26)'),
 )
 TUTORIALS=dict(TUTORIALS_LIST) ### do not remove
 
 TUTORIALS_CAPS={
-'11': 32,
-'12': 62,
-'13': 32,
-'14': 32,
-'15': 32,
-'16': 62,  # ??
-'17': 32,
-'18': 32,
-
-'21': 32,
-'22': 62,
-'23': 32,
-'24': 32,
-'25': 32,
-'26': 62,
-'27': 32,
-'28': 32,
-
-'31': 62,  # second 60 TBD
-'32': 32,
-'33': 32,
-'34': 62,
-'35': 32,
-'36': 32,
-'37': 32,
-'38': 32,
-
-'41': 32,
-'42': 32,
-'43': 32,
-'44': 62,
-'45': 32,
-'46': 32,
-'47': 32,
-'48': 62,  # ??
 }
 
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-TALK_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
-TALK_LEVELS=(T("Beginner"),T("Intermediate"),T("Advanced"))
+EVENT_TYPES=('talk','keynote','panel','plenary','tutorial','summit','open-space','social','break') 
+EVENT_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
+EVENT_LEVELS=("Beginner","Intermediate","Advanced")
 
 SPONSOR_LEVELS=("Organizer",)
 
 # verify by email, unless running a developer test:
-EMAIL_VERIFICATION= True #not DEV_TEST
+EMAIL_VERIFICATION= False #not DEV_TEST
 EMAIL_SERVER='localhost:25'
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='pyday-rafaela@googlegroups.com'
+EMAIL_SENDER='info@jornadasregionales.org'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
@@ -221,4 +155,5 @@ PASSWORD_RETRIEVE_BODY=T("Your new password is %(password)s")
 INVOICE_HEADER = "This is a Conference Invoice!!!"
 
 CONFERENCE_URL=None
-CONFERENCE_COORDS=-31.2597103,-61.4510078
+CONFERENCE_COORDS=-20.2597103,-61.4510078
+#-31.2597103,-61.4510078
