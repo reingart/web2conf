@@ -30,7 +30,7 @@
   <div id="{{="description%s"% talk.id}}" style="display: none; padding-left: 4em; font-size: smaller">{{=XML(talk.description)}}</div>  
   <div id="{{="attachs%s"% talk.id}}" style="display: none; padding-left: 4em; font-size: smaller">
       <ul>{{for attach in attachs.get(talk.id,[]):}}
-          <li>{{=attach.description}}: {{=A(attach.filename,_href=URL(r=request,f='fast_download',args=attach.file,vars={'filename':attach.filename}))}}</li>
+          <li>{{=attach.description}}: {{=A(attach.filename,_href=URL(r=request,f='download',args=attach.file,vars={'filename':attach.filename}))}}</li>
           {{pass}}
       </ul>
   </div>  

@@ -1,20 +1,67 @@
 {{extend 'layout.html'}}
 
 <div class="frame">
-<h2>{{=T('Talk Proposal')}}</h2>
-[{{=A('edit',_href=t2.action('update_talk',t2.id))}}]
-[{{=A('review',_href=t2.action('review_talk',t2.id))}}]
+<h2>{{=T('Event Proposal')}}</h2>
+{{if auth.has_membership(role='reviewer') or user_is_author(event_id):}}
+[{{=A(T('edit'),_href=URL(r=request,f='update',args=event_id))}}]
+[{{=A(T('attach'),_href=URL(r=request,f='attach',args=event_id))}}]
+[{{=A(T('comment'),_href=URL(r=request,f='comment',args=event_id))}}]
+{{pass}}
+{{if auth.has_membership(role='reviewer') and not user_is_author(event_id):}}
+[{{=A(T('review'),_href=URL(r=request,f='review',args=event_id))}}]
+{{pass}}
 {{=item}}
 </div>
 
-{{if attachments:}}
+<div style="clear: both;">&nbsp;</div>
+
 <div class="frame">
 <h2>{{=T('Attachments')}}</h2>
-{{=attachments}}
-</div>
+{{if attachments is not None:}}
+  <UL>
+  {{for attach in attachments:}}
+    <LI>
+{{=A(attach.filename or T('noname'),_href=URL(r=request,f='download',args=attach.file,vars={'filename':attach.filename}))}}:
+{{=attach.description}}
+{{if auth.has_membership(role='reviewer') or user_is_author(event_id):}}
+({{=A(T('edit'),_href=URL(r=request,f='attach',args=(event_id,attach.id)))}})
 {{pass}}
+    </LI>
+  {{pass}}
+  </UL>
+{{pass}}
+</div>
+
+<div style="clear: both;">&nbsp;</div>
 
 <div class="frame">
 <h2>{{=T('Comments')}}</h2>
-{{=comments}}
+{{if comments is not None:}}
+  <UL>
+  {{for comment in comments:}}
+    <LI>
+    {{=T('User %(created_signature)s on %(created_on)s says: %(body)s') % comment}}
+    </LI>
+  {{pass}}
+  </UL>
+{{pass}}
 </div>
+
+<div style="clear: both;">&nbsp;</div>
+
+{{if auth.has_membership(role='manager'):}}
+<div class="frame">
+<h2>{{=T('Reviews')}}</h2>
+{{if reviews is not None:}}
+  <UL>
+  {{for review in reviews:}}
+    <LI>
+    {{=T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s') % review}}
+    </LI>
+  {{pass}}
+  </UL>
+{{pass}}
+</div>
+{{pass}}
+
+<div style="clear: both;">&nbsp;</div>

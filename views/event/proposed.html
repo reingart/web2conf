@@ -5,7 +5,7 @@
 
 <ul>
 {{for talk in talks:}}
-{{=LI(talk.status,' ',A(talk.title,_href=URL(r=request,f='display_talk',args=talk.id)))}}
+{{=LI(talk.status,' ',A(talk.title,_href=URL(r=request,f='display',args=talk.id)))}}
 {{pass}}
 </ul>
 </div>
