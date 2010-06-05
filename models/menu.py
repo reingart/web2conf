@@ -25,8 +25,8 @@ submenu_info=[
         [T('Maps'),False,URL(r=request,c='stats',f='maps')],
 ]
 if ENABLE_TALKS:
-   submenu_info.append([T('Accepted Talks'),False,URL(r=request,c='event',f='accepted')])
-   submenu_info.append([T('Proposed Talks'),False,URL(r=request,c='event',f='proposed')])
+   submenu_info.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
+   submenu_info.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
 
 response.menu.append([T('Stats'),False,'#',submenu_info])
 response.menu.append([T('About'),False,URL(r=request,c='default',f='about')])
@@ -65,10 +65,10 @@ if auth.has_membership(role='manager'):
 
 response.sidebar=[]
 if auth.user and ENABLE_TALKS:
-    talks=[(t.title,URL(r=request,c='event',f='display',args=t.id)) \
-           for t in db(db.event.created_by==auth.user.id).select()]
-    talks.append((T('Propose talk'),URL(r=request,c='event',f='propose')))
-    response.sidebar.append([T('Your Talks'),talks])
+    talks=[(t.title,URL(r=request,c='activity',f='display',args=t.id)) \
+           for t in db(db.activity.created_by==auth.user.id).select()]
+    talks.append((T('Propose talk'),URL(r=request,c='activity',f='propose')))
+    response.sidebar.append([T('Your Activities'),talks])
 
 #############################################
 # Insert Sponsors Logo

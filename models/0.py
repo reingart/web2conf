@@ -96,9 +96,9 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-EVENT_TYPES=('talk','keynote','panel','plenary','tutorial','summit','open-space','social','break') 
-EVENT_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
-EVENT_LEVELS=("Beginner","Intermediate","Advanced")
+ACTIVITY_TYPES=('talk','keynote','panel','plenary','tutorial','summit','open-space','social','break') 
+ACTIVITY_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
+ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 
 SPONSOR_LEVELS=("Organizer",)
 

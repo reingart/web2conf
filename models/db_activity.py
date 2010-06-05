@@ -4,10 +4,10 @@ import datetime
 now=datetime.datetime.now()
 
 ######################################
-### MANAGE EVENTS (PROPOSALS)
+### MANAGE ACTIVITIES ("TALK" PROPOSALS)
 ######################################
 
-db.define_table('event',
+db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
@@ -30,30 +30,30 @@ db.define_table('event',
     format='%(title)s',
     migrate=migrate)
 
-db.event.description.display=lambda value: XML(value)
-db.event.title.requires=IS_NOT_IN_DB(db,'event.title')
-db.event.authors.requires=IS_NOT_EMPTY()
-db.event.status.requires=IS_IN_SET(['pending','accepted','rejected'])
-db.event.type.requires=IS_IN_SET(EVENT_TYPES)
-db.event.type.default=EVENT_TYPES[0]
-db.event.level.requires=IS_IN_SET(EVENT_LEVELS)
-db.event.level.default=EVENT_LEVELS[0]
-db.event.abstract.requires=IS_NOT_EMPTY()
-db.event.description.requires=IS_NOT_EMPTY()
-db.event.categories.requires=IS_IN_SET(EVENT_CATEGORIES,multiple=True)
-##db.event.displays=db.proposal.fields
-db.event.status.writable=db.event.status.readable=auth.has_membership('manager')
-db.event.scheduled_datetime.writable=db.event.scheduled_datetime.readable=auth.has_membership('manager')
-db.event.video.writable=db.event.video.readable=auth.has_membership('reviewer')
+db.activity.description.display=lambda value: XML(value)
+db.activity.title.requires=IS_NOT_IN_DB(db,'activity.title')
+db.activity.authors.requires=IS_NOT_EMPTY()
+db.activity.status.requires=IS_IN_SET(['pending','accepted','rejected'])
+db.activity.type.requires=IS_IN_SET(ACTIVITY_TYPES)
+db.activity.type.default=ACTIVITY_TYPES[0]
+db.activity.level.requires=IS_IN_SET(ACTIVITY_LEVELS)
+db.activity.level.default=ACTIVITY_LEVELS[0]
+db.activity.abstract.requires=IS_NOT_EMPTY()
+db.activity.description.requires=IS_NOT_EMPTY()
+db.activity.categories.requires=IS_IN_SET(ACTIVITY_CATEGORIES,multiple=True)
+##db.activity.displays=db.proposal.fields
+db.activity.status.writable=db.activity.status.readable=auth.has_membership('manager')
+db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=auth.has_membership('manager')
+db.activity.video.writable=db.activity.video.readable=auth.has_membership('reviewer')
 
-db.event.represent=lambda event: \
-   A('[%s] %s' % (event.status,event.title),
-     _href=URL(r=request,c='event',f='display',args=[event.id]))
+db.activity.represent=lambda activity: \
+   A('[%s] %s' % (activity.status,activity.title),
+     _href=URL(r=request,c='activity',f='display',args=[activity.id]))
 
-db.define_table('event_archived',db.event,db.Field('event_proposal',db.event), migrate=migrate)
+db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate)
 
 db.define_table('attachment',
-   db.Field('event_id',db.event,label=T('Event'),writable=False),
+   db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
    db.Field('name','string',label=T('Name')),
    db.Field('description','text',label=T('Description')),
    db.Field('file','upload',label=T('File')),
@@ -68,7 +68,7 @@ db.attachment.filename.requires=IS_NOT_EMPTY()
 db.attachment.filename.comment=T("(new filename for downloads)")
 
 db.define_table('comment',
-   db.Field('event_id',db.event,label=T('Event'),writable=False),
+   db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
    db.Field('body','text',label=T('Body')),
    db.Field('created_signature',label=T("Created Signature"),readable=False,writable=False,
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
@@ -78,7 +78,7 @@ db.define_table('comment',
 db.comment.body.requires=IS_NOT_EMPTY()
 
 db.define_table('review',
-   db.Field('event_id',db.event,label=T('Event'),writable=False),
+   db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
    db.Field('rating','integer',label=T('Rating'),default=0),
    db.Field('body','text',label=T('Body')),
    db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
@@ -91,21 +91,21 @@ db.review.rating.requires=IS_IN_SET([str(x) for x in range(0,6)])
 
 db.define_table('author',
     db.Field('user_id', db.auth_user),
-    db.Field('event_id', db.event),
+    db.Field('activity_id', db.activity),
     db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
     migrate=migrate)
     
-def user_is_author(event_id=None):
-    if not auth.is_logged_in() or (not request.args and event_id is None):
+def user_is_author(activity_id=None):
+    if not auth.is_logged_in() or (not request.args and activity_id is None):
         return False
-    if event_id is None:
-        event_id = request.args[0]
-    if db((db.author.user_id==auth.user_id)&(db.author.event_id==event_id)).count():
+    if activity_id is None:
+        activity_id = request.args[0]
+    if db((db.author.user_id==auth.user_id)&(db.author.activity_id==activity_id)).count():
         return True
 
-def event_is_accepted():
+def activity_is_accepted():
     if not request.args:
         return False
-    if db((db.event.id==request.args[0])&(db.event.status=='accepted')).count():
+    if db((db.activity.id==request.args[0])&(db.activity.status=='accepted')).count():
         return True
