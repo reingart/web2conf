@@ -2,8 +2,11 @@
 # Manage Authentication
 #############################################
 
+# we are not in default controller, change it at auth
+auth.settings.controller='user'
+
 def login():
-    return dict(form=auth.login(next='index',
+    return dict(form=auth.login(next=URL(r=request,c='default',f='index'),
                                 onaccept=lambda form:update_pay(auth.user)))
 
 def verify():
@@ -19,7 +22,7 @@ def password():
         
 
 @auth.requires_login()
-def logout(): auth.logout(next='index')
+def logout(): auth.logout(next=URL(r=request,c='default',f='index'))
 
 @auth.requires_login()
 def profile():
@@ -32,5 +35,5 @@ def profile():
         db.auth_user.discount_coupon.writable=False
     form=crud.update(db.auth_user,auth.user.id,
                      onaccept=update_person,
-                     next='index')
+                     next='profile')
     return dict(form=form)

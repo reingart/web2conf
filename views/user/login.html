@@ -4,7 +4,7 @@
 <h2>{{=T('Login')}}</h2>
 {{=form}}
 <br/>
-{{=A('lost your password?',_href=t2.action('password'))}}
+{{=A(T('lost your password?'),_href=URL(r=request,f='password'))}}
 <br/>
-{{=A('need to register?',_href=t2.action('register'))}}
+{{=A(T('need to register?'),_href=URL(r=request,f='register'))}}
 </div>
