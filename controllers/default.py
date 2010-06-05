@@ -27,7 +27,7 @@ def download():
 ###@cache(request.env.path_info,60,cache.disk)
 def fast_download():
     # very basic security:
-    if not request.args(0).startswith("sponsor.logo") and not request.args(0).startswith("t2_attachment.file"): 
+    if not request.args(0).startswith("sponsor.logo"): 
         return download()
     if 'filename' in request.vars:
         response.headers["Content-Disposition"] = "attachment; filename=%s" % request.vars['filename'] 

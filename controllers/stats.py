@@ -45,13 +45,24 @@ def charts():
                 cn.append((TUTORIALS[item],colors[k],cn2[item]))
                 k+=1
     chart_tutorials=None #t2.barchart(cn,label_width=150)
+
+    def barchart(data,width=400,height=15,scale=None,
+                 label_width=50,values_width=50):
+        if not scale: scale=max([m for n,c,m in data])
+        if not scale: return None
+        return TABLE(_class='barchart',
+               *[TR(TD(n,_width=label_width,_style="text-align: right"),
+               TABLE(TR(TD(_width=int(m*width/scale),_height=height,
+               _style='background-color:'+c))),TD(m,_width=values_width),
+               _style="vertical-alignment: middle") for n,c,m in data])
+
     def colorize(d,sort_key=lambda x:x):
         s=[(m,n) for n,m in d.items()]
         s.sort(key=sort_key)
         s.reverse()
             
         t=[(x[1],colors[i % len(colors)],x[0]) for i,x in enumerate(s)]
-        return t2.barchart(t,label_width=150)   
+        return barchart(t,label_width=150)   
     country={}
     city={}
     state={}

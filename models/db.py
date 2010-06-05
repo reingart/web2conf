@@ -1,7 +1,6 @@
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
-exec('from applications.%s.modules.t2 import T2, COUNTRIES' % request.application)
 
 migrate = True
 
@@ -137,7 +136,5 @@ db.auth_user.created_by_ip.requires=\
     IS_NOT_IN_DB(db(db.auth_user.created_on>PAST),'auth_user.created_by_ip')
 db.auth_user.registration_key.default=str(uuid.uuid4())
 
-
-t2=T2(request,response,session,cache,T,db)
 
 crud=Crud(globals(),db)

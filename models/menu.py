@@ -55,7 +55,7 @@ if auth.has_membership(role='manager'):
         [T('FA-CSV'),False,URL(r=request,c='manage',f='fa_csv')],
         [T('FA-(email all)'),False,URL(r=request,c='manage',f='fa_email_all')]
     ]
-    submenu[0][3]=[['[%s]' % (table if not table[:3]=='t2_' else table[3:]),
+    submenu[0][3]=[['[%s]' % (table),
                False,URL(r=request,c='manage',f='_crud',args=("select",table))] for table in db.tables]
     response.menu.append([T('Manage'),False,'#',submenu])
 

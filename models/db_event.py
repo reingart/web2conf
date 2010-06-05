@@ -40,7 +40,7 @@ db.event.level.requires=IS_IN_SET(EVENT_LEVELS)
 db.event.level.default=EVENT_LEVELS[0]
 db.event.abstract.requires=IS_NOT_EMPTY()
 db.event.description.requires=IS_NOT_EMPTY()
-db.event.categories.widget=lambda s,v:T2.tag_widget(s,v,EVENT_CATEGORIES)
+db.event.categories.requires=IS_IN_SET(EVENT_CATEGORIES,multiple=True)
 ##db.event.displays=db.proposal.fields
 db.event.status.writable=db.event.status.readable=auth.has_membership('manager')
 db.event.scheduled_datetime.writable=db.event.scheduled_datetime.readable=auth.has_membership('manager')
@@ -88,7 +88,6 @@ db.define_table('review',
    migrate=migrate)
 db.review.body.requires=IS_NOT_EMPTY()
 db.review.rating.requires=IS_IN_SET([str(x) for x in range(0,6)])
-## db.review.rating.widget=T2.rating_widget
 
 db.define_table('author',
     db.Field('user_id', db.auth_user),
