@@ -37,7 +37,7 @@ def display():
     item=t2.display(db.event)
     comments=t2.comments(db.event)
     rows=db(db.event.id==request.args[0]).select()
-    if session.manager or (rows and rows[0].created_by==auth.user.id):
+    if auth.has_membership(role='manager') or (rows and rows[0].created_by==auth.user.id):
         writable=True
     else:
         writable=False

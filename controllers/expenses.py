@@ -1,4 +1,3 @@
-session.manager=(auth.user and auth.user.email in MANAGERS)
 
 response.menu=[
     ['Main',False,URL(r=request,c='default',f='index')],

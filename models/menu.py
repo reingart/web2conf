@@ -1,7 +1,5 @@
 # coding: utf8
 
-session.manager=(auth.user and auth.user.email in MANAGERS)
-
 response.menu=[[T('Main'),False,URL(r=request,c='default',f='index')]]
 
 if not auth.user:
@@ -44,7 +42,7 @@ else:
 # Insert Manage sub-menu item
 #############################################    
 
-if auth.user and session.manager:
+if auth.has_membership(role='manager'):
     submenu=[
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],

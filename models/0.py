@@ -39,9 +39,6 @@ response.footer='<b>Más información:</b> <a href="http://wiki.jornadasregional
 response.keywords='conference, jornadas, JRSL, Jornadas Regionales, Software Libre, Free Software, San Luis'
 response.description='Jornadas Regionales de Software Libre 2010'
 
-# MANAGERS are set in 0_private.py - here just to ensure definition
-MANAGERS=['reingart@gmail.com','malaniz@code4life.com.ar']
-
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
 GOOGLEMAP_KEY='ABQIAAAAD3I2hE4jmkeymGlYmvvpCRQZU72Tq1l8c0mXrEv4HycGRvgEAxTNpE8MpZFJaMclBAF4VwhMGF0Cvg'
 
