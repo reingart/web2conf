@@ -46,6 +46,7 @@ else:
 
 if auth.user and session.manager:
     submenu=[
+        [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],
         [T('Payments'),False,URL(r=request,c='manage',f='payments')],
         # [T('CSV for Badges'),False,URL(r=request,c='manage',f='badges')],
@@ -56,8 +57,8 @@ if auth.user and session.manager:
         [T('FA-CSV'),False,URL(r=request,c='manage',f='fa_csv')],
         [T('FA-(email all)'),False,URL(r=request,c='manage',f='fa_email_all')]
     ]
-    submenu+=[['[%s]' % (table if not table[:3]=='t2_' else table[3:]),
-               False,t2.action('create',table)] for table in db.tables]
+    submenu[0][3]=[['[%s]' % (table if not table[:3]=='t2_' else table[3:]),
+               False,URL(r=request,c='manage',f='_crud',args=("select",table))] for table in db.tables]
     response.menu.append([T('Manage'),False,'#',submenu])
 
 #############################################

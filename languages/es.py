@@ -68,6 +68,7 @@
 'Below is the complete list, as accessible to managers only.': 'A continuaci\xc3\xb3n aparece una lista completa, asequible solo por administradores.',
 'Body': 'Cuerpo',
 'Breakdown by person': 'Detalle por persona',
+'CRUD': 'CRUD',
 'CSV for Badges': 'CSV para identificaciones',
 'CV': 'CV',
 'Cancel': 'Cancelar',

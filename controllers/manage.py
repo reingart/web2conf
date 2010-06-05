@@ -3,6 +3,14 @@
 #############################################
 
 @auth.requires_login()
+def _crud():
+    if not (session.manager):
+        redirect(URL(r=request, c='default', f='index'))
+    crud.settings.controller = 'manage'
+    return dict(form=crud())
+
+
+@auth.requires_login()
 def badges():
     if not session.manager: t2.redirect('index')
     rows=db().select(db.auth_user.first_name,
@@ -71,35 +79,6 @@ def payments():
     if not session.manager: t2.redirect('index')
     rows=db(db.payment.status!='PRE-PROCESSING')(db.payment.from_person==db.auth_user.id).select(orderby=~db.payment.created_on)
     return dict(payments=rows)
-
-@auth.requires_login()
-def create():
-    if not (session.manager and request.args and request.args[0] in db.tables):
-         t2.redirect('index')
-    table=request.args[0]
-    db[table]['exposes']=db[table].fields
-    form=t2.create(db[table])
-    db[table]['represent']=lambda item: A(item.id,':',
-        item[db[table].fields[1]],_href=t2.action('update',[table,item.id]))
-    search=t2.search(db[table])
-    return dict(form=form,search=search)
-
-@auth.requires_login()
-def update():
-    if not (session.manager and request.args and request.args[0] in db.tables):
-         t2.redirect('index')
-    table=request.args[0]
-    if table=='auth_user':
-        ##db[table]['exposes']=db.auth_user.exposes[:-1]
-        form=t2.update(db[table],next='impersonate/[id]')
-    else:
-        db[table]['exposes']=db[table].fields
-        form=t2.update(db[table],next='create/%s' % table)
-    if table=='auth_user' and form.vars.id:
-        balance=session.balance
-        update_pay(form.record)
-        session.balance=balance
-    return dict(form=form)
 
 # Select records for badge
 @auth.requires_login()
@@ -285,3 +264,4 @@ def cancel_payment2():
          t2.redirect('impersonate/%s'%request.args[0],flash=T('Payment cancelled'))
     except Exception:
          t2.redirect('impersonate/%s'%request.args[0],flash=T('Invalid operation'))
+
