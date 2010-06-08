@@ -3,7 +3,6 @@
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
-exec('from applications.%s.modules.t2 import T2, COUNTRIES' % request.application)
 
 ######################################
 ### MANAGE BALANCE TRANSFER

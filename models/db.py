@@ -8,7 +8,7 @@ if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
 else:
-    db=SQLDB(DBURI)
+    db=DAL(DBURI)
 
 PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 
