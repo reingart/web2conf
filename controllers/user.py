@@ -13,7 +13,7 @@ def verify():
     return auth.verify_email(next=URL(r=request,f='login'))
 
 def register():
-    form=auth.register(next='index',
+    form=auth.register(next=URL(r=request,c='default',f='index'),
                        onaccept=update_person)
     return dict(form=form)
                 

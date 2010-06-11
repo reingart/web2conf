@@ -79,17 +79,17 @@
 		menuClass   : 'sf-js-enabled',
 		anchorClass : 'sf-with-ul',
 		arrowClass  : 'sf-sub-indicator',
-		shadowClass : 'sf-shadow'
+		//shadowClass : 'sf-shadow'
 	};
 	sf.defaults = {
 		hoverClass	: 'sfHover',
 		pathClass	: 'overideThisToUse',
 		pathLevels	: 1,
-		delay		: 800,
-		animation	: {opacity:'show'},
+		delay		: 400,
+		//animation	: {opacity:'show'},
 		speed		: 'normal',
 		autoArrows	: true,
-		dropShadows : true,
+		dropShadows : false,
 		disableHI	: false,		// true disables hoverIntent detection
 		onInit		: function(){}, // callback functions
 		onBeforeShow: function(){},

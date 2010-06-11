@@ -32,7 +32,6 @@ response.menu.append([T('Stats'),False,'#',submenu_info])
 response.menu.append([T('About'),False,URL(r=request,c='default',f='about')])
 
 if auth.user:
-    response.menu.append([T('Expenses'),True,URL(r=request,c='expenses',f='index')])
     response.menu.append([T('Profile'),False,URL(r=request,c='user',f='profile')])
     response.menu.append([T('Logout'),False,URL(r=request,c='user',f='logout')])
 else:
@@ -45,10 +44,11 @@ else:
 if auth.has_membership(role='manager'):
     submenu=[
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
+        [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],
+        [T('Expenses'),True,URL(r=request,c='expenses',f='index')],
         [T('Payments'),False,URL(r=request,c='manage',f='payments')],
         # [T('CSV for Badges'),False,URL(r=request,c='manage',f='badges')],
-        [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],
         [T('Badges'),False,URL(r=request,c='manage',f='badge',args='auth_user')],
         [T('Tutorials'),False,URL(r=request,c='manage',f='list_by_tutorial')],
         # [T('Tutorials+food'),False,URL(r=request,c='manage',f='by_tutorial_csv')],

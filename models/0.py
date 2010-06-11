@@ -103,10 +103,10 @@ ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 SPONSOR_LEVELS=("Organizer",)
 
 # verify by email, unless running a developer test:
-EMAIL_VERIFICATION= False #not DEV_TEST
+EMAIL_VERIFICATION= True #not DEV_TEST
 EMAIL_SERVER='localhost:25'
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='info@jornadasregionales.org'
+EMAIL_SENDER='register@jornadasregionales.org'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
