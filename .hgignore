@@ -1,6 +1,7 @@
 syntax: glob
 *.pyc
 *.pyo
+*.bak
 *~
 #*
 models/0_override.py

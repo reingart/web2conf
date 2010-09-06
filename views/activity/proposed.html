@@ -1,0 +1,15 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Proposed Activities')}}</h2>
+
+<ul>
+{{for activity in activities:}}
+{{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)))}}
+{{pass}}
+</ul>
+</div>
+
+{{if not activities:}}
+No talks proposed yet
+{{pass}}

@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+
+<script>
+$(document).ready(function(){
+$('TR TD:first').attr('width','150px');
+});
+</script>
+
+<div class="frame">
+<h2>{{=T('Registration Form')}}</h2>
+{{=form}}
+<p><b>Notas:</b></p>
+<p id="footnote1"><b>[1]</b> {{=T('This information will be encoded on your badge and can be provided to sponsors and exhibitors in the expo hall. These fields are optional unless otherwise noted.')}}
+<p id="footnote2"><b>[2]</b> {{=T('Paying this rate, you\'ll be helping to keep the conference affordable for all')}}
+<p id="footnote3"><b>[3]</b> {{=T('If you want you can upload your CV to be available to our Sponsors in further laboral searchs:')}}
+</p>
+</div>

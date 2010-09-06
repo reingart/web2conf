@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+{{if form and format=='HTML':}}
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.css')}}" />
+<script type="text/javascript">
+$(function()
+  {
+      $('#wysiwyg').wysiwyg();
+  });
+</script>
+{{pass}}
+<div class="frame">
+{{=body}}
+</div>
+{{if form:}}
+{{=form}}
+{{pass}}

@@ -1,0 +1,37 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('City')}}</h2>
+{{=chart_city}}
+<br /><br />
+
+<h2>{{=T('State')}}</h2>
+{{=chart_state}}
+<br /><br />
+
+{{if session.manager:}}
+<h2>{{=T('Registration date')}}</h2>
+{{=chart_registration_date}}
+<br /><br />
+
+<h2>{{=T('Certificate')}}</h2>
+{{=chart_certificates}}
+<br /><br />
+{{pass}}
+
+<h2>Tutorials</h2>
+{{=chart_tutorials or T("Nobody registered for tutorials")}}
+<br /><br />
+<h2>Attendee Type</h2>
+{{=chart_attendee_type}}
+<h2>Food Preference</h2>
+{{=chart_food_preference}}
+<br /><br />
+<h2>T-Shirt Size</h2>
+{{=chart_t_shirt_size}}
+<br /><br />
+<h2>Country</h2>
+{{=chart_country}}
+<br /><br />
+
+</div>

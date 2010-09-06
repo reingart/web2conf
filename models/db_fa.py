@@ -1,3 +1,64 @@
+# coding: utf8
+
+#### yarko ---< F/A (financial aid) forms >----
+db.define_table( 'fa',
+   # Idendtification:
+   # - Legal name => fa.person.first_name + fa.person.last_name
+   # - Address => fa.person.{address1,address2,city,state,country,zip_code}
+   # - email address => fa.person.email
+   # Registration:
+   # - registration type => fa.percon.attendee_type
+   db.Field( 'person', db.auth_user ),
+   db.Field('created_on','datetime'),
+   db.Field('modified_on','datetime',default=now),
+   db.Field( 'registration_amount', 'double', default='0.00'),
+   # Hotel Cost:
+   # - number of nights of assitance requested;
+   db.Field( 'hotel_nights', 'integer', default=0 ),
+   # - total amount requested; label:  "Max 50% of room rate at Crowne Plaza x # nights;" labeled; validated if easy to update room rates.
+   db.Field( 'total_lodging_amount', 'double', default='0.00'),
+   db.Field( 'roommates', 'string', length=128, default=''),
+   # Transportation:
+   # - method of transportation / details;
+   # db.Field( 'method_of_transportation', 'string', default=''),
+   db.Field( 'transportation_details', 'text', default=''),
+   # - total amount requested; label: "If you want assistance with your transportation costs, please provide a rough estimate (to nearest US$100)
+   #       of how much a round-trip will cost.  Please update your request once final cost is known."
+   db.Field( 'transportation_amount', 'double', default='0.00', ),
+   # Total:  - read-only field calculated from above 3 sections
+   # - registration dollar amount requested; (let applicant specify, as they can ask for just a portion)
+   db.Field( 'total_amount_requested', 'double', default='0.0'), # default = ATTENDEE_TYPE_COST[person.attendee_type]),
+   #
+   # Additional fileds:
+   # - minimum at. requested; label "In addition to the desired amount, state the minimum amount of aid you require, below
+   #  which you will not be able to attend PyCon.  If we are unable to allocate this minumum amount, we will decline your application
+   #  and allocate the funds to others."
+   db.Field( 'minimum_amount_requested', 'double', default='0.00', ),
+   # - Rational " State why you should come to PyCon, and what you will be doing.
+   #    We don't need an essay, but please provide a few sentences of explanation.
+   #   Priority will be given to people who make significant contributions to PyCon
+   #   and the Python community (e.g. students working on a task, conference speakers,
+   #   sprint leaders, developers critical to a sprint, super-enthusiastic sprint newbies
+   #   who will give 110% for their project, or people doing public service work with Python)."
+   db.Field( 'rationale', 'text', default='' ),
+   migrate=migrate)
+
+db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
+
+db.fa.registration_amount.comment= XML(str(T('(%s)',A('instructions',_href='#registration_amount'))))
+db.fa.hotel_nights.comment= XML(str(T('(%s)',A('instructions',_href='#hotel_nights'))))
+db.fa.total_lodging_amount.comment= XML(str(T('(%s)',A('instructions',_href='#total_lodging'))))
+db.fa.roommates.comment= XML(str(T('(%s)',A('instructions',_href='#roommates'))))
+db.fa.transportation_details.comment= XML(str(T('(%s)',A('instructions',_href='#transportation'))))
+db.fa.transportation_amount.comment= XML(str(T('(%s)',A('instructions',_href='#transportation_amt'))))
+db.fa.total_amount_requested.comment= XML(str(T('(%s)',A('instructions',_href='#total_amt'))))
+db.fa.minimum_amount_requested.comment= XML(str(T('(%s)',A('instructions',_href='#min_amt'))))
+db.fa.rationale.comment= XML(str(T('(%s)',A('instructions',_href='#rationale'))))
+#### ---< END: F/A forms >---
+
+#### end fixup
+
+
 body_template="""
 Your Financial Aid Application has been %s.
 Thank you; your updates will be reviewed.
@@ -80,4 +141,3 @@ def email_fa_select(query=db.fa.id>0):
             print "t2.email(\n",EMAIL_SENDER,[FA_EMAIL_TO],"\nsubject=",'PyCon FA Application Updated [#%s]' % fa.id, body, ")"
         else:
             t2.email(EMAIL_SENDER,[FA_EMAIL_TO],subject='PyCon FA Application Updated [#%s]' % fa.id, message=body)
-

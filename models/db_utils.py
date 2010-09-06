@@ -1,17 +1,19 @@
 def coords_by_address(person):
         import re, urllib
         try:
-            address=urllib.quote("%s %s, %s, %s %s, %s" % (person.address1,person.address2,person.city,person.state,person.zip_code,person.country))
+            address=urllib.quote("%s, %s %s, %s" % (person.city,person.state,person.zip_code,person.country))
             t=urllib.urlopen('http://maps.google.com/maps/geo?q=%s&output=xml'%address).read()
             item=re.compile('\<coordinates\>(?P<la>[^,]*),(?P<lo>[^,]*).*?\</coordinates\>').search(t)
             la,lo=float(item.group('la')),float(item.group('lo'))
             return la,lo
-        except: return 0.0,0.0
+        except e: raise RuntimeError(str(e))
+        raise RuntimeError(str("%s = %s" % (address, t)))
+        return 0.0,0.0
 
 def update_zip(person):    
     ### compute zip code
     import shelve,os
-    if not person.zip_code: return
+    ##if not person.zip_code: return
     """
     code=person.zip_code.strip()[:5]
     if not is_gae:
@@ -23,6 +25,7 @@ def update_zip(person):
     """
     lo,la=coords_by_address(person)
     db(db.auth_user.id==person.id).update(latitude=la, longitude=lo)
+    return lo,la
 
 def update_billed_amount(person):
     ### person here can be a form instead of a record but should be record
@@ -37,12 +40,12 @@ def update_billed_amount(person):
     coupons=db((db.coupon.name==person.discount_coupon)&((db.coupon.person==None)|(db.coupon.person==person.id))).select()
     if coupons:
         coupon=coupons[0]
-	if coupon.auto_match_registration:
+        if coupon.auto_match_registration:
             coupon.update_record(discount=ATTENDEE_TYPE_COST[person.attendee_type])
         due=max(0.0,due-coupon.discount)
         coupon.update_record(person=person.id)
-    if person.donation_to_PSF: 
-        due+=person.donation_to_PSF ### add donation
+    if person.donation: 
+        due+=person.donation ### add donation
     db(db.auth_user.id==person.id).update(amount_billed=due)
     return due
 

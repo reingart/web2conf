@@ -1,0 +1,14 @@
+{{extend 'layout.html'}}
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.css')}}" />
+<script type="text/javascript">
+$(function()
+  {
+      $('#wysiwyg').wysiwyg();
+  });
+</script>
+
+<div class="frame">
+<h2>{{=T('Update this Activity Proposal')}}</h2>
+{{=form}}
+</div>
