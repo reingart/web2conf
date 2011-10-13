@@ -6,8 +6,10 @@ def coords_by_address(person):
             item=re.compile('\<coordinates\>(?P<la>[^,]*),(?P<lo>[^,]*).*?\</coordinates\>').search(t)
             la,lo=float(item.group('la')),float(item.group('lo'))
             return la,lo
-        except e: raise RuntimeError(str(e))
-        raise RuntimeError(str("%s = %s" % (address, t)))
+        except Exception, e: 
+            #raise RuntimeError(str(e))
+            pass
+        #raise RuntimeError(str("%s = %s" % (address, t)))
         return 0.0,0.0
 
 def update_zip(person):    
@@ -50,10 +52,14 @@ def update_billed_amount(person):
     return due
 
 def update_person(form):
+    if not ENABLE_PAYMENTS:
+        return
     update_zip(form.vars)
     return update_billed_amount(form.vars)
 
 def update_pay(person):
+    if not ENABLE_PAYMENTS:
+        return
     if not person.update_record:
        person=db(db.auth_user.id==person.id).select()[0]
     update_billed_amount(person)
@@ -82,8 +88,8 @@ def update_pay(person):
 # for testing
 #######
 
-if not db(db.coupon.id>0).count():
-    [db.coupon.insert(name=str(uuid.uuid4())) for i in range(100)]
+#if not db(db.coupon.id>0).count():
+#    [db.coupon.insert(name=str(uuid.uuid4())) for i in range(100)]
 
 def fill_just_data():
     if db(db.auth_user.id>0).count()<100:

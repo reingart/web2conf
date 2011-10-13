@@ -1,0 +1,32 @@
+{{extend 'layout.html'}}
+<h1>{{=T('Speakers')}}</h1>
+{{for author in sorted(authors, key=lambda x: x.last_name.upper() ):}}
+{{if author.id in activities_by_author:}}
+<h2>{{="%s %s" % (author.first_name, author.last_name)}}</h2>
+<div class="wiki">
+{{if author.photo:}}
+{{=IMG(_alt=author.last_name, _src=URL(r=request,c='default',f='fast_download', args=author.photo),  _width="100px",_height="100px", _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; ")}}
+{{pass}}
+{{if author.personal_home_page:}}
+{{=T('Personal Home Page')}}: {{=A(author.personal_home_page,_href=author.personal_home_page)}}<br/>
+{{pass}}
+{{if author.company_name:}}
+{{=T("Company")}}: {{=A(author.company_name,_href=author.company_home_page)}}<br/>
+{{pass}}
+{{if author.resume:}}
+<div class="wiki">{{=MARKMIN(author.resume, sep="br")}}</div><br/>
+{{else:}}
+<br/>
+{{pass}}
+<div style="clear:both"><ul>
+<!-- {{=author.id}}  -->
+{{for activity in activities_by_author.get(author.id, []):}}
+<li>{{=A(activity.title, _href=URL(r=request,c='activity', f='accepted', anchor=activity.id ))}}</li>
+{{pass}}
+</ul>
+</div> 
+<br/>
+</div>
+{{pass}}
+{{pass}}
+{{#=BEAUTIFY(activities_by_author)}}

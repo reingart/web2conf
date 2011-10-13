@@ -15,12 +15,12 @@ else:
     is_gae=True
 
 VERSION=0.5
-##T.current_languages=['es','es-ar','es-es']
+T.current_languages=['es','es-ar','es-es']
 
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
 # DEV_TEST=True   # settings suitable for development work
-DEV_TEST=True # Deployed settings
+DEV_TEST=True# Deployed settings
 
 if DEV_TEST:
     DBURI='sqlite://development.db'
@@ -30,15 +30,17 @@ if DEV_TEST:
     if session.language: T.force(session.language)
 else:
     # DBURI set in 0_private.py
-    DBURI='sqlite://production.db'
+    DBURI='postgres://web2py:password@localhost/pycon2011'
     DBPOOLS=0
 
-response.title='web2conf'
-response.subtitle='conference management system'
-response.footer='you@somewhere.com'
-response.keywords='conference, web2py'
-response.description='made with web2py'
-
+TWITTER_HASH = "pyconar"
+response.title='PyCon Argentina 2011'
+response.subtitle=''
+response.footer="""Conferencia Nacional de Python el <b>23 y 24 de Septiembre de 2011</b> en Junín (organizado por miembros de <a href="http://www.python.org.ar/">PyAr</a>). <br/>
+Más Información: <a href="http://python.org.ar/pyar/Eventos/Conferencias">http://python.org.ar/</a>&nbsp;
+Contacto: <a href="https://listas.usla.org.ar/cgi-bin/mailman/listinfo/pyconar2011">pyconar2011@listas.usla.org.ar</a>"""
+response.keywords='python, software libre, argentina, PyCon'
+response.description='Hecho con web2py'
 
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
 GOOGLEMAP_KEY=''
@@ -51,19 +53,22 @@ GOOGLE_SANDBOX=DEV_TEST
 FOOD_PREFERENCES=('normal','vegetarian','vegan','kosher','halal')
 FOOD_PREFERENCES_LABELS=(T('normal'),T('vegetarian'),T('vegan'),T('kosher'),T('halal'))
 
-T_SHIRT_SIZES=('man/small','man/medium','man/large','man/xlarge','man/2xlarge','man/3xlarge',
-               'woman/small','woman/medium','woman/large')
-T_SHIRT_SIZES_LABELS=(T("men's/small"),T("men's/medium"),T("men's/large"),T("men's/xlarge"),T("men's/2xlarge"),
-                T("men's/3xlarge"),T("women's/small"),T("women's/medium"),T("women's/large"))
+T_SHIRT_SIZES=('', 'S','M','L','XL','XXL','XXXL',)
+T_SHIRT_SIZES_LABELS=('no, gracias',    T("small"),T("medium"),T("large"),T("xlarge"),T("xxlarge"), T("xxxlarge"),)
 
 # TODAY_DATE is here so that comparizons w/ cutoff dates
 #  will work properly anywhere in web2conf
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2011,8,27,23,00,00)
+REVIEW_DEADLINE_DATE=datetime.datetime(2011,9,5,23,00,00)
 EARLYBIRD_DATE=datetime.datetime(2009,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2009,3,19,6,0,0)
 FACUTOFF_DATE=datetime.datetime(2009,2,24,6,0,0)
+REGCLOSE_DATE=datetime.datetime(2011,9,22,1,00,00)
+
+SIMPLIFIED_REGISTRATION=True # don't ask password on registration
 
 ### fix this ...
 if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
@@ -97,17 +102,21 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-ACTIVITY_TYPES=('talk','keynote','panel','plenary','tutorial','summit','open-space','social','break') 
-ACTIVITY_CATEGORIES=('py3k','gui','web','herramientas','lenguaje')
+ACTIVITY_TYPES=('keynote','panel','plenary','tutorial','talk','poster','startup','stand','summit','open-space','social','break', 'lightning talk') 
+ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas','lenguaje','fomento','core','educación','ciencia','académico','comunidad','moviles','caso de estudio','redes','juegos','seguridad','testing'))
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
+ACTIVITY_DURATION={'talk': 45, 'tutorial': 120, 'poster': 0}
+ACTIVITY_ROOMS={1: "5-6-7-8", 2: "9-10", 3: "13+14", 4: "31", 5: "35", 6: "32"}
 
-SPONSOR_LEVELS=("Organizer",)
+ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
+
+SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Agradecimiento Especial", "")
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
 EMAIL_SERVER='localhost:25'
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='register@jornadasregionales.org'
+EMAIL_SENDER='pyconar2011@gmail.com'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
@@ -121,7 +130,11 @@ DO_RECAPTCHA= False #not DEV_TEST
 RECAPTCHA_PUBLIC_KEY=''
 RECAPTCHA_PRIVATE_KEY=''
 
+# modules
 ENABLE_TALKS=True
+ENABLE_EXPENSES = False
+ENABLE_FINANCIAL_AID = False
+ENABLE_PAYMENTS = False
 
 if True and DEV_TEST:    # for local development
     HOST='localhost:8000'

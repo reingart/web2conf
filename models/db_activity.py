@@ -11,17 +11,19 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
-    db.Field('duration','integer',label=T("Duration"),default=60),
+    db.Field('duration','integer',label=T("Duration"),default=45),
     db.Field('cc',label=T("cc"),length=512),
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),
-    db.Field('categories','text',label=T("Categories")),
+    db.Field('categories','list:string',label=T("Categories")),
     db.Field('level','text',label=T("Level"),represent=lambda x: T(x)),
     db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
+    db.Field('scheduled_room',label=T("Scheduled Room"),requires=IS_EMPTY_OR(IS_IN_SET(ACTIVITY_ROOMS)), writable=False,readable=False),
     db.Field('status',default='pending',label=T("Status"),writable=False,readable=False),
+    db.Field('confirmed','boolean',default=False,writable=False,readable=False),
     db.Field('video',length=128,label=T('Video'),default='',writable=False,readable=False),
     db.Field('score','double',label=T("Score"),default=None,readable=False,writable=False),
-    db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
+    db.Field('created_by',db.auth_user,label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
     db.Field('created_signature',label=T("Created Signature"),readable=False,writable=False,
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
@@ -30,21 +32,28 @@ db.define_table('activity',
     format='%(title)s',
     migrate=migrate)
 
-db.activity.description.display=lambda value: XML(value)
+if request.controller != 'appadmin':
+    db.activity.description.represent=lambda value: XML(value)
 db.activity.title.requires=IS_NOT_IN_DB(db,'activity.title')
 db.activity.authors.requires=IS_NOT_EMPTY()
-db.activity.status.requires=IS_IN_SET(['pending','accepted','rejected'])
+db.activity.status.requires=IS_IN_SET(['pending','accepted','rejected', 'declined'])
 db.activity.type.requires=IS_IN_SET(ACTIVITY_TYPES)
 db.activity.type.default=ACTIVITY_TYPES[0]
 db.activity.level.requires=IS_IN_SET(ACTIVITY_LEVELS)
 db.activity.level.default=ACTIVITY_LEVELS[0]
 db.activity.abstract.requires=IS_NOT_EMPTY()
+db.activity.abstract.represent=lambda x: MARKMIN(x, sep="br")
+db.activity.abstract.comment= SPAN(T("WIKI format: "), A('MARKMIN', _target='_blank',
+     _href="http://web2py.com/examples/static/markmin.html",))
 db.activity.description.requires=IS_NOT_EMPTY()
 db.activity.categories.requires=IS_IN_SET(ACTIVITY_CATEGORIES,multiple=True)
 ##db.activity.displays=db.proposal.fields
 db.activity.status.writable=db.activity.status.readable=auth.has_membership('manager')
 db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=auth.has_membership('manager')
 db.activity.video.writable=db.activity.video.readable=auth.has_membership('reviewer')
+db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=auth.has_membership('manager')
+db.activity.scheduled_room.writable=db.activity.scheduled_room.readable=auth.has_membership('manager')
+db.activity.scheduled_room.represent = lambda x: x and ACTIVITY_ROOMS[int(x)] or ''
 
 db.activity.represent=lambda activity: \
    A('[%s] %s' % (activity.status,activity.title),
@@ -80,14 +89,14 @@ db.comment.body.requires=IS_NOT_EMPTY()
 db.define_table('review',
    db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
    db.Field('rating','integer',label=T('Rating'),default=0),
-   db.Field('body','text',label=T('Body')),
+   db.Field('body','text',label=T('Body'),comment="Mensaje opcional para el autor / organizadores"),
    db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
    db.Field('created_signature',label=T("Created Signature"),readable=False,writable=False,
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
    db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
    migrate=migrate)
-db.review.body.requires=IS_NOT_EMPTY()
-db.review.rating.requires=IS_IN_SET([str(x) for x in range(0,6)])
+#db.review.body.requires=IS_NOT_EMPTY()
+db.review.rating.requires=IS_IN_SET([x for x in range(0,6)])
 
 db.define_table('author',
     db.Field('user_id', db.auth_user),
@@ -97,7 +106,7 @@ db.define_table('author',
     migrate=migrate)
     
 def user_is_author(activity_id=None):
-    if not auth.is_logged_in() or (not request.args and activity_id is None):
+    if not auth.is_logged_in() or (not request.args and activity_id is None) or not request.args[0].isdigit():
         return False
     if activity_id is None:
         activity_id = request.args[0]
@@ -105,7 +114,23 @@ def user_is_author(activity_id=None):
         return True
 
 def activity_is_accepted():
-    if not request.args:
+    if not request.args or not request.args[0].isdigit():
         return False
     if db((db.activity.id==request.args[0])&(db.activity.status=='accepted')).count():
         return True
+
+TUTORIALS_LIST=[row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)]
+class IS_IN_SET_NOT_EMPTY(IS_IN_SET): 
+    def __call__(self, value):
+        (values, error) = IS_IN_SET.__call__(self,value)
+        if not values:
+            return (values, self.error_message)
+        else:
+            return (values, error)
+db.auth_user.tutorials.requires=IS_IN_SET(TUTORIALS_LIST,multiple=True)
+db.auth_user.tutorials.comment=SPAN(T('(seleccione su preferencia de charlas para la organización del evento; '), 
+A('más información',_target='_blank',_href='/2011/activity/accepted'),T(", la disponibilidad y horarios pueden variar sin previo aviso)"))
+
+ACTIVITY_LEVEL_HINT = {}
+for i, level in enumerate(ACTIVITY_LEVELS):
+    ACTIVITY_LEVEL_HINT[level] = XML("&loz;"* (i+1),)

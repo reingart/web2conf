@@ -5,7 +5,14 @@
 
 <ul>
 {{for activity in activities:}}
-{{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)))}}
+{{review = reviews.get(activity.id)}}
+{{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
+      review and I(" %s " % T("review:"),
+          A(review.rating, 
+           _href=URL(r=request,f='review',args=activity.id), 
+           _title=review.body))  or '',  
+          activity.confirmed and " (%s) " % T("confirmed") or "",
+      )}}
 {{pass}}
 </ul>
 </div>

@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Voting')}}</h2>
+
+<p style="text-align: center">
+{{=T('Level')}} (Orientativo): 
+{{for level in ACTIVITY_LEVELS:}}
+<span>{{=levels[level]}} {{=T(level)}}&nbsp;&nbsp;</span>
+{{pass}}
+<br/>
+{{=message}}
+</p>
+
+{{=form}}
+
+</div>

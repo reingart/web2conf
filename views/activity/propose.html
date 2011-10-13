@@ -10,5 +10,10 @@ $(function()
 
 <div class="frame">
 <h2>{{=T('Submit a Talk Proposal')}}</h2>
+{{if TODAY_DATE<PROPOSALS_DEADLINE_DATE:}}
 {{=form}}
+{{else:}}
+<h3>El período de propuestas de actividades finalizado el {{=PROPOSALS_DEADLINE_DATE}}</h3>
+<h3>¡Los eseperamos en el evento!</h3>
+{{pass}}
 </div>

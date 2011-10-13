@@ -2,10 +2,45 @@
 ### FOR MANAGERS
 #############################################
 
+crud=Crud(globals(),db)
+
 @auth.requires_membership(role='manager')
 def _crud():
     crud.settings.controller = 'manage'
     return dict(form=crud())
+
+crud.settings.controller='manage'
+crud.settings.showid=True
+
+@auth.requires_membership(role='manager')
+def index(): 
+    return dict(form=crud.tables())
+
+@auth.requires_membership(role='manager')
+def select():
+    table = request.args[0]
+    if auth.is_logged_in():
+        f='update'
+    else:
+        f='read'
+    return dict(form=crud.select(table, linkto=crud.url(f)))
+    #crud.select(table, query, fields, orderby, limitby, headers, **attr)
+
+@auth.requires_membership(role='manager')
+def read():
+    table, record = request.args
+    return dict(form=crud.read(table, record))
+
+@auth.requires_membership(role='manager')
+def update():
+    table, record = request.args
+    return dict(form=crud.update(table, record, next=crud.url('select', table), deletable=True))
+
+@auth.requires_membership(role='manager')
+def create():
+    table = request.args[0]
+    return dict(form=crud.create(table, next=crud.url('create', table)))
+
 
 
 @auth.requires_membership(role='manager')
@@ -43,13 +78,13 @@ def attendees_csv():
     Create a comma-separated mail list of attendees;
     could expand to create many different lists.
     '''
-    rec=db((db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')).select(db.auth_user.first_name, db.auth_user.last_name, db.auth_user.dni, db.auth_user.certificate,db.auth_user.email,orderby=db.auth_user.last_name)
+    rec=db((db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')).select(db.auth_user.first_name, db.auth_user.last_name,  db.auth_user.company_name, db.auth_user.city, db.auth_user.state, db.auth_user.country,db.auth_user.email,db.auth_user.speaker,db.auth_user.confirmed,orderby=db.auth_user.last_name)
     response.headers['Content-Type']='text/csv'
     ## BUG: (yarko:) str calls csv-writer,
     ##   which on both Ubuntu & Win returns \r\n for newline; need to find & fix
     buggy_newline='\r\n'
     # rec renders column header I don't want:
-    return str(rec).partition('\n')[-1].replace(buggy_newline,',\n').decode('utf8').encode('latin1')
+    return str(rec).partition('\n')[-1].replace(buggy_newline,',\n') #.decode('utf8').encode('latin1')
 
 
 @auth.requires_membership(role='manager')
@@ -202,4 +237,3 @@ def cancel_payment2():
     except Exception:
          session.flash=T('Invalid operation')
          redirect(URL(r=request,f='impersonate',args=request.args[0]))
-

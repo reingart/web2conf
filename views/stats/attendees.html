@@ -1,5 +1,5 @@
 {{extend 'layout.html'}}
-{{pd = db((db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0)).count()}}
+{{pd = db((db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0)&(db.auth_user.confirmed==True)).count()}}
 {{tot = db(db.auth_user.attendee_type!='non_attending').count()}}
 <div class="frame">
 <h2>{{=T('Conference Participants')}}</h2>

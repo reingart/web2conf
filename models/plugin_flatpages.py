@@ -43,7 +43,8 @@ def plugin_flatpage():
         # search flatpage according to the current request
         query = db.plugin_flatpage.controller==request.controller
         query &= db.plugin_flatpage.function==request.function
-        query &= db.plugin_flatpage.arg==(request.args and request.args[0])
+        
+        #query &= db.plugin_flatpage.arg==(request.args and request.args[0])
         if 'id' in request.vars:
             # request an specific version
             query &= db.plugin_flatpage.id==request.vars['id']
@@ -107,7 +108,7 @@ def plugin_flatpage():
         form = FORM(TABLE(
                    TR(T("Title"), INPUT(_type="text", _name="title", value=title)),
                    TR(T("Subtitle"), INPUT(_type="text", _name="subtitle", value=subtitle)),
-                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id="wysiwyg")), 
+                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id='textarea' not in request.vars and  "wysiwyg" or "")), 
                    TR(T("Format"), SELECT(
                           [OPTION(v, _value=k) for (k, v) in db.plugin_flatpage.format.requires.options()], 
                           value=format, _name="format", requires=db.plugin_flatpage.format.requires,
@@ -121,7 +122,7 @@ def plugin_flatpage():
                                    _onclick="this.form.action.value='';this.form.submit();"),
                         ))))
 
-        if form.accepts(request.vars, session):
+        if form.accepts(request.vars):
             if request.vars.action=='save':
                 ##if form.vars.format == 'WIKI':
                 ##    from html2text import 
@@ -154,7 +155,7 @@ def plugin_flatpage():
                 INPUT(_type="submit", _value=T("Edit"), ),
                 INPUT(_type='button', _value=T("History"),
                       _onclick="this.form.action.value='history';this.form.submit();"))
-                        
+
     response.view = view or FLATPAGE_VIEW
     response.title = title
     response.subtitle = subtitle

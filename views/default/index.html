@@ -1,44 +1,29 @@
 {{extend 'layout.html'}}
-
-{{tdy=TODAY_DATE}}
-{{early=EARLYBIRD_DATE}}
-{{pre=PRECONF_DATE}}
-{{msg='Onsite - register here, pay at the Registration Desk.'}}
-{{if tdy<early:}}
-  {{remains=early-tdy}}
-  {{if remains.days>1:}}
-    {{msg=str(remains.days)+' days left for early-bird rates'}}
-  {{elif remains.days>0:}}
-    {{msg=str(remains.days)+' day left for early-bird rates'}}
-  {{else:}}
-    {{msg='Last day for early-bird rates! - %2dh:%02dm remains' % (remains.seconds/60/60,remains.seconds/60%60)}}
-  {{pass}}
-
-{{elif tdy<pre:}}
-  {{remains=pre-tdy}}
-  {{if remains.days>1:}}
-    {{msg=str(remains.days)+' days left for pre-conference rates'}}
-  {{elif remains.days>0:}}
-    {{msg=str(remains.days)+' day left for pre-conference rates'}}
-  {{else:}}
-    {{msg='Last day for pre-conference rates! - %2dh:%02dm remains' % (remains.seconds/60/60,remains.seconds/60%60)}}
-  {{pass}}
+{{if form and format=='HTML':}}
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.css')}}" />
+<script type="text/javascript">
+$(function()
+  {
+      $('#wysiwyg').wysiwyg();
+  });
+</script>
+{{pass}}
+<div class="frame">
+{{=body}}
+</div>
+{{if form:}}
+{{=form}}
 {{pass}}
 
+<p/>
+
+{{if True or TWITTER_HASH:}}    
 <div class="frame">
-<h2>Bienvenido</h2>
-<p>
-{{=A('PyAr, el grupo de usuarios de Python Argentina,', _href='http://www.python.org.ar/')}}
-está orgulloso de presentar la 4º Jornada del lenguaje Python Argentina,
-{{=A('PyDay 2010', _href='http://python.org.ar/pyar/Eventos/Conferencias/PyDayRafaela2010')}}
-a realizarse en esta ocación en la ciudad de {{=A('Rafaela', _href='http://es.wikipedia.org/wiki/Rafaela')}}
-posibilemente en la  {{=A('Universidad Católica de Santiago del Estero, Departamento Académica Rafaela', _href='http://ucse.edu.ar/rafaela/sede_rafaela.htm')}}, en abril de 2010.
-</p>
-<h3>En este sitio ud. puede:</h3>
-<ul>
-<li><a href="{{=t2.action('register')}}">Registrarse:</a> Registrece para asistir a la jornada</li>
-<li><a href="{{=t2.action('attendees')}}">Participantes:</a> Ver quienes estan viniendo y  <a href="{{=t2.action('maps')}}">de donde</a></li>
-<li>Charlas: Ver  las <a href="{{=t2.action('accepted_talks')}}">charlas ya aceptadas</a> y  y  <a href="{{=t2.action('propose_talk')}}">proponer nuevas</a></li>
-<p>
-</p>
+  <h3><img src={{=URL(c="static",f="/img/twitter.png")}} ald="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}}</h3>
+  <div id="tweets">{{=T('loading...')}}</div>
+  <script>
+    jQuery(document).ready(function(){jQuery('#tweets').load('{{=URL('twitter')}}')});
+  </script>
 </div>
+{{pass}}

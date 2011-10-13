@@ -8,10 +8,19 @@ $('TR TD:first').attr('width','150px');
 
 <div class="frame">
 <h2>{{=T('Registration Form')}}</h2>
+{{if TODAY_DATE<REGCLOSE_DATE:}}
 {{=form}}
 <p><b>Notas:</b></p>
-<p id="footnote1"><b>[1]</b> {{=T('This information will be encoded on your badge and can be provided to sponsors and exhibitors in the expo hall. These fields are optional unless otherwise noted.')}}
-<p id="footnote2"><b>[2]</b> {{=T('Paying this rate, you\'ll be helping to keep the conference affordable for all')}}
-<p id="footnote3"><b>[3]</b> {{=T('If you want you can upload your CV to be available to our Sponsors in further laboral searchs:')}}
+<p id="footnote1"><b>[1]</b> Esta información podrá ser provista a los auspiciantes (desmarcar "Incluir en Lista de Participantes" o "Contactos con Auspiciantes" si no desea que sus datos sean publicados y/o provistos a auspiciantes).
+Los campos son opcionales salvo que se indique lo contrario.</p>
+<p id="footnote2"><b>[2]</b> Pagando por tu certificado nos ayudas a hacer posible este evento.
 </p>
+{{else:}}
+<h3>El período de inscripción web finalizado el {{=REGCLOSE_DATE}}</h3>
+
+<p>Quienes no se registraron o no pudieron confirmar pueden igualmente acercarse, siempre y cuando nos sea posible, podemos registrarlos en el evento y permitirles acceder, pero tendran prioridad para entrar - dado los lugares limitados - aquellos que hayan confirmado.
+La inscripción y confirmación era obligatoria para evitar este tipo de inconvenientes.</p>
+
+<h3>¡Los eseperamos en el Evento!</h3>
+{{pass}}
 </div>

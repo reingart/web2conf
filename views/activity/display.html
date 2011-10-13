@@ -2,10 +2,14 @@
 
 <div class="frame">
 <h2>{{=T('Activity Proposal')}}</h2>
-{{if auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
+{{if auth.has_membership(role='manager') or auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
 [{{=A(T('edit'),_href=URL(r=request,f='update',args=activity_id))}}]
+[{{=A(T('add author'),_href=URL(r=request,f='add_author',args=activity_id))}}]
 [{{=A(T('attach'),_href=URL(r=request,f='attach',args=activity_id))}}]
 [{{=A(T('comment'),_href=URL(r=request,f='comment',args=activity_id))}}]
+{{if not activity.confirmed:}}
+[{{=A(T('confirm'),_href=URL(r=request,f='confirm',args=activity_id))}}]
+{{pass}}
 {{pass}}
 {{if auth.has_membership(role='reviewer') and not user_is_author(activity_id):}}
 [{{=A(T('review'),_href=URL(r=request,f='review',args=activity_id))}}]
@@ -49,14 +53,18 @@
 
 <div style="clear: both;">&nbsp;</div>
 
-{{if auth.has_membership(role='manager'):}}
+{{if auth.has_membership(role='manager') or ( auth.has_membership(role='reviewer') and not user_is_author(activity_id)) or TODAY_DATE>REVIEW_DEADLINE_DATE:}}
 <div class="frame">
 <h2>{{=T('Reviews')}}</h2>
 {{if reviews is not None:}}
   <UL>
   {{for review in reviews:}}
     <LI>
+    {{if auth.has_membership(role='manager'):}}
     {{=T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s') % review}}
+    {{else:}}
+    {{=T('Rating %(rating)s: %(body)s') % review}}
+    {{pass}}
     </LI>
   {{pass}}
   </UL>

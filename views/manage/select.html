@@ -1,0 +1,5 @@
+{{extend 'layout.html'}}
+<h1>{{="%s %s" % (T("Table"), request.args[0])}}</h1>
+{{=form or ''}}
+<br/>
+{{=A(T("Insert new"), _href=URL('create', args=request.args))}}

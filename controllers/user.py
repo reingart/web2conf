@@ -2,11 +2,13 @@
 # Manage Authentication
 #############################################
 
+crud=Crud(globals(),db)
+
 # we are not in default controller, change it at auth
 auth.settings.controller='user'
 
 def login():
-    return dict(form=auth.login(next=URL(r=request,c='default',f='index'),
+    return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
                                 onaccept=lambda form:update_pay(auth.user)))
 
 def verify():
@@ -22,7 +24,7 @@ def password():
         
 
 @auth.requires_login()
-def logout(): auth.logout(next=URL(r=request,c='default',f='index'))
+def logout(): auth.logout(next=URL(r=request,c='default',f='index', args="nocache"))
 
 @auth.requires_login()
 def profile():
@@ -37,3 +39,20 @@ def profile():
                      onaccept=update_person,
                      next='profile')
     return dict(form=form)
+
+
+def confirm():
+    if len(request.args)==2:
+        user_id = request.args[0]
+        received_hash = request.args[1]
+        q = db.auth_user.id==user_id
+        u = db(q).select()[0]
+        s= "%s-%s-%s-%s-%s" % (u.last_name, u.first_name, u.email, u.created_by_ip, u.created_on)
+        import hashlib
+        computed_hash = hashlib.md5(s).hexdigest()
+        if computed_hash == received_hash:
+            db(q).update(confirmed=True)
+            session.flash = T("Confirmed!")
+            redirect(URL(c="default", f="index", args="nocache"))
+    session.flash = T("Not Confirmed, please enter into your profile and check '%s' field") % T("Confirm attendance")
+    redirect(URL(c="user", f="profile"))

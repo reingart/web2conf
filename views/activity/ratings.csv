@@ -1,0 +1,2 @@
+{{for row in ratings:}}{{if row.activity.type=='talk' and row.activity.status=='pending':}}{{=row.activity.id}}|{{=str(row.activity.title)}}|{{=str(row.activity.authors)}}|{{=row["COUNT(review.rating)"]}}|{{=row["COUNT(review.rating)"] and "%0.2f" % (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"])) or ''}}|{{=votes.get(row.activity.title, "")}}
+{{pass}}{{pass}}
