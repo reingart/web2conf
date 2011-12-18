@@ -67,7 +67,7 @@ PRECONF_DATE=datetime.datetime(2021,3,19,6,0,0)
 FACUTOFF_DATE=datetime.datetime(2021,2,24,6,0,0)
 REGCLOSE_DATE=datetime.datetime(2021,9,22,1,00,00)
 
-SIMPLIFIED_REGISTRATION=True # don't ask password on registration
+SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
 ### fix this ...
 if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!

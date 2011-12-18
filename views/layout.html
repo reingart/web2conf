@@ -42,11 +42,11 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
 </head>
 <body>
 <div id="header">
-  <div id="header-container" style="margin:0;"> 
-  <div id="logo" style="margin:0; height:94px"> 
-  <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0" style0="vertical-align: text-top; margin:0; padding: 0;" style="height: 78px; width: 60px; padding: 4px 12px; float: left;  margin: 0; border: 0; outline: 0; font-size: 100%; vertical-align: text-top; background: transparent;   ">
-  <h1 style="float: none; margin: 0; padding: 10px 8px; font-size: 26pt; line-height: 22pt; font-weight: 400; color: #EEE; border: 0; outline: 0; vertical-align: text-top; background: transparent; display: block; font-weight: bold; letter-spacing: 0;">{{=response.title}}</h1>
-  <h2 style="float: none; margin: 0; padding: 8px 8px; font-size: 18pt; line-height: 16pt; font-weight: 400; color: #EEE; border: 0; outline: 0; vertical-align: text-top; background: transparent; display: block; font-weight: bold; letter-spacing: 0;">{{=response.subtitle}}</h2>
+  <div id="header-container"> 
+  <div id="logo"> 
+  <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0">
+  <h1>PyCon Argentina 2012</h1>
+  <h2>Buenos Aires, Septiembre 2012</h2>
   </div>
   <!--
   <div id="search"> 
@@ -60,13 +60,22 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
     </form> 
   </div>
   --> 
+
+            
   </div> 
 </div>
 <div id="menu">
+  <div id="menu-container">
   {{=MENU(response.menu, _class = 'sf-menu')}}
+  </div>
 </div>
 <div id="page">
   <div id="content">
+    <!-- AddToAny BEGIN -->
+    <div style="float:right; padding-top:6px;" class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="http://www.addtoany.com/share_save">Share</a></div>
+    <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+    <!-- AddToAny END -->
     {{
 try:
    if not response.flash and form.errors:

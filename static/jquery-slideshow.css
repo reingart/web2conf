@@ -2,8 +2,8 @@
 
 #slideshow {
     position:relative;
-    height:350px;
-    width: 400px;
+    height:400px;
+    width: 600px;
     margin: 0 auto 0 auto;
     text-align: center; 
 }
@@ -15,7 +15,7 @@
     z-index:8;
     opacity:0.0;
     height: 350px;
-    width: 400px;
+    width: 600px;
     background-color: #FFF;
 }
 
@@ -29,8 +29,8 @@
 }
 
 #slideshow DIV IMG {
-    height: 300px;
-    width: 400px;
+    height: 350px;
+    width: 600px;
     display: block;
     border: 0;
     margin-bottom: 10px;
