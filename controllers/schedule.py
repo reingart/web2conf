@@ -3,7 +3,7 @@
 
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 #@auth.requires_membership(role="manager")
-def index(): 
+def index():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))
     query=(db.activity.status=='accepted') &(db.auth_user.id==db.activity.created_by)

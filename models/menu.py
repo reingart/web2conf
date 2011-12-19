@@ -1,6 +1,6 @@
 # coding: utf8
 
-response.menu=[[T('Main'),False,URL(r=request,c='default',f='index')]]
+response.menu=[]
 
 if not auth.user:
     response.menu.append([T('Register'),False,URL(r=request,c='user',f='register')])
@@ -16,6 +16,7 @@ else:
         [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
         [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
         [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
+        [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')],
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
     ]
@@ -30,15 +31,20 @@ submenu_info=[
 ]
 if ENABLE_TALKS:
    submenu_activities = []
-   response.menu.append([T('Activities'),False,URL(r=request,c='schedule',f='index'),submenu_activities])
+   if REVIEW_DEADLINE_DATE<TODAY_DATE:
+        url = URL(r=request,c='schedule',f='index')
+   else:
+        url = URL(r=request,c='conference',f='proposals')
+   response.menu.append([T('Activities'),False,url,submenu_activities])
    submenu_activities.append([T('Timetable'),False,URL(r=request,c='schedule',f='index')])
    submenu_activities.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
    submenu_activities.append([T('Speakers'),False,URL(r=request,c='activity',f='speakers')])
    submenu_activities.append([T('Ratings'),False,URL(r=request,c='activity',f='ratings')])
 
+response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index')])
+response.menu.append([T('Jobs'),False,URL(r=request,c='jobs',f='index')])
 response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
-response.menu.append([T('About'),False,URL(r=request,c='default',f='about')])
 
 if auth.user:
     response.menu.append([T('Profile'),False,URL(r=request,c='user',f='profile')])

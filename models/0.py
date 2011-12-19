@@ -60,8 +60,8 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
-PROPOSALS_DEADLINE_DATE=datetime.datetime(2021,8,27,23,00,00)
-REVIEW_DEADLINE_DATE=datetime.datetime(2021,9,5,23,00,00)
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,3,31,23,00,00)
+REVIEW_DEADLINE_DATE=datetime.datetime(2012,4,30,23,00,00)
 EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2021,3,19,6,0,0)
 FACUTOFF_DATE=datetime.datetime(2021,2,24,6,0,0)
@@ -101,10 +101,10 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-ACTIVITY_TYPES=('keynote','panel','plenary','tutorial','talk','poster','startup','stand','summit','open-space','social','break', 'lightning talk') 
+ACTIVITY_TYPES=('keynote','panel','plenary','tutorial','talk','poster','sprint','startup','stand','summit','open-space','social','break', 'lightning talk') 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas','lenguaje','fomento','core','educación','ciencia','académico','comunidad','moviles','caso de estudio','redes','juegos','seguridad','testing'))
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
-ACTIVITY_DURATION={'talk': 45, 'tutorial': 120, 'poster': 0}
+ACTIVITY_DURATION={'talk': 45, 'tutorial': 120, 'poster': 0, 'sprint': 0}
 ACTIVITY_ROOMS={1: "5-6-7-8", 2: "9-10", 3: "13+14", 4: "31", 5: "35", 6: "32"}
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
