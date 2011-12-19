@@ -307,6 +307,7 @@
 'Presenter': 'Presentado por',
 'Preview': 'Vista previa',
 'Profile': 'Perfil',
+'Projects': 'Proyectos',
 'Propose talk': 'Proponer charla',
 'Proposed Activities': 'Actividades Propuestas',
 'Proposed Talks': 'Charlas propuestas',

@@ -236,6 +236,7 @@
 'Presenter': 'Presenter',
 'Preview': 'Preview',
 'Profile': '资料',
+'Projects': 'Projects',
 'Propose talk': 'Propose talk',
 'Proposed Activities': 'Proposed Activities',
 'Proposed Talks': '尚在审核的讲演',

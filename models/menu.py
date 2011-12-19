@@ -44,6 +44,7 @@ if ENABLE_TALKS:
 
 response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index')])
 response.menu.append([T('Jobs'),False,URL(r=request,c='jobs',f='index')])
+response.menu.append([T('Projects'),False,URL(r=request,c='projects',f='index')])
 response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
 if auth.user:

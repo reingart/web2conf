@@ -2,7 +2,7 @@ BODY
 {
     margin: 0;
     font-family: "Helvetica Neue", "Arial", "Helvetica", sans-serif;
-    font-size: 13px;
+    font-size: 13px;e
     color: #787878;
     background: url(media/img01.jpg) repeat-x left top;
 }
@@ -208,7 +208,7 @@ A:hover
 }
 #menu A
 {
-    padding: 5px 20px;
+    padding: 5px 15px;
     text-decoration: none;
     font-family: Helvetica, sans-serif;
     font-size: 14px;

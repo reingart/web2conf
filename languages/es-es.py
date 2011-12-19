@@ -183,6 +183,7 @@
 'Presenter': 'Presenter',
 'Preview': 'Preview',
 'Profile': 'Profile',
+'Projects': 'Projects',
 'Propose talk': 'Propose talk',
 'Proposed Activities': 'Proposed Activities',
 'Proposed Talks': 'Proposed Talks',

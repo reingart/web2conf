@@ -237,6 +237,7 @@
 'Presenter': 'Presenter',
 'Preview': 'Preview',
 'Profile': 'Perfil',
+'Projects': 'Projects',
 'Propose talk': 'Propose talk',
 'Proposed Activities': 'Proposed Activities',
 'Proposed Talks': 'Charlas propuestas',
