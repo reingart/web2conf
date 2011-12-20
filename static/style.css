@@ -2,34 +2,33 @@ BODY
 {
     margin: 0;
     font-family: "Helvetica Neue", "Arial", "Helvetica", sans-serif;
-    font-size: 13px;e
+    font-size: 1em;
     color: #787878;
     background: url(media/img01.jpg) repeat-x left top;
 }
 H1, H2, H3
 {
     margin: 0;
-    letter-spacing: 0.15em;
     font-family: Helvetica, sans-serif;
-    padding: 10px;
+    padding: 10px 0;
     color: #787878;
 }
 H1
 {
-    font-size: 1.8em;
+    font-size: 2.2em;
 }
 H2
 {
-    font-size: 1.4em;
+    font-size: 1.8em;
 }
 H3
 {
-    font-size: 1em;
+    font-size: 1.4em;
 }
 P, UL, OL
 {
     margin-top: 0;
-    line-height: 180%;
+    line-height: 150%;
     color: #787878;
 }
 UL, OL
@@ -91,7 +90,7 @@ A:hover
     float: none;
     margin: 0;
     padding: 10px 8px;
-    font-size: 20pt; 
+    font-size: 26pt; 
     line-height: 18pt; 
     font-weight: 400; 
     color: #EEE; 
@@ -108,7 +107,7 @@ A:hover
     float: none; 
     margin: 0; 
     padding: 8px 8px; 
-    font-size: 18pt; 
+    font-size: 20pt; 
     line-height: 16pt; 
     font-weight: 400; 
     color: #EEE; 
@@ -179,6 +178,28 @@ A:hover
 {
     display: none;
 }
+
+#account-bar {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: #222;
+    text-shadow: none;
+    color: #FFF;
+    font-size: 1em;
+    padding: 4px 12px 6px;
+    color: #FFF;
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+}
+#account-bar a, #account-bar a:visited {
+    text-decoration: none;
+    color: #BBB;
+}
+#account-bar a:hover {
+    color: #FFF;
+}
+
 /*Menu*/
 #menu
 {
@@ -194,7 +215,7 @@ A:hover
     margin-top: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 900px;
+    width: 902px;
 }
 #menu UL
 {
@@ -211,7 +232,7 @@ A:hover
     padding: 5px 15px;
     text-decoration: none;
     font-family: Helvetica, sans-serif;
-    font-size: 14px;
+    font-size: 1.1em;
     font-weight: normal;
     color: #FFFFFF;
 }
@@ -276,12 +297,14 @@ A:hover
     border-bottom: 1px dashed #D2D4C9;
     color: #787878;
     text-align: center;
+    font-size: 0.8em;
 }
 #sidebar UL
 {
     margin: 0;
     padding: 0;
     list-style: none;
+    line-height: 150%;
 }
 #sidebar P
 {
@@ -320,12 +343,20 @@ TABLE TR TD
     width: 100%;
     height: 50px;
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 20px 0;
     background: #90BF4D url(media/img02.jpg) left top;
+    font-size: 20px;
     font-family: Helvetica, sans-serif;
     color: #416110;
     text-align: center;
 }
+#footer H2, H3
+{
+    font-size: 1em;
+    padding: 0;
+
+}
+
 #footer P
 {
     margin: 0;

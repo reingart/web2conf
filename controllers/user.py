@@ -4,8 +4,13 @@
 
 crud=Crud(globals(),db)
 
-# we are not in default controller, change it at auth
-auth.settings.controller='user'
+def index():
+    # URL rewrite for backward compatibility (navbar)
+    f = request.args[0]
+    args = request.args and request.args[1:]
+    if f == 'request_reset_password':
+        f = 'password'
+    redirect(URL(f=f, args=args))
 
 def login():
     return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),

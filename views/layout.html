@@ -46,8 +46,11 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
   <div id="logo"> 
   <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0">
   <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
-  <h2>{{=A(response.header[1], _href=URL(c='default',f='index'))}}</h2>
+  <h2>{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}</h2>
   </div>
+  <div id="account-bar"> 
+   {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
+  </div>   
   <!--
   <div id="search"> 
     <form method="get" action="http://www.google.com/search"> 
@@ -84,7 +87,7 @@ try:
 except: pass
     }}
     {{if response.flash:}}<div class="flash">{{=response.flash}}</div>{{pass}}
-    {{if auth.user:}}<h3>{{=T('Hello')}} {{=auth.user.first_name}}
+    {{if auth.user and request.controller=="default":}}<h3>{{=T('Hello')}} {{=auth.user.first_name}}
     {{if auth.has_membership('manager'):}} (manager){{pass}}
     {{if session.balance is not None and session.balance>0 and not request.function=='pay':}}, {{=T('You have not paid for your registration; the cost is')}} ${{=T('%0.2f' % session.balance)}} [{{=A(T('pay now'),_href=URL(r=request,c='payment',f='pay'))}}]
     {{elif session.balance is not None and session.balance<0 and not request.function=='pay':}}, {{=T('You have a credit of')}} ${{=T('%0.2f' % -session.balance)}} [{{=A(T('info'),_href=URL(r=request,c='payment',f='pay'))}}]{{pass}}</h3>{{pass}}

@@ -113,9 +113,9 @@ SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
-EMAIL_SERVER=None # 'localhost:25' or Configure!
+EMAIL_SERVER='localhost:25' #or Configure!
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='pyconar2011@gmail.com'
+EMAIL_SENDER='pyconar2012@gmail.com'
 
 # for FA applications / communication
 FA_EMAIL_UPDATES=True

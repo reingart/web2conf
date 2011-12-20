@@ -47,12 +47,6 @@ response.menu.append([T('Jobs'),False,URL(r=request,c='jobs',f='index')])
 response.menu.append([T('Projects'),False,URL(r=request,c='projects',f='index')])
 response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
-if auth.user:
-    response.menu.append([T('Profile'),False,URL(r=request,c='user',f='profile')])
-    response.menu.append([T('Logout'),False,URL(r=request,c='user',f='logout')])
-else:
-    response.menu.append([T('Login'),False,URL(r=request,c='user',f='login')])
-
 #############################################
 # Insert Manage sub-menu item
 #############################################    

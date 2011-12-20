@@ -107,6 +107,7 @@ db.auth_user.password.requires=CRYPT(auth.settings.hmac_key)
 
 auth.settings.table_user=db.auth_user
 auth.define_tables()
+auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
 auth.settings.logout_next=URL(r=request,c='default',f='index')
@@ -117,6 +118,8 @@ auth.settings.retrieve_password_next=URL(r=request,c='user',f='login')
 auth.settings.change_password_next=URL(r=request,c='default',f='index')
 auth.settings.logged_url=URL(r=request,c='user',f='profile')
 auth.settings.create_user_groups = False
+#auth.settings.actions_disabled = ['request_reset_password']
+auth.settings.reset_password_requires_verification = True
 
 if EMAIL_SERVER:
     mail=Mail()                                  # mailer
