@@ -1,0 +1,15 @@
+{{ if message is not None: }}
+  {{=P(message)}}
+{{ pass }}
+
+{{ if tweets is not None: }}
+<ul>
+{{ for k in reversed(tweets.keys()): }}
+<li>
+  {{ # tweets is a dictionary of type date_string: (img_source, user_name, message) }}
+  {{ =DIV(k[:-5]) }} {{ =SPAN(IMG(_src=tweets[k][1]), tweets[k][0]) }} {{ =DIV(tweets[k][2]) }}
+</li>
+{{ pass }}
+</ul>
+
+{{ pass }}

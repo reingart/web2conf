@@ -3,6 +3,7 @@ syntax: glob
 *.pyo
 *.bak
 *~
+*.directory*
 #*
 models/0_override.py
 databases/*

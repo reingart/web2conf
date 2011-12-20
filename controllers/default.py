@@ -28,16 +28,24 @@ def about():
 def twitter():
     session.forget()
     session._unlock(response)
-    import gluon.tools
+    import urllib
     import gluon.contrib.simplejson as sj
     try:
         if TWITTER_HASH:
-            page = gluon.tools.fetch('http://twitter.com/%s?format=json'%TWITTER_HASH)
-            return sj.loads(page)['#timeline']
+            # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
+            tweets = urllib.urlopen("http://search.twitter.com/search.json?q=%%40%s" % TWITTER_HASH).read()
+            data = sj.loads(tweets, encoding="utf-8")
+            the_tweets = dict()
+            
+            for obj in data["results"]:
+                the_tweets[obj["created_at"]] = (obj["from_user"], obj["profile_image_url"], obj["text"])
+            return dict(message = None, tweets = the_tweets)
         else:
-            return 'disabled'
+            return dict(tweets = None, message = 'disabled')
+
     except Exception, e:
-        return DIV(T('Unable to download because:'),BR(),str(e))
+        return dict(tweets = None, message = DIV(T('Unable to download because:'),BR(),str(e)))
+
 
 #############################################
 # Allow registered visitors to download
