@@ -46,7 +46,6 @@ def twitter():
     except Exception, e:
         return dict(tweets = None, message = DIV(T('Unable to download because:'),BR(),str(e)))
 
-
 #############################################
 # Allow registered visitors to download
 #############################################

@@ -6,8 +6,10 @@ syntax: glob
 *.directory*
 #*
 models/0_override.py
+models/0_private.py
 databases/*
 sessions/*
 errors/*
 cache/*
 uploads/*
+static/slideshow/*
