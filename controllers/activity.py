@@ -109,11 +109,15 @@ def propose():
             db.activity.type.default = request.args[0]
             db.activity.duration.writable = False
             db.activity.type.writable = False
-                
+
+    session.notify_text = T("Your activity proposal has been recorded. Thank you")
+    session.notify_subject = T("New activity proposal")
+        
+    # TODO:  one-to-many author/activity relations
     insert_author = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)
     return dict(form=crud.create(db.activity, 
                                  next='display/[id]', 
-                                 onaccept=insert_author))
+                                 onaccept=[insert_author, email_author]))
 
 @auth.requires(auth.has_membership(role='manager') or (user_is_author() and TODAY_DATE<PROPOSALS_DEADLINE_DATE))
 def update():
@@ -130,13 +134,15 @@ def display():
     rows = db(db.activity.id==activity_id).select()
     activity = rows[0]
     item=crud.read(db.activity,activity_id)
+    authors = db(db.auth_user.id==activity.created_by).select()
     comments=db(db.comment.activity_id==activity_id).select()
     attachments=db(db.attachment.activity_id==activity_id).select()
     query = db.review.activity_id==activity_id
     if not auth.has_membership(role='manager') and TODAY_DATE<REVIEW_DEADLINE_DATE:
         query &= db.review.created_by==auth.user.id
     reviews=db(query).select()
-    return dict(activity_id=activity_id,activity=activity,item=item,reviews=reviews,attachments=attachments,comments=comments)
+
+    return dict(activity_id=activity_id,activity=activity,item=item,reviews=reviews,attachments=attachments,comments=comments, authors=authors)
 
 
 @auth.requires(auth.has_membership(role='reviewer') or activity_is_accepted())
@@ -238,3 +244,9 @@ def download():
     if activity.status=='accepted' or auth.has_membership(role='reviewer') or user_is_author(activity.id):
         return response.download(request,db)
     raise HTTP(501)
+
+def email_author(form):
+    subject = session.notify_subject
+    text = session.notify_text
+    session.notify_text = session.notify_subject = None
+    notify(subject, text)

@@ -1,3 +1,12 @@
+# conference options
+db.define_table("option",
+                Field("name", unique = True, requires=IS_NOT_EMPTY()),
+                Field("value", "text"),
+                Field("valuetype", default="string"),
+                Field("record", "boolean", default = False),
+                Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)), default=None),
+                Field("description", "text"))
+
 def coords_by_address(person):
         import re, urllib
         try:
@@ -107,3 +116,39 @@ def fill_just_data():
             if not is_gae: la,lo,city,state=zips[zip] if zips.has_key(zip) else (0.,0.,'','')
             else: lo,la=0.0,0.0
             db.auth_user.insert(name=name+str(k),first_name=name.capitalize(),last_name=r().capitalize(),email=name+'@'+comp+'.com',company_name=comp.capitalize()+' Corp.',include_in_delegate_listing=True,food_preference=r(FOOD_PREFERENCES),t_shirt_size=r(T_SHIRT_SIZES),country=r(COUNTRIES),attendee_type=r(ATTENDEE_TYPES.keys()),tutorials='[web2py]',latitude=la,longitude=lo,zip_code=zip,personal_home_page='http://www.%s.com'%comp,company_home_page='http://www.%s.com'%comp)
+
+# email notification
+def notify(subject, text):
+    to = auth.user.email
+    info = response.title
+    
+    # Address person
+    addressing = T("Dear attendee")
+   
+    message = T("""    %s:\n
+    %s\n\n
+    Please do not respond this automated message
+    %s
+    """)
+    body = message % (addressing, text, info)
+    
+    result = mail.send(to, subject, body)
+
+    if result:
+        return True
+    else:
+        return False
+
+def get_option(name):
+    option = db(db.option.name==name).select().first()
+    if option is not None:
+        if option.record:
+            try:
+                obj = db[option.tablename][int(option.value)]
+            except:
+                obj = None
+        else:
+            obj = option.value
+    else:
+        obj = None
+    return obj
