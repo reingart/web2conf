@@ -59,6 +59,10 @@ db.activity.represent=lambda activity: \
    A('[%s] %s' % (activity.status,activity.title),
      _href=URL(r=request,c='activity',f='display',args=[activity.id]))
 
+db.activity.type.represent=lambda activity_type: T(activity_type.replace("_", " "))
+db.activity.duration.represent=lambda activity_duration: activity_duration and ("%s min" % activity_duration) or 'n/a'
+
+
 db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate)
 
 db.define_table('attachment',

@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+{{=H1(T("Edit option"))}}
+{{=H3(opt.name)}}
+{{=EM(opt.description)}}
+{{=BR()}}
+{{=BR()}}
+<div>
+{{if accepted:}}
+{{ =A(T("Edit"), _href=URL("manage", "option", args=["option", opt.id,]))}} | 
+{{ pass }}
+{{ =A(T("Back to the options list"), _href=URL("manage", "control_panel")) }}
+</div>
+<br />
+{{=form}}
+{{if records is not None:}}
+{{=H3("Option records")}}
+<div>
+{{=records}}
+</div>
+{{pass}}

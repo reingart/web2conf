@@ -4,6 +4,9 @@ now=datetime.datetime.now()
 
 migrate = True
 
+if SUSPEND_SERVICE:
+    raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")
+
 if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
@@ -73,6 +76,23 @@ db.define_table('auth_user',
     db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
     format="%(last_name)s, %(first_name)s (%(id)s)",
     migrate=migrate)
+
+
+# web2py planet model
+
+db.define_table("feed",
+    Field("name", label=T("name")),
+    Field("author", label=T("author")),
+    Field("email", requires=IS_EMAIL(), label=T("email")),
+    Field("url", requires=IS_URL(), comment=T("RSS/Atom feed")),
+    Field("link", requires=IS_URL(), comment=T("Blog href"), label=T("link")),
+    Field("general", "boolean", comment=T("Many categories (needs filters)"), label=T("general")),
+    )
+
+PLANET_FEEDS_MAX = 4
+
+# end of web2py planet model
+
 
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
@@ -176,3 +196,51 @@ else:
     db.auth_user.confirmed.writable = True
     
 db.auth_user.confirmed.label = T("Confirm attendance")
+
+# conference options
+db.define_table("option",
+                Field("name", "string", unique=True),
+                Field("value", "text", comment=T("Value or record reference")),
+                Field("valuetype", requires=IS_EMPTY_OR(IS_IN_SET({"integer":T("integer"),
+                "double":T("double"), "string":T("string"), "text": T("text"),
+                "boolean":T("boolean"), "date": T("date"), "datetime": T("datetime"),
+                "reference": T("reference")}))),
+                Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)),
+                default=None),
+                Field("description", "text"), format=lambda row: row.name)
+
+
+def get_option(name, default=None):
+    option = db(db.option.name==name).select().first()
+    
+    if option is not None:
+        if option.valuetype == "reference":
+            try:
+                obj = db[option.tablename][int(option.value)]
+            except (ValueError, TypeError, AttributeError):
+                obj = default
+        else:
+            try:
+                if option.valuetype == "integer":
+                    obj = int(option.value)
+                elif option.valuetype == "double":
+                    obj = float(option.value)
+                elif option.valuetype == "boolean":
+                    if option.value in ("", "False", None, False):
+                        obj = False
+                    else:
+                        obj = True
+                elif option.valuetype == "date":
+                    ymd = [int(v) for v in option.value.split("-")]
+                    obj = datetime.date(ymd[0], ymd[1], ymd[2])
+                else:
+                    split_data = option.value.split(" ")
+                    ymd = [int(v) for v in split_data[0].split("-")]
+                    hms = [int(v) for v in split_data[1].split(":")]
+                    obj = datetime.datetime(ymd[0], ymd[1], ymd[2],
+                    hms[0], hms[1], hms[2])
+            except  (ValueError, TypeError, AttributeError):
+                obj = option.value            
+    else:
+        obj = default
+    return obj

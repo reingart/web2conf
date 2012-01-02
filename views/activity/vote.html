@@ -1,5 +1,7 @@
 {{extend 'layout.html'}}
 
+{{ if ALLOW_VOTE: }}
+{{="allow vote is " + str(ALLOW_VOTE)}}
 <div class="frame">
 <h2>{{=T('Voting')}}</h2>
 
@@ -15,3 +17,7 @@
 {{=form}}
 
 </div>
+
+{{ else: }}
+  {{ =P(EM(T("Voting is not allowed yet"))) }}
+{{ pass }}

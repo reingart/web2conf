@@ -237,3 +237,57 @@ def cancel_payment2():
     except Exception:
          session.flash=T('Invalid operation')
          redirect(URL(r=request,f='impersonate',args=request.args[0]))
+
+@auth.requires_membership(role='manager')
+def control_panel():
+    options = db(db.option).select()
+    return dict(options=options)
+    
+@auth.requires_membership(role='manager')
+def option():
+    records = None
+    format = None
+    opt = db.option[request.args(1)]
+    if opt.valuetype == "reference":
+       table = db[opt.tablename]
+       valuetype = table
+       requires = IS_EMPTY_OR(IS_IN_DB(db, table))
+       records = db(table).select()
+       widget = SQLFORM.widgets.options.widget
+    else:
+       widget = None
+       if opt.valuetype == "date":
+           widget = SQLFORM.widgets.date.widget
+       elif opt.valuetype == "datetime":
+           widget = SQLFORM.widgets.datetime.widget
+       elif opt.valuetype == "string":
+           widget = SQLFORM.widgets.string.widget
+       elif opt.valuetype == "text":
+           widget = SQLFORM.widgets.text.widget
+       elif opt.valuetype == "integer":
+           widget = SQLFORM.widgets.integer.widget
+       elif opt.valuetype == "double":
+           widget = SQLFORM.widgets.double.widget           
+       elif opt.valuetype == "boolean":
+           widget = SQLFORM.widgets.boolean.widget
+       elif opt.valuetype == "password":
+           widget = SQLFORM.widgets.password.widget           
+       valuetype = opt.valuetype
+       requires = None
+       
+    form = SQLFORM.factory(Field("value", valuetype, requires=requires, label=T("Value"), widget = widget))
+    form.vars.value = opt.value
+    
+    accepted = False
+    
+    if form.accepts(request.vars, session):
+        if valuetype == "boolean":
+            value = bool(request.vars.value)
+        else:
+            value = request.vars.value
+        opt.update_record(value=value)
+        response.flash = T("Option changed")
+        form = crud.read(db.option, request.args(1))
+        accepted = True
+
+    return dict(form=form, records=records, opt=opt, accepted=accepted)

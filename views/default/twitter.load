@@ -4,10 +4,10 @@
 
 {{ if tweets is not None: }}
 <ul>
-{{ for k in reversed(tweets.keys()): }}
+{{ for k in reversed(sorted(tweets)): }}
 <li>
-  {{ # tweets is a dictionary of type date_string: (img_source, user_name, message) }}
-  {{ =DIV(k[:-5]) }} {{ =SPAN(IMG(_src=tweets[k][1]), tweets[k][0]) }} {{ =DIV(tweets[k][2]) }}
+  {{ # tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
+  {{ =DIV(tweets[k][0][:-5]) }} {{ =SPAN(IMG(_src=tweets[k][2]), tweets[k][1]) }} {{ =DIV(tweets[k][3]) }}
 </li>
 {{ pass }}
 </ul>

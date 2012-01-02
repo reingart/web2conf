@@ -20,6 +20,23 @@
 <div style="clear: both;">&nbsp;</div>
 
 <div class="frame">
+<h2>{{=T('Authors')}}</h2>
+{{if authors:}}
+  <UL>
+  {{for author in authors:}}
+    <LI>
+{{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}} ({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
+{{=author.resume}}
+({{=A("...", _href=URL(r=request,f='speakers',args=author.id), _target='new')}})
+    </LI>
+  {{pass}}
+  </UL>
+{{pass}}
+</div>
+
+<div style="clear: both;">&nbsp;</div>
+
+<div class="frame">
 <h2>{{=T('Attachments')}}</h2>
 {{if attachments is not None:}}
   <UL>

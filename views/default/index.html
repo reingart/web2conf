@@ -9,20 +9,25 @@ $(function()
   });
 </script>
 {{pass}}
+
 <div class="frame">
 {{=body}}
 </div>
+
 {{if form:}}
-{{=form}}
+  {{=form}}
 {{pass}}
 
-<p/>
-
-{{if True or TWITTER_HASH:}}    
-<div class="frame">
-  <h3><img src={{=URL(c="static",f="/img/twitter.png")}} ald="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}}</h3>
-    <div class="twitter">
-      {{ =LOAD("default", "twitter.load") }}
-    </div>
+{{ =HR() }}
+<div>
+  {{ =LOAD("default", "planet.load") }}
 </div>
+{{ =HR() }}
+{{if True or TWITTER_HASH:}}
+  <div>
+    <h3><img src={{=URL(c="static",f="/img/twitter.png")}} ald="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}}</h3>
+      <div class="twitter">
+        {{ =LOAD("default", "twitter.load") }}
+      </div>
+  </div>
 {{pass}}

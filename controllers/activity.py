@@ -110,9 +110,6 @@ def propose():
             db.activity.duration.writable = False
             db.activity.type.writable = False
 
-    session.notify_text = T("Your activity proposal has been recorded. Thank you")
-    session.notify_subject = T("New activity proposal")
-        
     # TODO:  one-to-many author/activity relations
     insert_author = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)
     return dict(form=crud.create(db.activity, 
@@ -152,11 +149,11 @@ def info():
     return dict(item=item)
 
 @auth.requires(auth.has_membership(role='manager')  or auth.has_membership(role='reviewer') or user_is_author())
-def comment(): 
+def comment():
     activity = db(db.activity.id==request.args[0]).select()[0]
     db.comment.activity_id.default=activity.id
     form=crud.create(db.comment, 
-                     next=URL(r=request,f='display',args=activity.id))
+                     next=URL(r=request,f='display',args=activity.id), onaccept=email_author)
     return dict(activity=activity,form=form)
 
 @auth.requires(auth.has_membership(role='reviewer') or user_is_author())
@@ -180,22 +177,27 @@ def attach():
 def review(): 
     activity = db(db.activity.id==request.args[0]).select()[0]
     reviews = db((db.review.activity_id==activity.id)&(db.review.created_by==auth.user_id)).select()
+    
     if reviews:
         form=crud.update(db.review, reviews[0].id,
                          next=URL(r=request,f='proposed'),
-                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')))
+                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')), onaccept=email_author)
     else:
         db.review.activity_id.default=activity.id
         form=crud.create(db.review, 
-                         next=URL(r=request,f='proposed'))
+                         next=URL(r=request,f='proposed'), onaccept=email_author)
     return dict(activity=activity,form=form)
 
 
 @auth.requires(auth.has_membership(role='manager') or user_is_author())
 def confirm(): 
     activity_id = request.args[0]
-    db(db.activity.id==activity_id).update(confirmed=True)
-    session.flash = T("Activity %s Confirmed. Thank you!" % (db.activity[activity_id].title))
+    activity = db.activity[activity_id]
+    activity.update_record(confirmed=True)
+    
+    email_author(None)
+    
+    session.flash = T("Activity %s Confirmed. Thank you!" % (activity.title))
     redirect(URL(r=request,f='display',args=activity_id))
 
 @auth.requires(auth.has_membership(role='manager') or user_is_author())
@@ -246,7 +248,28 @@ def download():
     raise HTTP(501)
 
 def email_author(form):
-    subject = session.notify_subject
-    text = session.notify_text
-    session.notify_text = session.notify_subject = None
-    notify(subject, text)
+    to = subject = text = None
+    if request.function == "propose":
+        activity = db.activity[form.vars.id]
+        # text to be sent to the author
+        text = T(get_option("PROPOSE_NOTIFY_TEXT", "Your activity proposal has been recorded. Thank you"))
+        subject = T(get_option("PROPOSE_NOTIFY_SUBJECT", "New activity proposal"))
+    elif request.function == "comment":
+        activity = db.activity[request.args[0]]
+        text = T(get_option("COMMENT_NOTIFY_TEXT", "Your activity received a comment by %(user)s.")) % dict(user="%s %s" % (auth.user.first_name, auth.user.last_name), link=URL(r=request,f='display',args=activity.id))
+        subject = T(get_option("COMMENT_NOTIFY_SUBJECT", "Activity comment"))
+        to = activity.created_by.email
+    elif request.function == "review":
+        activity = db.activity[request.args[0]]
+        text = T(get_option("REVIEW_NOTIFY_TEXT", "A review of your activity has been created or updated by %(user)s.")) % dict(user="%s %s" % (auth.user.first_name, auth.user.last_name))
+        subject = T(get_option("REVIEW_NOTIFY_SUBJECT", "Activity review"))
+        to = activity.created_by.email
+    elif request.function == "confirm":
+        # confirm forms are None
+        activity = db.activity[request.args[0]]
+        text = T(get_option("CONFIRM_NOTIFY_TEXT", "Your activity %(activity)s has been confirmed")) % dict(activity=activity.title, user="%s %s" % (auth.user.first_name, auth.user.last_name))
+        subject = T(get_option("CONFIRM_NOTIFY_SUBJECT", "Activity confirmed"))
+        to = activity.created_by.email
+    if to is None:
+        to = auth.user.email
+    notify(subject, text, to=to)

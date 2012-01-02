@@ -1,0 +1,4 @@
+{{extend 'layout.html'}}
+
+{{=H1(T("Options"))}}
+{{=SQLTABLE(options, columns=["option.id", "option.name", "option.description", "option.valuetype", "option.value"], headers={"option.id": T("Edit"), "option.name": T("Name"), "option.description": T("Description"), "option.value": T("Value"), "option.valuetype": T("Type")}, linkto=URL("manage", "option"))}}

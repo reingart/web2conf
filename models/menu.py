@@ -5,22 +5,35 @@ response.menu=[]
 if not auth.user:
     response.menu.append([T('Register'),False,URL(r=request,c='user',f='register')])
 
+# Add feed items for the menu
+menu_feeds = []
+for mf in db(db.feed).select():
+    menu_feeds.append([mf.name, True, mf.url])
+
 if CONFERENCE_URL:
     response.menu.append([T('Conference'),False,CONFERENCE_URL])
+    
 else:
     submenu_conf=[
         [T('About'),True,URL(r=request,c='conference',f='about')],
         [T('Venue'),True,URL(r=request,c='conference',f='venue')],
         [T('Maps'),True,URL(r=request,c='conference',f='maps')],
+        [ T('Conference'), True, None, [
         [T('Schedule'),True,URL(r=request,c='schedule',f='index')],
         [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
         [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
         [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
         [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
-        [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')],
+        [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')] ]
+        ],
+
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
-    ]
-    response.menu.append([T('General Information'),False,URL(r=request,c='conference',f='index'),submenu_conf])
+        [T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
+        [T('RSS'),True,None, menu_feeds]]]]
+
+    response.menu.append([T('General Information'),False,URL(r=request, \
+    c='conference',f='index'),submenu_conf])
+  
 
 submenu_info=[
         [T('Companies'),False,URL(r=request,c='stats',f='companies')],
@@ -67,7 +80,7 @@ if auth.has_membership(role='manager'):
     ]
     submenu[0][3]=[['[%s]' % (table),
                False,URL(r=request,c='manage',f='select',args=(table,))] for table in db.tables]
-    response.menu.append([T('Manage'),False,'#',submenu])
+    response.menu.append([T('Manage'),True,URL("manage", "control_panel"),submenu])
 
 #############################################
 # Insert Login and Logout menu items

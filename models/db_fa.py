@@ -44,7 +44,7 @@ if ENABLE_FINANCIAL_AID:
        db.Field( 'rationale', 'text', default='' ),
        migrate=migrate)
     
-    db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
+    db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(last_name)s, %(first_name)s [%(id)s]')
     
     db.fa.registration_amount.comment= XML(str(T('(%s)',A('instructions',_href='#registration_amount'))))
     db.fa.hotel_nights.comment= XML(str(T('(%s)',A('instructions',_href='#hotel_nights'))))
