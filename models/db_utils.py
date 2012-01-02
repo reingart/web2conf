@@ -109,7 +109,7 @@ def fill_just_data():
             db.auth_user.insert(name=name+str(k),first_name=name.capitalize(),last_name=r().capitalize(),email=name+'@'+comp+'.com',company_name=comp.capitalize()+' Corp.',include_in_delegate_listing=True,food_preference=r(FOOD_PREFERENCES),t_shirt_size=r(T_SHIRT_SIZES),country=r(COUNTRIES),attendee_type=r(ATTENDEE_TYPES.keys()),tutorials='[web2py]',latitude=la,longitude=lo,zip_code=zip,personal_home_page='http://www.%s.com'%comp,company_home_page='http://www.%s.com'%comp)
 
 # email notification
-def notify(subject, text, to=None):
+def notify(subject, text, to=None, cc=None):
     if to is None:
         to = auth.user.email
     info = response.title
@@ -124,7 +124,7 @@ def notify(subject, text, to=None):
     """)
     body = message % (addressing, text, info)
     
-    result = mail.send(to, subject, body)
+    result = mail.send(to, subject, body, cc=cc)
 
     if result:
         return True

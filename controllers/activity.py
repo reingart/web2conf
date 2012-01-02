@@ -248,28 +248,40 @@ def download():
     raise HTTP(501)
 
 def email_author(form):
-    to = subject = text = None
+    to = subject = text = cc = None
+    user = "%s %s" % (auth.user.first_name, auth.user.last_name)
     if request.function == "propose":
+        cc = [text.strip() for text in get_option("ON_PROPOSE_EMAIL", "").split(";") if "@" in text]
+        for c in form.vars.cc.split(";"):
+            if (not c.strip() in cc) and ("@" in c):
+                cc.append(c)
         activity = db.activity[form.vars.id]
-        # text to be sent to the author
-        text = T(get_option("PROPOSE_NOTIFY_TEXT", "Your activity proposal has been recorded. Thank you"))
-        subject = T(get_option("PROPOSE_NOTIFY_SUBJECT", "New activity proposal"))
+        tvars = dict(activity=activity.title, user=user, link=URL(r=request,f='display',args=activity.id, scheme=True, host=True))
+        text = T(get_option("PROPOSE_NOTIFY_TEXT", "Your activity proposal has been recorded. Thank you")) % tvars
+        subject = T(get_option("PROPOSE_NOTIFY_SUBJECT", "New activity proposal")) % tvars
     elif request.function == "comment":
         activity = db.activity[request.args[0]]
-        text = T(get_option("COMMENT_NOTIFY_TEXT", "Your activity received a comment by %(user)s.")) % dict(user="%s %s" % (auth.user.first_name, auth.user.last_name), link=URL(r=request,f='display',args=activity.id))
-        subject = T(get_option("COMMENT_NOTIFY_SUBJECT", "Activity comment"))
+        tvars = dict(activity=activity.title, user=user, link=URL(r=request,f='display',args=activity.id, scheme=True, host=True))        
+        tvars["comment"] = form.vars.body
+        text = T(get_option("COMMENT_NOTIFY_TEXT", "Your activity received a comment by %(user)s.")) % tvars
+        subject = T(get_option("COMMENT_NOTIFY_SUBJECT", "Activity comment")) % tvars
         to = activity.created_by.email
     elif request.function == "review":
         activity = db.activity[request.args[0]]
-        text = T(get_option("REVIEW_NOTIFY_TEXT", "A review of your activity has been created or updated by %(user)s.")) % dict(user="%s %s" % (auth.user.first_name, auth.user.last_name))
-        subject = T(get_option("REVIEW_NOTIFY_SUBJECT", "Activity review"))
+        tvars = dict(activity=activity.title, user=user, link=URL(r=request,f='display',args=activity.id, scheme=True, host=True))
+        tvars["review"] = form.vars.body
+        tvars["rating"] = form.vars.rating
+        text = T(get_option("REVIEW_NOTIFY_TEXT", "A review of your activity has been created or updated by %(user)s.")) % tvars
+        subject = T(get_option("REVIEW_NOTIFY_SUBJECT", "Activity review")) % tvars
         to = activity.created_by.email
     elif request.function == "confirm":
         # confirm forms are None
         activity = db.activity[request.args[0]]
-        text = T(get_option("CONFIRM_NOTIFY_TEXT", "Your activity %(activity)s has been confirmed")) % dict(activity=activity.title, user="%s %s" % (auth.user.first_name, auth.user.last_name))
-        subject = T(get_option("CONFIRM_NOTIFY_SUBJECT", "Activity confirmed"))
+        tvars = dict(activity=activity.title, user=user, link=URL(r=request,f='display',args=activity.id, scheme=True, host=True))
+        text = T(get_option("CONFIRM_NOTIFY_TEXT", "Your activity %(activity)s has been confirmed")) % tvars
+        subject = T(get_option("CONFIRM_NOTIFY_SUBJECT", "Activity confirmed")) % tvars
         to = activity.created_by.email
     if to is None:
         to = auth.user.email
-    notify(subject, text, to=to)
+        
+    notify(subject, text, to=to, cc=cc)
