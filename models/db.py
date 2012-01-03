@@ -211,8 +211,11 @@ db.define_table("option",
 
 
 def get_option(name, default=None):
+    cdata = cache.ram(name, lambda: retrieve_option(name, default=default), 12*60*60)
+    return cdata
+
+def retrieve_option(name, default=None):
     option = db(db.option.name==name).select().first()
-    
     if option is not None:
         if option.valuetype == "reference":
             try:
@@ -233,12 +236,15 @@ def get_option(name, default=None):
                 elif option.valuetype == "date":
                     ymd = [int(v) for v in option.value.split("-")]
                     obj = datetime.date(ymd[0], ymd[1], ymd[2])
-                else:
+                elif option.valuetype == "datetime":
                     split_data = option.value.split(" ")
                     ymd = [int(v) for v in split_data[0].split("-")]
                     hms = [int(v) for v in split_data[1].split(":")]
                     obj = datetime.datetime(ymd[0], ymd[1], ymd[2],
                     hms[0], hms[1], hms[2])
+                else:
+                    # string, text, other types
+                    obj = option.value
             except  (ValueError, TypeError, AttributeError):
                 obj = option.value            
     else:

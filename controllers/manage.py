@@ -243,6 +243,7 @@ def control_panel():
     options = db(db.option).select()
     return dict(options=options)
     
+
 @auth.requires_membership(role='manager')
 def option():
     records = None
@@ -289,5 +290,6 @@ def option():
         response.flash = T("Option changed")
         form = crud.read(db.option, request.args(1))
         accepted = True
+        cache.ram.clear()        
 
     return dict(form=form, records=records, opt=opt, accepted=accepted)
