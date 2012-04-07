@@ -85,7 +85,7 @@ def vote():
 
     return dict(form=form, levels=ACTIVITY_LEVEL_HINT, message=db.auth_user.tutorials.comment)
 
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+##@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def accepted():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))

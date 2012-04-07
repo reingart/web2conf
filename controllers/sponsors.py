@@ -8,3 +8,4 @@ def index():
         return plugin_flatpage()
 
 def prospectus(): return plugin_flatpage()
+def expo(): return plugin_flatpage()
