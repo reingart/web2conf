@@ -9,6 +9,7 @@ db.define_table('navbar',
     Field("sortable", "integer"),
     Field("parent_id", "reference navbar"),
     format="%(title)s",
+    migrate=migrate,
     )
 
 def get_sub_menus(parent_id, default_c=None, default_f=None):
@@ -26,19 +27,21 @@ def get_sub_menus(parent_id, default_c=None, default_f=None):
          get_sub_menus(menu_entry.id, c, f)
          )         
 
-response.menu = list(get_sub_menus(parent_id=None))
+# if navbar record, use them, if not, use default menu
+menu_info = list(get_sub_menus(parent_id=None))
+if menu_info:
+    response.menu = menu_info
+    submenu_info=[
+            [T('Companies'),False,URL(r=request,c='stats',f='companies')],
+            [T('Attendees'),False,URL(r=request,c='stats',f='attendees')],
+            [T('Charts'),False,URL(r=request,c='stats',f='charts')],
+            [T('Brief'),False,URL(r=request,c='stats',f='brief')],
+            [T('Maps'),False,URL(r=request,c='stats',f='maps')],
+    ]
+    response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
-submenu_info=[
-        [T('Companies'),False,URL(r=request,c='stats',f='companies')],
-        [T('Attendees'),False,URL(r=request,c='stats',f='attendees')],
-        [T('Charts'),False,URL(r=request,c='stats',f='charts')],
-        [T('Brief'),False,URL(r=request,c='stats',f='brief')],
-        [T('Maps'),False,URL(r=request,c='stats',f='maps')],
-]
-response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
-
-if auth.user:
-    response.menu.append([T('Profile'),False,URL(r=request,c='user',f='profile')])
-    response.menu.append([T('Logout'),False,URL(r=request,c='user',f='logout')])
-else:
-    response.menu.append([T('Login'),False,URL(r=request,c='user',f='login')])
+    if auth.user:
+        response.menu.append([T('Profile'),False,URL(r=request,c='user',f='profile')])
+        response.menu.append([T('Logout'),False,URL(r=request,c='user',f='logout')])
+    else:
+        response.menu.append([T('Login'),False,URL(r=request,c='user',f='login')])
