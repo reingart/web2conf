@@ -199,15 +199,17 @@ db.auth_user.confirmed.label = T("Confirm attendance")
 
 # conference options
 db.define_table("option",
-                Field("name", "string", unique=True),
-                Field("value", "text", comment=T("Value or record reference")),
-                Field("valuetype", requires=IS_EMPTY_OR(IS_IN_SET({"integer":T("integer"),
-                "double":T("double"), "string":T("string"), "text": T("text"),
-                "boolean":T("boolean"), "date": T("date"), "datetime": T("datetime"),
-                "reference": T("reference")}))),
-                Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)),
-                default=None),
-                Field("description", "text"), format=lambda row: row.name)
+    Field("name", "string", unique=True),
+    Field("value", "text", comment=T("Value or record reference")),
+    Field("valuetype", requires=IS_EMPTY_OR(IS_IN_SET({"integer":T("integer"),
+        "double":T("double"), "string":T("string"), "text": T("text"),
+        "boolean":T("boolean"), "date": T("date"), "datetime": T("datetime"),
+        "reference": T("reference")}))),
+    Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)), default=None),
+    Field("description", "text"), 
+    format=lambda row: row.name,
+    migrate=migrate,
+    )
 
 
 def get_option(name, default=None):
