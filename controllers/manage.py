@@ -130,7 +130,7 @@ def fa_csv():
     person=db.auth_user
     fa=db.fa
     who=(person.id==fa.person)
-    rows=db(db.fa.id>0).select(person.first_name,person.last_name,person.id,person.address1,person.address2,
+    rows=db(db.fa.id>0).select(person.first_name,person.last_name,person.id,person.address,
                      person.city,person.state,person.zip_code,person.country, person.email, person.attendee_type,
                      fa.registration_amount, fa.hotel_nights, fa.total_lodging_amount, fa.roommates,
                      fa.transportation_details, fa.transportation_amount,
@@ -152,6 +152,12 @@ def badges():
     response.headers['Content-Type']='text/csv'
     return str(rows)
 
+@auth.requires_membership(role='manager')
+def update_zips():
+    for row in db(db.auth_user).select():
+        update_zip(row)
+
+    
 @auth.requires_membership(role='manager')
 def list_by_tutorial():
     page=[]

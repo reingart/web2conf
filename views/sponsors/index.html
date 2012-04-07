@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+<a href="/2012/sponsors/prospectus/" class="btn-sponsor"><span>{{=XML(T("Learn how to<br>become a <b>sponsor</b>"))}}</span></a>
+<h1>{{=T("About PyConAr Sponsors")}}</h1>
+<table>
+{{for sponsor in sponsors_detail:}}
+<tr><td>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.image),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor.level)))}}</td>
+<td><h2>{{=A(sponsor.alt,_href=sponsor.url)}}<a class="headerlink" href="#{{=sponsor.id}}" title="Permanent link">¶</a></h2>
+<h4>{{=T(sponsor.level)}}</h4>
+<p>{{=MARKMIN(sponsor.text)}}</p>
+</tr>
+{{pass}}
+</table>

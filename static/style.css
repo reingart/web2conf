@@ -1191,3 +1191,29 @@ div.twitter img {
 margin-top: 0.5 em;
 margin-right: 0.5em;
 }
+
+/* SPONSORS */
+
+a.btn-sponsor {
+    display: block;
+    float: right;
+    width: 139px;
+    height: 51px;
+    background: url(img/arrow_bg.png) no-repeat 0 0;
+    color: white;
+    text-decoration: none;
+    text-shadow: 0 1px 1px rgba(76, 154, 172, 0.75);
+    font-size: 80%;
+    cursor: pointer;
+    margin: 1em;
+}
+
+a.btn-sponsor span {
+    display: block;
+    padding: 9px 0 0 12px;
+    line-height: 1.3em;
+}
+
+a.btn-sponsor:hover {
+  background-position: 0 -51px;
+}

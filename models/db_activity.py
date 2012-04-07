@@ -11,7 +11,8 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
-    db.Field('duration','integer',label=T("Duration"),default=45),
+    db.Field('duration','integer',label=T("Duration")), # era 45 min
+    db.Field('request_time_extension', 'boolean', default=False, label=T("I need a time extension"), comment=T("Please remember to fill the note field if you need more time.")),
     db.Field('cc',label=T("cc"),length=512),
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),
@@ -29,6 +30,7 @@ db.define_table('activity',
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
     db.Field('modified_by','integer',label=T("Modified By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('modified_on','datetime',label=T("Modified On"),readable=False,writable=False,default=request.now,update=request.now),
+    db.Field('note', 'text'),
     format='%(title)s',
     migrate=migrate)
 

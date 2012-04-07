@@ -109,6 +109,8 @@ def propose():
             db.activity.type.default = request.args[0]
             db.activity.duration.writable = False
             db.activity.type.writable = False
+        else:
+            db.activity.type.requires=IS_IN_SET((T("talk"), T("extreme_talk"), T("tutorial"), T("sprint"), T("poster")))
 
     # TODO:  one-to-many author/activity relations
     insert_author = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)

@@ -12,4 +12,6 @@ db.define_table( 'sponsor',
    db.Field('url','string',requires=IS_URL()),   
    db.Field('contact','string',requires=IS_EMAIL(),label=T("Contact")),   
    db.Field('alt','string',requires=IS_NOT_EMPTY()),
+   db.Field('image','upload', comment="Big logo for sponsors page"),
+   db.Field('text','text', comment="Long text for program and sponsors page"),
 )

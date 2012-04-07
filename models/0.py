@@ -55,6 +55,10 @@ GOOGLE_MERCHANT_ID=''
 GOOGLE_MERCHANT_KEY=''
 GOOGLE_SANDBOX=DEV_TEST
 
+# Event link in social networks
+LINKEDIN_EVENT = ""
+FACEBOOK_EVENT = ""
+
 FOOD_PREFERENCES=('normal','vegetarian','vegan','kosher','halal')
 FOOD_PREFERENCES_LABELS=(T('normal'),T('vegetarian'),T('vegan'),T('kosher'),T('halal'))
 
@@ -108,22 +112,28 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES=(T('keynote'),T('panel'),T('plenary'),T('tutorial'),T('talk'),T('extreme_talk'),T('poster'),T('project'),T('startup'),T('stand'),T('summit'),T('open-space'),T('social'),T('break'), T('lightning talk'))
+ACTIVITY_TYPES= (T('keynote'),T('panel'),T('plenary'),T('tutorial'),
+                 T('talk'),T('extreme talk'),T('poster'),T('project'),
+                 T('startup'),T('stand'),T('summit'),T('open space'),
+                 T('social'),T('break'),T('lightning talk'),
+                 T('sprint'),T('workshop'))
 
-# custom activities
-# ACTIVITY_TYPES=("charla", "taller", "poster")
+ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
+                             'lenguaje','fomento','core','educación',
+                             'ciencia','académico','comunidad','moviles',
+                             'caso de estudio','redes','juegos','seguridad',
+                             'testing'))
 
-ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas','lenguaje','fomento','core','educación','ciencia','académico','comunidad','moviles','caso de estudio','redes','juegos','seguridad','testing'))
-ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
-ACTIVITY_DURATION={'talk': 45, 'extreme_talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0}
-ACTIVITY_ROOMS={1: "5-6-7-8", 2: "9-10", 3: "13+14", 4: "31", 5: "35", 6: "32"}
+ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced", "Extreme")
+ACTIVITY_DURATION={'talk': 30, 'extreme_talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0}
+ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Aula D", 6: "Sala Internet"}
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
 SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Agradecimiento Especial", "")
 
 # verify by email, unless running a developer test:
-EMAIL_VERIFICATION= False #not DEV_TEST
+EMAIL_VERIFICATION= True #not DEV_TEST
 EMAIL_SERVER='localhost:25' #or Configure!
 EMAIL_AUTH=None # or 'username:password'
 EMAIL_SENDER='pyconar2012@gmail.com'

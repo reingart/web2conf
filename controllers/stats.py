@@ -41,7 +41,12 @@ colors=['#ff0000','#ff0033','#ff0066','#ff0099','#ff00cc','#ff00ff',
 
 def barchart(data,width=400,height=15,scale=None,
              label_width=50,values_width=50):
-    if not scale: scale=max([m for n,c,m in data])
+    if not scale:
+        try:
+            scale=max([m for n,c,m in data])
+        except ValueError:
+            # empty sequence
+            scale=None
     if not scale: return None
     return TABLE(_class='barchart',
            *[TR(TD(n,_width=label_width,_style="text-align: right"),
@@ -160,7 +165,7 @@ def brief():
                 )
     return response.render(d)
     
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+##@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def maps():
     rows=db(db.auth_user.id>0).select(
             db.auth_user.first_name,

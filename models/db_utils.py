@@ -52,9 +52,9 @@ def update_billed_amount(person):
     return due
 
 def update_person(form):
+    update_zip(form.vars)
     if not ENABLE_PAYMENTS:
         return
-    update_zip(form.vars)
     return update_billed_amount(form.vars)
 
 def update_pay(person):
