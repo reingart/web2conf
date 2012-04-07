@@ -2,7 +2,7 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
 
 if is_gae:
     db=GQLDB()
@@ -72,7 +72,7 @@ db.define_table('auth_user',
     db.Field('cena_sabado','boolean', comment="sin cargo para los disertantes + organizadores"),
     db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
     format="%(last_name)s, %(first_name)s (%(id)s)",
-    migrate=migrate)
+    migrate=False)
 
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
@@ -116,7 +116,7 @@ auth.settings.profile_next=URL(r=request,c='user',f='profile')
 auth.settings.retrieve_password_next=URL(r=request,c='user',f='login')
 auth.settings.change_password_next=URL(r=request,c='default',f='index')
 auth.settings.logged_url=URL(r=request,c='user',f='profile')
-auth.settings.create_user_groups = False
+
 
 if EMAIL_SERVER:
     mail=Mail()                                  # mailer
