@@ -10,11 +10,12 @@ from gluon.sqlhtml import form_factory
 
 #@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def index():
+    redirect(URL(c='about', f='index'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
     session.forget()
     # do not cache flatpage edits!:
-    if request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
+    if True: ##request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
         r = response.render(plugin_flatpage()) 
     else:
         r = cache.ram(request.env.path_info,lambda: response.render(plugin_flatpage()), time_expire=60*5)

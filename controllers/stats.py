@@ -5,7 +5,7 @@
 def index():
     redirect(URL("attendees"))
     
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+#@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def companies():
     if auth.has_membership(role='manager'): s=db()
     else: s=db(db.auth_user.include_in_delegate_listing==True)
