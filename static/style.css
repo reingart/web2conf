@@ -8,10 +8,7 @@ BODY
 }
 H1, H2, H3
 {
-    margin: 0;
-    letter-spacing: 0.15em;
     font-family: Helvetica, sans-serif;
-    padding: 10px;
     color: #787878;
 }
 H1
@@ -28,8 +25,6 @@ H3
 }
 P, UL, OL
 {
-    margin-top: 0;
-    line-height: 180%;
     color: #787878;
 }
 UL, OL
@@ -221,7 +216,6 @@ margin: 0; padding: 8px 16px; font-size: 20pt; line-height: 24pt; font-weight: 4
 {
     background: #FFFFFF;
     color: #000000;
-    border: 2px solid #AAAAAA;
     padding: 10px;
 }
 .frame .title
