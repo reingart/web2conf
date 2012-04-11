@@ -61,7 +61,10 @@ response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index'),
     [T('Index'),False,URL(r=request,c='sponsors',f='index')],
     [T('Jobs'),False,URL(r=request,c='jobs',f='index')],
     [T('Prospectus'),False,URL(r=request,c='sponsors',f='prospectus')],
+    [T('Sign-up'),False,URL(r=request,c='sponsors',f='sign_up')],
     ]])
+if auth.user:
+    response.menu[-1][3].append([T('Edit'),False,URL(r=request,c='sponsors',f='edit')])
 response.menu.append([T('Projects'),False,URL(r=request,c='projects',f='index')])
 response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
@@ -71,6 +74,8 @@ response.menu.append([T('Venue'),False,URL(r=request,c='venue',f='index'), [
     [T('City Tour'),False,URL(r=request,c='venue',f='city_tour')],
     [T('Traveling'),False,URL(r=request,c='venue',f='traveling')],
     [T('Accomodation'),False,URL(r=request,c='venue',f='accomodation')],
+    [T('Restaurants'),False,URL(r=request,c='venue',f='restaurants')],
+    [T('Room Sharing'),False,URL(r=request,c='venue',f='room_sharing')],
     ]])
 
 #############################################
@@ -81,6 +86,7 @@ if auth.has_membership(role='manager'):
     submenu=[
         [T('Settings'),False,URL("manage", "control_panel"), []],    
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
+        [T('Upload'),False,URL(r=request,c='manage',f='upload'), []],
         [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],
         [T('Expenses'),True,URL(r=request,c='expenses',f='index')],
@@ -112,7 +118,7 @@ if auth.user and ENABLE_TALKS:
 # Insert Sponsors Logo
 #############################################
 
-sponsors=db(db.sponsor.id>0).select(orderby=db.sponsor.number)
+sponsors=db(db.sponsor.active==True).select(orderby=db.sponsor.number)
 response.sponsors={}
 for sponsor in sponsors:
     if sponsor.level:

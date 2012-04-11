@@ -67,13 +67,13 @@ db.define_table('auth_user',
     db.Field('reviewer','boolean',default=True,readable=False,writable=False),
     db.Field('latitude','double',default=0.0,readable=False,writable=False),
     db.Field('longitude','double',default=0.0,readable=False,writable=False),
-    db.Field('confirmed','boolean',default=False,writable=True,readable=True),
+    db.Field('confirmed','boolean',default=False,writable=False,readable=False),
     db.Field('registration_key',length=64,default='',readable=False,writable=False),
     db.Field('created_by_ip',readable=False,writable=False,default=request.client),
     db.Field('created_on','datetime',readable=False,writable=False,default=request.now),
-    db.Field('cena_viernes','boolean', comment="-con cargo-"),
-    db.Field('cena_sabado','boolean', comment="sin cargo para los disertantes + organizadores"),
-    db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
+    ##db.Field('cena_viernes','boolean', comment="-con cargo-"),
+    ##db.Field('cena_sabado','boolean', comment="sin cargo para los disertantes + organizadores"),
+    ##db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
     format="%(last_name)s, %(first_name)s (%(id)s)",
     migrate=migrate)
 
@@ -103,7 +103,7 @@ db.auth_user.photo.comment=T('Your picture (for authors)')
 #db.auth_user.dni.comment=T('(required if you need a certificate)')
 #db.auth_user.certificate.comment=XML(A(str(T('El Costo de Certificado es $x.-')) + '[2]',_href='#footnote2'))
 db.auth_user.t_shirt_size.requires=IS_IN_SET(T_SHIRT_SIZES,T_SHIRT_SIZES_LABELS)
-db.auth_user.t_shirt_size.comment='Si desea remera, seleccione tamaño (el precio es $ 50.)'
+db.auth_user.t_shirt_size.comment='Si desea remera, seleccione tamaño (con costo a definir)'
 
 db.auth_user.level.comment="Conocimiento de Python, para organización"
 
@@ -189,11 +189,11 @@ db.auth_user.tutorials.label = "Charlas Preferidas"
 if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.controller=='user' and request.function=='register':
     db.auth_user.password.readable = False
     db.auth_user.password.writable = False
-    db.auth_user.confirmed.default = True
+    ##db.auth_user.confirmed.default = False
 else:
     db.auth_user.confirmed.default = False
-    db.auth_user.confirmed.readable = True
-    db.auth_user.confirmed.writable = True
+    ##db.auth_user.confirmed.readable = True
+    ##db.auth_user.confirmed.writable = True
     
 db.auth_user.confirmed.label = T("Confirm attendance")
 

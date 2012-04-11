@@ -131,6 +131,7 @@ except: pass
   <div id="sidebar">  
     <ul>
       {{for sponsor_level in SPONSOR_LEVELS: }}
+      {{if response.sponsors.get(sponsor_level):}}
       <li>
          <h2>{{=T(sponsor_level)}}</h2>
          <ul>   
@@ -141,6 +142,7 @@ except: pass
           {{pass}}
         </ul>
       </li>
+      {{pass}}
       {{pass}}
     </ul>
   </div>
