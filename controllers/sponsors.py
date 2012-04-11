@@ -36,3 +36,5 @@ def edit():
         q = db.sponsor.created_by == auth.user.id
     rows = db(q).select(db.sponsor.id, db.sponsor.name)
     return dict(rows=rows)
+
+def expo(): return plugin_flatpage()

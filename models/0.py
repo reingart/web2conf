@@ -47,6 +47,10 @@ More info: <a href="#">blog</a>&nbsp; Contact: <a href="#">mail address</a>""")
 response.keywords='python, free software'
 response.description=T('Powered by web2py')
 
+# Enable or disable dynamic menu
+NAVBAR = False
+
+
 # GOOGLEMAP_KEY set in 0_private.py - here just to ensure definition
 GOOGLEMAP_KEY=''
 
