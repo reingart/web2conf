@@ -10,7 +10,7 @@
   {{ # tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
   {{ =IMG(_src=tweets[k][2])}}
   <h4>{{ ="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
-  {{ =MARKMIN(tweets[k][3]) }}
+  {{ =MARKMIN(tweets[k][3].encode('utf8', 'ignore')) }}
 </li>
 {{ pass }}
 </ul>
