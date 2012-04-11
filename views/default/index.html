@@ -26,7 +26,7 @@ $(function()
 {{if True or TWITTER_HASH:}}
   <div>
     <h3><img src={{=URL(c="static",f="/img/twitter.png")}} ald="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}}</h3>
-      <div class="twitter">
+      <div class="tweets" class="tweets">
         {{ =LOAD("default", "twitter.load") }}
       </div>
   </div>

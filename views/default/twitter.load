@@ -3,13 +3,16 @@
 {{ pass }}
 
 {{ if tweets is not None: }}
+<div id="tweets">
 <ul>
 {{ for k in reversed(sorted(tweets)): }}
 <li>
   {{ # tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
-  {{ =DIV(tweets[k][0][:-5]) }} {{ =SPAN(IMG(_src=tweets[k][2]), tweets[k][1]) }} {{ =DIV(tweets[k][3]) }}
+  {{ =IMG(_src=tweets[k][2])}}
+  <h4>{{ ="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
+  {{ =MARKMIN(tweets[k][3]) }}
 </li>
 {{ pass }}
 </ul>
-
+</div>
 {{ pass }}

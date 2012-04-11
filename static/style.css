@@ -341,19 +341,20 @@ TABLE TR TD
 #footer
 {
     width: 100%;
-    height: 50px;
-    margin: 0 auto;
-    padding: 20px 0;
+    height: 60px;
+    margin: 0;
+    padding: 0;
     background: #90BF4D url(media/img02.jpg) left top;
     font-size: 20px;
     font-family: Helvetica, sans-serif;
     color: #416110;
     text-align: center;
 }
-#footer H2, H3
+#footer H2, #footer H3
 {
     font-size: 1em;
     padding: 0;
+    margin: 0;
 
 }
 
@@ -1183,13 +1184,40 @@ margin-left: -20px;
 
 
 /* TWITTER at index page */
-div.twitter li {
-margin-bottom: 1em;
+
+#tweets ul {
+  margin: 0.5em 0;
 }
 
-div.twitter img {
+#tweets ul li {
+  background: #d3e5ff;
+  list-style: none;
+  -moz-border-radius: 0.5em;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  margin: 0.5em 0;
+  border: 1px solid #aaa;
+}
+
+#tweets .entry-date {
+  font-weight: bold;
+  display: block;
+}
+
+#tweets img {
+float: left;
 margin-top: 0.5 em;
 margin-right: 0.5em;
+}
+
+#tweets h4 {
+margin: 0;
+padding: 0;
+}
+
+#tweets p {
+margin: 0;
+padding: 0;
 }
 
 /* SPONSORS */
