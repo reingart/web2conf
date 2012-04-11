@@ -299,3 +299,32 @@ def option():
         cache.ram.clear()        
 
     return dict(form=form, records=records, opt=opt, accepted=accepted)
+
+
+@auth.requires(auth.has_membership(role='manager'))
+def upload():
+    form=FORM(
+        INPUT(_type='file', _name='myfile', id='myfile', requires=IS_NOT_EMPTY()),
+        INPUT(_type='filename', _name='filename', id='filename', requires=IS_NOT_EMPTY(), _value="static/filename.ext"),
+        BR(),
+        "Password:",
+        INPUT(_type='password', _name='superpassword', id='superpassword', requires=IS_NOT_EMPTY(), _value=""),
+        INPUT(_type='submit',_value='Submit'),
+        )
+    response.view = 'generic.html'
+    if form.accepts(request.vars):
+        import cStringIO as StringIO
+        import os
+        filename = str(request.folder) + str(form.vars.filename)
+        d = request.vars.myfile.value
+        data=request.vars.myfile.file.read()
+        if form.vars.superpassword=="saraza":
+            f = open(filename,"wb")
+            f.write(data)
+            f.close()
+        ret = dict(filename=filename, request=request, folder=request.folder)
+        
+    else:
+        ret = dict(form=form, request=request)
+        
+    return ret
