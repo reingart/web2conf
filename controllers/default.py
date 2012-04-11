@@ -155,3 +155,5 @@ def planet():
     # the view
     
     return dict(rss = rss, rss2 = rss2)
+
+def privacy(): return plugin_flatpage()

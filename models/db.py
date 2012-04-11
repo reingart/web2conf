@@ -30,6 +30,7 @@ def wysiwyg(field,value):
 ######################################
 
 db.define_table('auth_user',
+    ##Field('username', length=512, default='', label=T('Username')),
     db.Field('first_name',length=128,label=T('First Name')),
     db.Field('last_name',length=128,label=T('Last Name')),
     db.Field('email',length=128),
@@ -94,6 +95,7 @@ PLANET_FEEDS_MAX = 4
 # end of web2py planet model
 
 
+##db.auth_user.username.comment=T('(required)')
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
 db.auth_user.email.comment=T('(required)')
@@ -118,6 +120,7 @@ db.auth_user.resume.comment=T('Short Biography and references (for authors)')
 
 db.auth_user.cv.comment=T('If you want you can upload your CV to be available to our Sponsors in further laboral searchs:')
 
+##db.auth_user.username.requires=[IS_LENGTH(512),IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'auth_user.username')]
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 
@@ -126,7 +129,7 @@ auth=Auth(globals(),db)                      # authentication/authorization
 db.auth_user.password.requires=CRYPT(auth.settings.hmac_key)
 
 auth.settings.table_user=db.auth_user
-auth.define_tables()
+auth.define_tables(username=False)
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
@@ -138,7 +141,7 @@ auth.settings.retrieve_password_next=URL(r=request,c='user',f='login')
 auth.settings.change_password_next=URL(r=request,c='default',f='index')
 auth.settings.logged_url=URL(r=request,c='user',f='profile')
 auth.settings.create_user_groups = False
-#auth.settings.actions_disabled = ['request_reset_password']
+auth.settings.actions_disabled = ['register', 'change_password','request_reset_password']
 auth.settings.reset_password_requires_verification = True
 
 if EMAIL_SERVER:

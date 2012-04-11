@@ -175,3 +175,8 @@ def copy_temp():
         db.pdf_element.insert(**e)
     return {'new_pdf_template_id': pdf_template_id}
 
+@auth.requires_membership(role='manager')
+def update_username():
+    for row in db(db.auth_user.id>0).select():
+        db(db.auth_user.id==row.id).update(username=row.email)
+    return "ok"
