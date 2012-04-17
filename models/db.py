@@ -2,7 +2,8 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
+fake_migrate = True
 
 if SUSPEND_SERVICE:
     raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")
@@ -76,7 +77,7 @@ db.define_table('auth_user',
     ##db.Field('cena_sabado','boolean', comment="sin cargo para los disertantes + organizadores"),
     ##db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
     format="%(last_name)s, %(first_name)s (%(id)s)",
-    migrate=migrate)
+    migrate=migrate, fake_migrate=fake_migrate)
 
 
 # web2py planet model
@@ -88,7 +89,7 @@ db.define_table("feed",
     Field("url", requires=IS_URL(), comment=T("RSS/Atom feed")),
     Field("link", requires=IS_URL(), comment=T("Blog href"), label=T("link")),
     Field("general", "boolean", comment=T("Many categories (needs filters)"), label=T("general")),
-    )
+    migrate=migrate, fake_migrate=fake_migrate)
 
 PLANET_FEEDS_MAX = 4
 
@@ -211,7 +212,7 @@ db.define_table("option",
     Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)), default=None),
     Field("description", "text"), 
     format=lambda row: row.name,
-    migrate=migrate,
+    migrate=migrate, fake_migrate=fake_migrate
     )
 
 
