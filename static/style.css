@@ -48,8 +48,8 @@ A:hover
 #header { width: 1680px; height: 198px; margin: 0 auto; }
 */
 #header-container
-{ 
-    margin: 0; 
+{
+    margin: 0;
     text-align: left;
 }
 #header
@@ -90,48 +90,48 @@ A:hover
     float: none;
     margin: 0;
     padding: 10px 8px;
-    font-size: 26pt; 
-    line-height: 18pt; 
-    font-weight: 400; 
-    color: #EEE; 
-    border: 0; 
-    outline: 0; 
-    vertical-align: text-top; 
-    background: transparent; 
-    display: block; 
-    font-weight: bold; 
+    font-size: 26pt;
+    line-height: 18pt;
+    font-weight: 400;
+    color: #EEE;
+    border: 0;
+    outline: 0;
+    vertical-align: text-top;
+    background: transparent;
+    display: block;
+    font-weight: bold;
     letter-spacing: 0;
 }
 #logo H2
 {
-    float: none; 
-    margin: 0; 
-    padding: 8px 8px; 
-    font-size: 20pt; 
-    line-height: 16pt; 
-    font-weight: 400; 
-    color: #EEE; 
-    border: 0; 
-    outline: 0; 
-    vertical-align: 
-    text-top; 
-    background: transparent; 
-    display: block; 
-    font-weight: bold; 
+    float: none;
+    margin: 0;
+    padding: 8px 8px;
+    font-size: 20pt;
+    line-height: 16pt;
+    font-weight: 400;
+    color: #EEE;
+    border: 0;
+    outline: 0;
+    vertical-align:
+    text-top;
+    background: transparent;
+    display: block;
+    font-weight: bold;
     letter-spacing: 0;
 }
 #logo IMG
 {
-    height: 78px; 
-    width: 60px; 
-    padding: 4px 12px; 
-    float: left;  
-    margin: 0; 
-    border: 0; 
-    outline: 0; 
-    font-size: 100%; 
-    vertical-align: text-top; 
-    background: transparent;   
+    height: 78px;
+    width: 60px;
+    padding: 4px 12px;
+    float: left;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: text-top;
+    background: transparent;
 }
 
 /* */
@@ -144,39 +144,42 @@ A:hover
 /*Search*/
 #search
 {
-    float: right;
-    width: 200px;
-    padding-top: 16px;
+    padding: 0;
+    margin: auto;
+    text-align: right;
 }
 #search FORM
 {
-    width: 160px;
+    clear: none;
+    margin: 0; padding: 0;
+    /*width: 160px;
     height: 41px;
     margin: 0;
     padding: 15px 0 0 10px;
-    /*+placement:shift -175px -20px;*/
-    position: relative;
-    left: -175px;
-    top: -20px;
+    placement:shift -175px -20px;
+    position: relative;*/
 }
 #search FIELDSET
 {
     margin: 0;
     padding: 0;
     border: none;
+    display: inline;
 }
 #search-text
 {
+    outline: none;
     border: none;
     text-transform: lowercase;
     border: 1px solid #FFFFFF;
-    padding: 3px;
-    font: bold 1em Helvetica, sans-serif;
+    padding: 1px;
+    font: bold 0.75em Helvetica, sans-serif;
     color: #5C5C5C;
+    display: inline;
 }
 #search-submit
 {
-    display: none;
+    display: inline;
 }
 
 #account-bar {
@@ -186,7 +189,7 @@ A:hover
     background: #222;
     text-shadow: none;
     color: #FFF;
-    font-size: 1em;
+    font-size: 0.90em;
     padding: 4px 12px 6px;
     color: #FFF;
     -moz-border-radius-bottomleft: 5px;
@@ -1105,7 +1108,7 @@ a.headerlink {
     padding: 0 4px 0 4px;
     text-decoration: none;
 }
- 
+
 a.headerlink:hover {
     color: #c60f0f;
 }
@@ -1179,7 +1182,7 @@ margin-left: -20px;
 
 /* MARKMIN WIKI */
 
-#wiki ul li { line-height: 100%; margin-bottom: 0em;} 
+#wiki ul li { line-height: 100%; margin-bottom: 0em;}
 #wiki p, ul, ol {line-height: 120%; margin-bottom: 0em;}
 
 

@@ -22,7 +22,7 @@ Released   : 20080425
 <script src="{{=URL(r=request,c='static',f='scripts/jquery.dimensions.js')}}"></script><script src="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.css')}}" />
 <script>
-$(document).ready(function() { $('.sf-menu').superfish({ animation: {height:'show'}, delay:500 }); 
+$(document).ready(function() { $('.sf-menu').superfish({ animation: {height:'show'}, delay:500 });
 $('#auth_user_tutorials').multiSelect({selectAll: false});
 });
 </script>
@@ -42,30 +42,27 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
 </head>
 <body>
 <div id="header">
-  <div id="header-container"> 
-  <div id="logo"> 
+  <div id="header-container">
+  <div id="logo">
   <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0">
   <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
   <h2>{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}</h2>
   </div>
-  <div id="account-bar"> 
+  <div id="account-bar">
    {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
-  </div>   
-  <!--
-  <div id="search"> 
-    <form method="get" action="http://www.google.com/search"> 
-      <fieldset> 
-        <input id="search-text" type="text" name="as_q" value="" size="15"/> 
-        <input type="hidden" name="as_sitesearch" value="us.pycon.org"> 
-        <input type="submit" id="search-submit" value="Search" /> 
-      </fieldset> 
-      <span style="color: #ffffff;">{{=T("Language")}}: <a href="?lang=es" style="color: #ffffff;">Español</a> - <a href="?lang=en" style="color: #ffffff;">English</a></a>
-    </form> 
+      <div id="search">
+        <form method="get" action="http://www.google.com/search">
+        <a href="?lang=es">Español</a> / <a href="?lang=en">English</a>
+        {{pass}} - 
+          <fieldset>
+            <input id="search-text" type="text" name="as_q" value="" size="15"/>
+            <input type="hidden" name="as_sitesearch" value="ar.pycon.org/2012">
+            <input type="submit" id="search-submit" value="{{=T("Search")}}" />
+          </fieldset>
+        </form>
+      </div>
+     </div>
   </div>
-  --> 
-
-            
-  </div> 
 </div>
 <div id="menu">
   <div id="menu-container">
@@ -108,7 +105,7 @@ except: pass
     </div>
   </div>
   {{if response.sidebar:}}
-  <div id="sidebar">  
+  <div id="sidebar">
     <ul>
       {{for _i in response.sidebar or []:}}
       <li>
@@ -128,13 +125,13 @@ except: pass
   </div>
   {{pass}}
   {{if response.sponsors:}}
-  <div id="sidebar">  
+  <div id="sidebar">
     <ul>
       {{for sponsor_level in SPONSOR_LEVELS: }}
       {{if response.sponsors.get(sponsor_level):}}
       <li>
          <h2>{{=T(sponsor_level)}}</h2>
-         <ul>   
+         <ul>
          {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
             <li>
               <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}</p>
