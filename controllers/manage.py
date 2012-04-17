@@ -7,13 +7,14 @@ crud=Crud(globals(),db)
 @auth.requires_membership(role='manager')
 def _crud():
     crud.settings.controller = 'manage'
+    response.view = 'generic.html'
     return dict(form=crud())
 
 crud.settings.controller='manage'
 crud.settings.showid=True
 
 @auth.requires_membership(role='manager')
-def index(): 
+def index():
     return dict(form=crud.tables())
 
 @auth.requires_membership(role='manager')
@@ -23,22 +24,26 @@ def select():
         f='update'
     else:
         f='read'
+    response.view = 'generic.html'
     return dict(form=crud.select(table, linkto=crud.url(f)))
     #crud.select(table, query, fields, orderby, limitby, headers, **attr)
 
 @auth.requires_membership(role='manager')
 def read():
     table, record = request.args
+    response.view = 'generic.html'
     return dict(form=crud.read(table, record))
 
 @auth.requires_membership(role='manager')
 def update():
     table, record = request.args
+    response.view = 'generic.html'
     return dict(form=crud.update(table, record, next=crud.url('select', table), deletable=True))
 
 @auth.requires_membership(role='manager')
 def create():
     table = request.args[0]
+    response.view = 'generic.html'
     return dict(form=crud.create(table, next=crud.url('create', table)))
 
 
@@ -50,14 +55,14 @@ def badges():
                 db.auth_user.last_name,
                 db.auth_user.company_name,
                 db.auth_user.state,
-                db.auth_user.country, 
+                db.auth_user.country,
                 db.auth_user.food_preference,
                 db.auth_user.speaker,
                 db.auth_user.session_chair,
                 db.auth_user.manager,
                 db.auth_user.reviewer)
     return str(rows)
-    
+
 @auth.requires_membership(role='manager')
 def maillist():
     '''
@@ -144,7 +149,7 @@ def fa_email_all():
     email_fa_select()
     session.flash="FA Records emailed to %s." % FA_EMAIL_TO
     redirect(URL(r=request,c="default",f='index'))
-    
+
 @auth.requires_membership(role='manager')
 def badges():
     p=db.auth_user
@@ -157,7 +162,7 @@ def update_zips():
     for row in db(db.auth_user).select():
         update_zip(row)
 
-    
+
 @auth.requires_membership(role='manager')
 def list_by_tutorial():
     page=[]
@@ -248,7 +253,7 @@ def cancel_payment2():
 def control_panel():
     options = db(db.option).select()
     return dict(options=options)
-    
+
 
 @auth.requires_membership(role='manager')
 def option():
@@ -274,19 +279,19 @@ def option():
        elif opt.valuetype == "integer":
            widget = SQLFORM.widgets.integer.widget
        elif opt.valuetype == "double":
-           widget = SQLFORM.widgets.double.widget           
+           widget = SQLFORM.widgets.double.widget
        elif opt.valuetype == "boolean":
            widget = SQLFORM.widgets.boolean.widget
        elif opt.valuetype == "password":
-           widget = SQLFORM.widgets.password.widget           
+           widget = SQLFORM.widgets.password.widget
        valuetype = opt.valuetype
        requires = None
-       
+
     form = SQLFORM.factory(Field("value", valuetype, requires=requires, label=T("Value"), widget = widget))
     form.vars.value = opt.value
-    
+
     accepted = False
-    
+
     if form.accepts(request.vars, session):
         if valuetype == "boolean":
             value = bool(request.vars.value)
@@ -296,12 +301,12 @@ def option():
         response.flash = T("Option changed")
         form = crud.read(db.option, request.args(1))
         accepted = True
-        cache.ram.clear()        
+        cache.ram.clear()
 
     return dict(form=form, records=records, opt=opt, accepted=accepted)
 
 
-@auth.requires(auth.has_membership(role='manager'))
+@auth.requires_membership(role='plugin_flatpages')
 def upload():
     form=FORM(
         INPUT(_type='file', _name='myfile', id='myfile', requires=IS_NOT_EMPTY()),
@@ -323,8 +328,8 @@ def upload():
             f.write(data)
             f.close()
         ret = dict(filename=filename, request=request, folder=request.folder)
-        
+
     else:
         ret = dict(form=form, request=request)
-        
+
     return ret
