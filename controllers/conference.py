@@ -22,3 +22,6 @@ def helpforspeakers(): return plugin_flatpage()
 def ConferenceNights(): return plugin_flatpage()
 def registration(): return plugin_flatpage()
 def diversity(): return plugin_flatpage()
+
+def contest(): return plugin_flatpage()
+def awards(): return plugin_flatpage()
