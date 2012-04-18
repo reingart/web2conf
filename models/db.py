@@ -2,8 +2,8 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = False
-fake_migrate = True
+migrate = True
+fake_migrate = False
 
 if SUSPEND_SERVICE:
     raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")

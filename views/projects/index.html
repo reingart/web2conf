@@ -1,0 +1,13 @@
+{{extend 'layout.html'}}
+<a href="/2012/conference/sprints/" class="btn-sponsor"><span>{{=XML(T("Learn how to<br>submit a <b>project</b>"))}}</span></a>
+<h1>{{=T("PyConAr Sprint Projects")}}</h1>
+{{for project in projects:}}
+{{author=project.author.select(db.auth_user.ALL)[0]}}
+{{=IMG(_alt=project.title,_src=URL(r=request, c='default', f='fast_download', args=project .logo),_border='0',_style="vertical-align: middle")}}
+<a class="headerlink" href="#{{=project.id}}" title="Permanent link">¶</a><br/>
+<b>Coordinador</b>: {{=A(project.authors,_href=author.personal_home_page)}} ({{=A(author.company_name,_href=author.company_home_page)}})
+<sup><a onclick="jQuery('{{="#bio%s"% author.id}}').slideToggle()">bio</a></sup><br/>
+<div id="{{="bio%s"% author.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume and MARKMIN(author.resume, sep="") or ''}}</div> 
+{{=MARKMIN(project.abstract)}}
+<b>Interesados</b>: <i>proximamente...</i><br/>
+{{pass}}
