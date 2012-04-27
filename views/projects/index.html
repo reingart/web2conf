@@ -11,7 +11,27 @@
 <a class="headerlink" href="#{{=project.id}}" title="Permanent link">¶</a></h3>
 <b>Coordinador</b>: {{=A(project.authors,_href=author.personal_home_page)}} ({{=A(author.company_name,_href=author.company_home_page)}})
 <sup><a onclick="jQuery('{{="#bio%s"% author.id}}').slideToggle()">bio</a></sup><br/>
-<div id="{{="bio%s"% author.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume and MARKMIN(author.resume, sep="") or ''}}</div> 
+<div id="{{="bio%s"% author.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume and MARKMIN(author.resume, sep="") or ''}}</div>
 {{=MARKMIN(project.abstract)}}
-<b>Interesados</b>: <i>proximamente...</i><br/>
+
+{{project_partakers = db(db.partaker.activity == project.id).select()}}
+{{confirmed=[LI(A(str(partaker.user.first_name) + " " + str(partaker.user.last_name), _href=partaker.user.personal_home_page)) for partaker in project_partakers if partaker.add_me]}}
+
+{{partaker_ids = [partaker.user.id for partaker in project_partakers]}}
+
+{{if len(confirmed) > 0:}}
+  {{=H4("Confirmed assistance")}}
+  {{=UL(*confirmed)}}
+{{pass}}
+{{=BR()}}
+
+{{if auth.user_id in partaker_ids:}}
+  {{application_message=T("Update my project application")}}
+{{else:}}
+  {{application_message=T("I'm interested (joining is optional)")}}
+{{pass}}
+{{=A(application_message, _href=URL(c="projects", f="apply", args=["project", project.id]))}}
+  {{if user_is_author_or_manager(activity_id=project.id):}}
+     | {{=A(T("See the partakers list"), _href=URL(c="projects", f="partakers", args=["project", project.id]))}}
+  {{pass}}
 {{pass}}
