@@ -117,11 +117,7 @@ def notify(subject, text, to=None, cc=None):
     # Address person
     addressing = T("Dear attendee")
    
-    message = T("""    %s:\n
-    %s\n\n
-    Please do not respond this automated message
-    %s
-    """)
+    message = T("""%s:\n%s\n\nPlease do not respond this automated message\n%s""")
     body = message % (addressing, text, info)
     
     result = mail.send(to, subject, body, cc=cc)

@@ -35,6 +35,11 @@ db.define_table('activity',
     format='%(title)s',
     migrate=migrate)
 
+db.define_table("partaker", Field("activity", db.activity),
+                Field("user", db.auth_user),
+                Field("add_me", "boolean", default=True, comment=T("Confirm my assistance")),
+                Field("comment", "text", comment=T("Write a comment for the project's owner")))
+
 if request.controller != 'appadmin':
     db.activity.description.represent=lambda value: XML(value)
 db.activity.title.requires=IS_NOT_IN_DB(db,'activity.title')
@@ -111,7 +116,7 @@ db.define_table('author',
     db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
     migrate=migrate)
-    
+
 def user_is_author(activity_id=None):
     if not auth.is_logged_in() or (not request.args and activity_id is None) or not request.args[0].isdigit():
         return False
@@ -120,6 +125,17 @@ def user_is_author(activity_id=None):
     if db((db.author.user_id==auth.user_id)&(db.author.activity_id==activity_id)).count():
         return True
 
+def user_is_author_or_manager(activity_id=None):
+    allowed = False
+    if activity_id is not None:
+        project = db.activity[activity_id]
+        if project is not None:
+            if project.created_by == auth.user_id:
+                allowed = True
+            elif auth.has_membership(role="manager"):
+                allowed = True
+    return allowed
+
 def activity_is_accepted():
     if not request.args or not request.args[0].isdigit():
         return False
@@ -127,7 +143,7 @@ def activity_is_accepted():
         return True
 
 TUTORIALS_LIST=[row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)]
-class IS_IN_SET_NOT_EMPTY(IS_IN_SET): 
+class IS_IN_SET_NOT_EMPTY(IS_IN_SET):
     def __call__(self, value):
         (values, error) = IS_IN_SET.__call__(self,value)
         if not values:
@@ -135,7 +151,7 @@ class IS_IN_SET_NOT_EMPTY(IS_IN_SET):
         else:
             return (values, error)
 db.auth_user.tutorials.requires=IS_IN_SET(TUTORIALS_LIST,multiple=True)
-db.auth_user.tutorials.comment=SPAN(T('(seleccione su preferencia de charlas para la organización del evento; '), 
+db.auth_user.tutorials.comment=SPAN(T('(seleccione su preferencia de charlas para la organización del evento; '),
 A('más información',_target='_blank',_href='/2011/activity/accepted'),T(", la disponibilidad y horarios pueden variar sin previo aviso)"))
 
 ACTIVITY_LEVEL_HINT = {}

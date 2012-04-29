@@ -2,7 +2,7 @@
 <h1>{{=T('Speakers')}}</h1>
 {{for author in sorted(authors, key=lambda x: x.last_name.upper() ):}}
 {{if author.id in activities_by_author or True:}}
-<h2>{{="%s %s" % (author.first_name, author.last_name)}}<a class="headerlink" href="#{{=author.id}}" title="Permanent link">¶</a></h2>
+<h2 id="{{=author.id}}">{{="%s %s" % (author.first_name, author.last_name)}}<a class="headerlink" href="#{{=author.id}}" title="Permanent link">¶</a></h2>
 <div class="wiki">
 {{if author.photo:}}
 {{=IMG(_alt=author.last_name, _src=URL(r=request,c='default',f='fast_download', args=author.photo),  _width="100px",_height="100px", _style="margin-left: 10px; margin-right: 10px; margin-top: 3px; margin-bottom: 10px; float: left; ")}}
