@@ -1,6 +1,7 @@
 {{extend 'layout.html'}}
 {{import urllib}}
 
+<div class="frame">
 <h1>{{=T('Attendee Locations')}}</h1>
 
 <p>{{=T('The map below shows the home location of all attendees who agreed to make their information public.')}}
@@ -55,3 +56,4 @@
     <div id="map" style="width: 600px; height: 300px"></div>
     <script>load();</script>
 </center>
+</div>

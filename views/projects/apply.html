@@ -1,0 +1,11 @@
+{{extend 'layout.html'}}
+{{if partaker is not None:}}
+  {{=H3(T("You joined") + " " + T(project.title))}}
+  {{=A(T("Really...? I'd like to dismiss it."), _href=URL(c="projects", f="dismiss", args=["partaker", partaker.id]))}}
+{{pass}}
+{{if form is not None:}}
+  {{=H3(T("Join") + " " + T(project.title))}}
+  {{=form}}
+{{pass}}
+{{=BR()}}
+{{=A(T("Back to the project list"), _href=URL(c="projects", f="index"))}}

@@ -2,7 +2,7 @@
 {{pd = db((db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0)&(db.auth_user.confirmed==True)).count()}}
 {{tot = db(db.auth_user.attendee_type!='non_attending').count()}}
 <div class="frame">
-<h2>{{=T('Conference Participants')}}</h2>
+<h1>{{=T('Conference Participants')}}</h1>
 <table>
 <tr><td width="10px"/><td>
 {{=T('%5d Pending Registrations',tot-pd)}}

@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 
 <div class="frame">
-<h2>{{=T('Ratings Summary')}} ({{=T('reviewers')}})</h2>
+<h1>{{=T('Ratings Summary')}} ({{=T('reviewers')}})</h1>
 
 {{for status in ['accepted','pending', 'rejected', 'declined']:}}
 <h3>{{="%s %s" % (T("Activities"), T(status))}}</h3>

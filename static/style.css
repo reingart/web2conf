@@ -5,10 +5,22 @@ beige #cabe57
 beige claro (letra) #c7c68d
 */
 
+@font-face {
+    font-family: 'LullabyRegular';
+    src: url('fonts/lullaby-webfont.eot');
+    src: url('fonts/lullaby-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/lullaby-webfont.woff') format('woff'),
+         url('fonts/lullaby-webfont.ttf') format('truetype'),
+         url('fonts/lullaby-webfont.svg#LullabyRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 BODY
 {
     margin: 0;
-    font-family:  Georgia, "Times New Roman", Times, serif;
+    <-family:  Georgia, "Times New Roman", Times, serif;
     font-size: 1em;
     color: #c7c68d;
     background: #052446;/*url(media/img01.jpg) repeat-x left top;*/
@@ -34,8 +46,8 @@ H3
 }
 P, UL, li, OL
 {
-    margin: 0;
-    padding: 0;
+    /*margin: 0;
+    padding: 0;*/
     line-height: 100%;
 
 }
@@ -110,7 +122,7 @@ A:hover
     clear: both;
     margin: 52px 0 0;
     padding: 0 20px 0 0;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 16pt;
     border: 0;
     outline: 0;
@@ -118,8 +130,12 @@ A:hover
     text-top;
     background: transparent;
     display: block;
-    font-weight: normal;
+    font-weight: bold;
     letter-spacing: 0;
+
+    font-family: LullabyRegular;
+    /*font-size: 2.2em;*/
+
 }
 #header_side {
     width: 190px;
@@ -319,17 +335,6 @@ A:hover
     color: #c7c68d;
     padding: 0;
 }
-@font-face {
-    font-family: 'LullabyRegular';
-    src: url('fonts/lullaby-webfont.eot');
-    src: url('fonts/lullaby-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/lullaby-webfont.woff') format('woff'),
-         url('fonts/lullaby-webfont.ttf') format('truetype'),
-         url('fonts/lullaby-webfont.svg#LullabyRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
 .frame h1 {
     /*background: url(img/H2_conectando_comunidad_python.png) no-repeat;*/
     font-family: LullabyRegular;
@@ -414,6 +419,8 @@ hr {
 }
 #sidebar UL {
     list-style-type:none;
+    margin: 0;
+    padding: 0;
 }
 #sidebar UL:first-child
 {
@@ -1249,7 +1256,7 @@ DIV.examples LABEL.examples
 }
 
 a.headerlink {
-    color: white;
+    color: transparent;
     font-size: 0.8em;
     padding: 0 4px 0 4px;
     text-decoration: none;
