@@ -330,7 +330,7 @@ A:hover
     font-style: normal;
 
 }
-.frame h2 {
+.frame h1 {
     /*background: url(img/H2_conectando_comunidad_python.png) no-repeat;*/
     font-family: LullabyRegular;
     display: block;
@@ -344,13 +344,6 @@ A:hover
     font-size: 1.2em;
 }
 
-.frame h3 a {
-    color: #cabe57;
-    font-family: LullabyRegular, Georgia, "Times New Roman", Times, serif;
-    font-size: 2em;
-    margin: 20px;
-    text-decoration: none;
-}
 
 .Apple-style-span{
     display: none;
@@ -482,6 +475,7 @@ TABLE TR TD
 }
 #social a {
     margin: 0 0 0 30px;
+    color: #FFFFFF;
 }
 
 /*Footer*/

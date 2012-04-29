@@ -47,17 +47,17 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
       <!--img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0"-->
       <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
 
-	<div id="header_side">      
+    <div id="header_side">      
       <div class="idioma"><a href="?lang=es">Español</a> - <a href="?lang=en">English</a></div>
       {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
-	  <h2><!--{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}-->12 al 17 de Noviembre <br /> Quilmes - Buenos Aires</h2>
+      <h2><!--{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}-->12 al 17 de Noviembre <br /> Quilmes - Buenos Aires</h2>
     </div>
         <div id="menu">
 
             {{=MENU(response.menu, _class = 'sf-menu')}}
 
         </div>
- 	 </div>
+     </div>
 </div>
 
 <div id="page">
@@ -89,7 +89,7 @@ except: pass
     </div>
   </div>
   {{if response.sidebar:}}
-  <div id="sidebar">
+  <div id="social">
     <ul>
       {{for _i in response.sidebar or []:}}
       <li>
