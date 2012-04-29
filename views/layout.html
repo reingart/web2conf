@@ -43,32 +43,23 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
 <body>
 <div id="header">
   <div id="header-container">
-  <div id="logo">
-  <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0">
-  <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
-  <h2>{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}</h2>
-  </div>
-  <div id="account-bar">
-   {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
-      <div id="search">
-        <form method="get" action="http://www.google.com/search">
-        <a href="?lang=es">Español</a> / <a href="?lang=en">English</a>
-        {{pass}} - 
-          <fieldset>
-            <input id="search-text" type="text" name="as_q" value="" size="15"/>
-            <input type="hidden" name="as_sitesearch" value="ar.pycon.org/2012">
-            <input type="submit" id="search-submit" value="{{=T("Search")}}" />
-          </fieldset>
-        </form>
-      </div>
-     </div>
-  </div>
+
+      <!--img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0"-->
+      <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
+
+	<div id="header_side">      
+      <div class="idioma"><a href="?lang=es">Español</a> - <a href="?lang=en">English</a></div>
+      {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
+	  <h2><!--{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}-->12 al 17 de Noviembre <br /> Quilmes - Buenos Aires</h2>
+    </div>
+        <div id="menu">
+
+            {{=MENU(response.menu, _class = 'sf-menu')}}
+
+        </div>
+ 	 </div>
 </div>
-<div id="menu">
-  <div id="menu-container">
-  {{=MENU(response.menu, _class = 'sf-menu')}}
-  </div>
-</div>
+
 <div id="page">
   <div id="content">
     <!-- AddToAny BEGIN -->
@@ -94,14 +85,7 @@ except: pass
         <h3>{{=T('About')}} {{=response.title}}</h3>
         {{=XML(response.footer)}}
     </div>
-    <div style="width: 60px; float: right;">
-    {{if FACEBOOK_EVENT:}}
-        {{=A(IMG(_src=URL(c='static', f='media/facebook.png'), _width='55px', _heigh='55px'), _href=FACEBOOK_EVENT, _title="Follow us in Facebook!")}}
-    {{pass}}
-    {{if LINKEDIN_EVENT:}}
-        {{=A(IMG(_src=URL(c='static', f='media/linked_in.jpg')), _href=LINKEDIN_EVENT, _title="Add the event to your Linked-In profile")}}
-    {{pass}}
-    </div>
+    
     </div>
   </div>
   {{if response.sidebar:}}
@@ -142,11 +126,34 @@ except: pass
       {{pass}}
       {{pass}}
     </ul>
+    
+    <div id="search">
+        <form method="get" action="http://www.google.com/search">
+        {{pass}}  
+          <fieldset>
+            <input id="search-text" type="text" name="as_q" value="" size="15"/>
+            <input type="hidden" name="as_sitesearch" value="ar.pycon.org/2012"><br />
+            <input type="submit" id="search-submit" value="{{=T("Search")}}" />
+          </fieldset>
+        </form>
+      </div>
+      
+      <div id="social">
+      <h2>Síguenos en:</h2>
+    {{if FACEBOOK_EVENT:}}
+        {{=A(IMG(_src=URL(c='static', f='media/facebook.png'), _width='55px', _heigh='55px'), _href=FACEBOOK_EVENT, _title="Follow us in Facebook!")}}
+    {{pass}}
+    {{if LINKEDIN_EVENT:}}
+        {{=A(IMG(_src=URL(c='static', f='media/linked_in.png')), _href=LINKEDIN_EVENT, _title="Add the event to your Linked-In profile")}}
+    {{pass}}
+    </div>
+    
   </div>
   {{pass}}
+  
+    
   <div style="clear: both;">&nbsp;</div>
   </div>
-
 
   <div id="footer">
     <h2><a href="http://www.web2py.com.ar"><img alt="web2py" src="{{=URL(r=request,c='static',f='media/web2py_logor.png')}}" border="0" />&nbsp&nbsp<sup>POWERED</sup></a></h2>
