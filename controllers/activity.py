@@ -90,6 +90,13 @@ def accepted():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))
     query=(db.activity.status=='accepted')&(db.auth_user.id==db.activity.created_by)
+    
+    activities = (T('keynote'),T('panel'),T('plenary'),T('tutorial'),
+                 T('talk'),T('extreme talk'))
+                 
+    # change the next line for GAE
+    query &= (db.activity.type.belongs(activities))
+    
     if request.args:
         query &=  db.activity.id==request.args[0]
     rows=db(query).select(orderby=db.activity.title)
@@ -233,7 +240,10 @@ def add_author():
     
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def speakers():
-    s=db(db.auth_user.speaker==True)
+    q = db.auth_user.speaker==True
+    if request.args:
+        q &= db.auth_user.id == request.args[0]
+    s=db(q)
     authors=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.last_name|db.auth_user.first_name)
     rows = db((db.activity.id==db.author.activity_id)&(db.activity.status=='accepted')).select()

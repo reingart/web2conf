@@ -3,6 +3,7 @@ import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
 migrate = True
+fake_migrate = False
 
 if SUSPEND_SERVICE:
     raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")
@@ -76,7 +77,7 @@ db.define_table('auth_user',
     ##db.Field('cena_sabado','boolean', comment="sin cargo para los disertantes + organizadores"),
     ##db.Field('cena_obs','string', comment="indique si quiere invitar a la cena a familiares o amigos (cant. de reservas) -con cargo-"),
     format="%(last_name)s, %(first_name)s (%(id)s)",
-    migrate=migrate)
+    migrate=migrate, fake_migrate=fake_migrate)
 
 
 # web2py planet model
@@ -88,7 +89,7 @@ db.define_table("feed",
     Field("url", requires=IS_URL(), comment=T("RSS/Atom feed")),
     Field("link", requires=IS_URL(), comment=T("Blog href"), label=T("link")),
     Field("general", "boolean", comment=T("Many categories (needs filters)"), label=T("general")),
-    )
+    migrate=migrate, fake_migrate=fake_migrate)
 
 PLANET_FEEDS_MAX = 4
 
@@ -99,7 +100,7 @@ PLANET_FEEDS_MAX = 4
 db.auth_user.first_name.comment=T('(required)')
 db.auth_user.last_name.comment=T('(required)')
 db.auth_user.email.comment=T('(required)')
-db.auth_user.password.comment=T('(required)')
+db.auth_user.password.comment=not JANRAIN and T('(required)') or T('(optional)')
 db.auth_user.resume.widget=lambda field,value: SQLFORM.widgets.text.widget(field,value,_cols="10",_rows="8")
 db.auth_user.photo.comment=T('Your picture (for authors)')
 #db.auth_user.dni.comment=T('(required if you need a certificate)')
@@ -126,7 +127,9 @@ db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 
 auth=Auth(globals(),db)                      # authentication/authorization
 
-db.auth_user.password.requires=CRYPT(auth.settings.hmac_key)
+db.auth_user.password.requires=[CRYPT()]
+if not JANRAIN:
+    db.auth_user.password.requires.append(IS_NOT_EMPTY())
 
 auth.settings.table_user=db.auth_user
 auth.define_tables(username=False)
@@ -173,7 +176,6 @@ def require_address(person=None):
 require_address()
 
 db.auth_user.email.requires=[IS_LENGTH(128),IS_EMAIL(),IS_NOT_IN_DB(db,'auth_user.email')]
-db.auth_user.password.requires=[IS_NOT_EMPTY(),CRYPT()]
 db.auth_user.personal_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]
 db.auth_user.company_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]
 db.auth_user.country.requires=IS_IN_SET(COUNTRIES)
@@ -211,7 +213,7 @@ db.define_table("option",
     Field("tablename", requires=IS_EMPTY_OR(IS_IN_SET(db.tables)), default=None),
     Field("description", "text"), 
     format=lambda row: row.name,
-    migrate=migrate,
+    migrate=migrate, fake_migrate=fake_migrate
     )
 
 

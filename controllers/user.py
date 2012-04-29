@@ -12,39 +12,66 @@ def index():
         f = 'password'
     redirect(URL(f=f, args=args))
 
+def create_rpx_login_form(c="user", f="login", embed=False):
+    if JANRAIN:
+        from gluon.contrib.login_methods.rpx_account import RPXAccount
+        return RPXAccount(request,
+            api_key=JANRAIN_API_KEY,
+            domain=JANRAIN_DOMAIN,
+            language=JANRAIN_LANGUAGE,
+            embed=embed,
+            url="%s://%s/%s/%s/%s" % (
+                request.env.wsgi_url_scheme,
+                request.env.http_host,
+                request.application,
+                c, f)), ['token']
+    else:
+        return None, []
+
 def login():
+    from gluon.contrib.login_methods.extended_login_form import ExtendedLoginForm
+
+    alt_login_form, signals = create_rpx_login_form()
+    if alt_login_form:
+        extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
+        auth.settings.login_form = extended_login_form
     return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
                                 onaccept=lambda form:update_pay(auth.user)))
 
 def janrain():
-    from gluon.contrib.login_methods.rpx_account import RPXAccount
-    auth.settings.login_form = RPXAccount(request,
-        api_key=JANRAIN_API_KEY,
-        domain=JANRAIN_DOMAIN,
-        language=JANRAIN_LANGUAGE,
-        embed=True,
-        url = "%s://%s/%s/user/janrain" % (request.env.wsgi_url_scheme, request.env.http_host, request.application))
-        
-    return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
+    alt_login_form, signals = create_rpx_login_form()
+    auth.settings.login_form = alt_login_form
+    return dict(form=auth.login(next=URL(r=request,c='user',f='profile'),
                                 onaccept=lambda form:update_pay(auth.user)))
 
 def verify():
     return auth.verify_email(next=URL(r=request,f='login'))
 
 def register():
+    alt_login_form, signals = create_rpx_login_form(f="janrain")
+
+    if (signals and
+        any([True for signal in signals if request.vars.has_key(signal)])
+       ):
+        return alt_login_form.login_form()
+
+    #auth.settings.login_form = self.auth
     form=auth.register(next=URL(r=request,c='default',f='index'),
                        onaccept=update_person)
+    #form = DIV(auth())
+    if alt_login_form:
+        form.components.append(alt_login_form.login_form())
     return dict(form=form)
-                
+
 def change_password():
     redirect(URL(f="password"))
-    
+
 def password():
     return dict(form=auth.retrieve_password(next='login'))
 
 def retrieve_username():
     return dict(form=auth.retrieve_username(next='login'))
-        
+
 
 @auth.requires_login()
 def logout(): auth.logout(next=URL(r=request,c='default',f='index', args="nocache"))

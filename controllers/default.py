@@ -61,6 +61,7 @@ def fast_download():
     if not request.args(0).startswith("sponsor.logo") and \
     not request.args(0).startswith("sponsor.image") and \
     not request.args(0).startswith("auth_user.photo") and \
+    not request.args(0).startswith("activity.logo") and \
     not request.args(0).startswith("attachment.file"):
         return download()
     if 'filename' in request.vars:
