@@ -31,7 +31,7 @@
 {{pass}}
 {{pass}}
 {{#=BEAUTIFY(activities_by_author)}}
-{{if len(authors)<10:}}
+{{if len(authors)<10 and not request.args:}}
 
 <p>Proximamente más invitados y oradores...</p>
 {{pass}}
