@@ -47,7 +47,7 @@ $('#auth_user_tutorials').multiSelect({selectAll: false});
       <!--img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0"-->
       <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
 
-    <div id="header_side">      
+    <div id="header_side">
       <div class="idioma"><a href="?lang=es">Español</a> - <a href="?lang=en">English</a></div>
       {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
       <h2><!--{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}-->12 al 17 de Noviembre <br /> Quilmes - Buenos Aires</h2>
@@ -85,11 +85,11 @@ except: pass
         <h3>{{=T('About')}} {{=response.title}}</h3>
         {{=XML(response.footer)}}
     </div>
-    
+
     </div>
   </div>
   {{if response.sidebar:}}
-  <div id="social">
+  <div id="user_menu">
     <ul>
       {{for _i in response.sidebar or []:}}
       <li>
@@ -118,7 +118,7 @@ except: pass
          <ul>
          {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
             <li>
-              {{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}
+              <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}</p>
             </li>
           {{pass}}
         </ul>
@@ -126,10 +126,10 @@ except: pass
       {{pass}}
       {{pass}}
     </ul>
-    
+
     <div id="search">
         <form method="get" action="http://www.google.com/search">
-        {{pass}}  
+        {{pass}}
           <fieldset>
             <input id="search-text" type="text" name="as_q" value="" size="15"/>
             <input type="hidden" name="as_sitesearch" value="ar.pycon.org/2012"><br />
@@ -137,7 +137,7 @@ except: pass
           </fieldset>
         </form>
       </div>
-      
+
       <div id="social">
       <h2>Síguenos en:</h2>
     {{if FACEBOOK_EVENT:}}
@@ -147,11 +147,11 @@ except: pass
         {{=A(IMG(_src=URL(c='static', f='media/linked_in.png')), _href=LINKEDIN_EVENT, _title="Add the event to your Linked-In profile")}}
     {{pass}}
     </div>
-    
+
   </div>
   {{pass}}
-  
-    
+
+
   <div style="clear: both;">&nbsp;</div>
   </div>
 

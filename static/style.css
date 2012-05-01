@@ -47,9 +47,9 @@ H3
 P, UL, li, OL
 {
     /*margin: 0;
-    padding: 0;*/
-    line-height: 100%;
-
+    padding:  0 ; */
+    line-height: 110%;
+    /*list-style: none;*/
 }
 UL, OL
 {
@@ -120,8 +120,8 @@ A:hover
 {
     float: right;
     clear: both;
-    margin: 52px 0 0;
-    padding: 0 20px 0 0;
+    margin: 28px 0 0;
+    padding: 0;
     font-size: 17px;
     line-height: 16pt;
     border: 0;
@@ -132,7 +132,6 @@ A:hover
     display: block;
     font-weight: bold;
     letter-spacing: 0;
-
     font-family: LullabyRegular;
     /*font-size: 2.2em;*/
 
@@ -195,17 +194,19 @@ A:hover
 /*Search*/
 #search
 {
-    padding: 0;
+    padding: 50px 0 0 0;
     margin: auto;
     text-align: right;
-    width: 210px;
+    width: 220px;
     float: right;
-    margin: 45px 10px 10px; 
+    margin: 0 0 10px;
+    background: url(img/sidebar_search.png) no-repeat top center;
 }
 #search FORM
 {
     clear: none;
-    margin: 0; padding: 0;
+    margin: 0; 
+    padding: 0 10px 0;
     /*width: 160px;
     height: 41px;
     margin: 0;
@@ -225,6 +226,7 @@ A:hover
     outline: none;
     border: none;
     text-transform: lowercase;
+
     border: 1px solid #FFFFFF;
     padding: 1px;
     font: bold 0.75em Helvetica, sans-serif;
@@ -262,6 +264,9 @@ A:hover
 .auth_navbar {
     float: right;
     clear: both;
+    width: 145px;
+    height: 40px;
+    text-align: right;
 }
 
 /*Menu*/
@@ -335,6 +340,7 @@ A:hover
     color: #c7c68d;
     padding: 0;
 }
+
 .frame h1 {
     /*background: url(img/H2_conectando_comunidad_python.png) no-repeat;*/
     font-family: LullabyRegular;
@@ -349,6 +355,23 @@ A:hover
     font-size: 1.2em;
 }
 
+.frame img {
+    background: withe;
+    border: solid 1px #605E1D;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.frame table tbody tr td img {
+    background: withe;
+    border: solid 1px #605E1D;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
 
 .Apple-style-span{
     display: none;
@@ -386,6 +409,9 @@ A:hover
     width: 580px;
     margin: 30px 0;
 }
+.w2p_fw textarea {
+    width: 340px;   
+}
 /*blog post*/
 hr {
     color: #cabe57;
@@ -409,15 +435,15 @@ hr {
 {
     float: right;
     width: 220px;
-    height: 658px;
+    /*height: 658px;*/
     margin: 0 20px 0 0;
-    padding: 50px 0 0 0;
+    padding: 0;
     color: #787878;
     text-align: center;
     font-size: 0.8em;
-    background: url(img/side_bg.png) no-repeat;
 }
 #sidebar UL {
+    background: url(img/sidebar_bg.png) repeat-y;
     list-style-type:none;
     margin: 0;
     padding: 0;
@@ -425,16 +451,21 @@ hr {
 #sidebar UL:first-child
 {
     margin: 0;
-    padding: 0;
+    padding: 20px 0 0;
     list-style: none;
     line-height: 150%;
-    height: 610px;
+    background: url(img/sidebar_head.png) top center no-repeat;
 }
+
 #sidebar h2 {
+    background: url(img/sidebar_bg.png) repeat-y;
     font-size: 1.4em;
     font-weight: normal;
     color: #7E0E10;
+    margin: 0;
+    padding: 10px 0;
 }
+
 #sidebar P
 {
     margin: 0;
@@ -442,10 +473,14 @@ hr {
     list-style: none;
 }
 
+
 TABLE TR TD
 {
     text-align: left;
     vertical-align: top;
+}
+TABLE TR TD div {
+    margin: 5px;
 }
 #calendar
 {
@@ -466,6 +501,31 @@ TABLE TR TD
 {
     text-align: right;
 }
+#user_menu {
+    background: url(img/social_bg.png) no-repeat;
+    width: 220px;
+    height: 166px;
+    display: block;
+    float: right;
+    margin: 0 20px 0;
+}
+#user_menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#user_menu h2 {
+    font-size: 1em;
+    text-align: center;
+    margin: 10px 0;
+    color: #7E0E10;
+    background: none;
+}
+#user_menu a {
+    margin: 0 10px;
+    color: #FFFFFF;
+}
 
 #social {
     background: url(img/social_bg.png) no-repeat;
@@ -477,12 +537,19 @@ TABLE TR TD
 }
 #social h2 {
     font-size: 1em;
-    margin: 20px;
+    margin: 10px 0;
     color: #7E0E10;
+    background: none;
 }
 #social a {
-    margin: 0 0 0 30px;
+    margin: 0 10px;
     color: #FFFFFF;
+}
+#social img {
+    width: 54px;
+    background: none;
+    margin: 0;
+    padding: 0;
 }
 
 /*Footer*/
