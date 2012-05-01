@@ -25,3 +25,6 @@ def diversity(): return plugin_flatpage()
 
 def contest(): return plugin_flatpage()
 def awards(): return plugin_flatpage()
+
+def science(): return plugin_flatpage()
+def publicize(): return plugin_flatpage()
