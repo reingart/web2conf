@@ -38,11 +38,15 @@ H1
 }
 H2
 {
-    font-size: 1.8em;
+    font-size: 1.4em;
 }
 H3
 {
-    font-size: 1.4em;
+    font-size: 1.2em;
+}
+H4
+{
+    font-size: 1em;
 }
 P, UL, li, OL
 {
