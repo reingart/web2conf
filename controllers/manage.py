@@ -24,7 +24,7 @@ def select():
         f='update'
     else:
         f='read'
-    response.view = 'generic.html'
+    #response.view = 'generic.html'
     return dict(form=crud.select(table, linkto=crud.url(f)))
     #crud.select(table, query, fields, orderby, limitby, headers, **attr)
 
