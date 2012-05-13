@@ -1,6 +1,7 @@
 /*
 rojo #7E0E10
 azul #052446
+azul claro #055b8e
 beige #cabe57
 beige claro (letra) #c7c68d
 */
@@ -505,32 +506,51 @@ TABLE TR TD div {
 {
     text-align: right;
 }
+
+
+/*******************************************************************/
 #user_menu {
-    background: url(img/social_bg.png) no-repeat;
+    background: #aeab35;
     width: 220px;
-    height: 166px;
     display: block;
     float: right;
-    margin: 0 20px 0;
+    margin: 0 20px 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	box-shadow: 1px 2px 2px #e4e3c3 inset, -1px -2px 2px #464415 inset;
 }
 #user_menu ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+   list-style: none;
 }
 
 #user_menu h2 {
     font-size: 1em;
     text-align: center;
-    margin: 10px 0;
+    margin: 0;
+	padding: 20px 0;
     color: #7E0E10;
-    background: none;
+    /*background: url(img/user_menu_head.png) no-repeat;*/
+}
+#user_menu li:last-child {
+   /* background: url(img/user_menu_foot.png) no-repeat;*/
 }
 #user_menu a {
-    margin: 0 10px;
-    color: #FFFFFF;
+    margin: 0;
+    color: #052446;
 }
-
+#user_menu ul:first-child {
+	padding: 0 0 20px;
+    width: 210px;
+	height: 95%;
+	margin: 5px;
+	background: #cabe57;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	box-shadow: 1px 2px 2px #e4e3c3, -1px -2px 2px #464415;
+}
+/*******************************************************************/
 #social {
     background: url(img/social_bg.png) no-repeat;
     width: 220px;
@@ -723,13 +743,13 @@ UL.sf-menu LI LI LI:hover UL, UL.sf-menu LI LI LI.sfHover UL
 }
 .sf-menu LI LI
 {
-    background: #cabe57;
+    background: #055b8e;
     /*border: 1px solid #5c5a1c;*/
     /*opacity: 0.8;*/
 }
 .sf-menu LI LI LI
 {
-    background: #cabe57;
+    background: #055b8e;
     /*border: 1px solid #5c5a1c;*/
 }
 .sf-menu LI:hover, .sf-menu LI.sfHover, .sf-menu A:focus, .sf-menu A:hover, .sf-menu A:active
