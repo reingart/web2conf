@@ -6,7 +6,7 @@
 {{for sponsor_level in SPONSOR_LEVELS: }}
 {{for sponsor in sorted([sponsor for sponsor in sponsors_detail if sponsor.level==sponsor_level], key=lambda x: x.number):}}
 <tr><td>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.image),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor.level)))}}</td>
-<td><h2 id="{{=sponsor.id}}>{{=sponsor.alt}}<a class="headerlink" href="#{{=sponsor.id}}" title="Permanent link">¶</a></h2>
+<td><h2 id="{{=sponsor.id}}">{{=sponsor.alt}}<a class="headerlink" href="#{{=sponsor.id}}" title="Permanent link">¶</a></h2>
 <h4>{{=A(sponsor.url,_href=sponsor.url)}}</h4>
 <h4>{{=T(sponsor.level)}}</h4>
 </td></tr>
