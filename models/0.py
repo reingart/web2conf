@@ -116,11 +116,11 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= (T('keynote'),T('panel'),T('plenary'),T('tutorial'),
-                 T('talk'),T('extreme talk'),T('poster'),T('project'),
-                 T('startup'),T('stand'),T('summit'),T('open space'),
+ACTIVITY_TYPES= (T('talk'),T('extreme talk'),T('poster'),T('project'),
+                 T('keynote'),T('panel'),T('plenary'),T('tutorial'),
+                 T('stand'),T('summit'),T('open space'),
                  T('social'),T('break'),T('lightning talk'),
-                 T('sprint'),T('workshop'))
+                 T('sprint'),T('workshop'),T('paper'))
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',
@@ -128,8 +128,9 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'caso de estudio','redes','juegos','seguridad',
                              'testing'))
 
-ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced", "Extreme")
-ACTIVITY_DURATION={'talk': 30, 'extreme_talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0}
+ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
+ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
+ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
 ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Aula D", 6: "Sala Internet"}
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
