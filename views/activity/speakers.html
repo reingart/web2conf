@@ -1,4 +1,5 @@
 {{extend 'layout.html'}}
+<div class="frame">
 <h1>{{=T('Speakers')}}</h1>
 {{for author in sorted(authors, key=lambda x: x.last_name.upper() ):}}
 {{if author.id in activities_by_author or True:}}
@@ -35,3 +36,4 @@
 
 <p>Proximamente más invitados y oradores...</p>
 {{pass}}
+</div>

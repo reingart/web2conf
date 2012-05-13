@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+{{=H3(T("Partakers of %s") % project.title)}}
+{{for partaker in partakers:}}
+  {{=H5(partaker.user.first_name + " " + partaker.user.last_name)}}
+  {{=DIV(partaker.comment)}}
+  {{=DIV(partaker.user.email)}}
+  {{=BR()}}
+{{pass}}
+{{=BR()}}
+{{=A(T("Back to the projects list"), _href=URL(c="projects", f="index"))}}

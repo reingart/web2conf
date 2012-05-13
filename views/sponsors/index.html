@@ -1,12 +1,19 @@
 {{extend 'layout.html'}}
+<div class="frame">
 <a href="/2012/sponsors/prospectus/" class="btn-sponsor"><span>{{=XML(T("Learn how to<br>become a <b>sponsor</b>"))}}</span></a>
-<h1>{{=T("About PyConAr Sponsors")}}</h1>
-<table>
-{{for sponsor in sponsors_detail:}}
+<h1>{{=T("Sponsors")}}</h1>
+<table CELLSPACING="10">
+{{for sponsor_level in SPONSOR_LEVELS: }}
+{{for sponsor in sorted([sponsor for sponsor in sponsors_detail if sponsor.level==sponsor_level], key=lambda x: x.number):}}
 <tr><td>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.image),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor.level)))}}</td>
-<td><h2>{{=A(sponsor.alt,_href=sponsor.url)}}<a class="headerlink" href="#{{=sponsor.id}}" title="Permanent link">¶</a></h2>
+<td><h2 id="{{=sponsor.id}}">{{=sponsor.alt}}<a class="headerlink" href="#{{=sponsor.id}}" title="Permanent link">¶</a></h2>
+<h4>{{=A(sponsor.url,_href=sponsor.url)}}</h4>
 <h4>{{=T(sponsor.level)}}</h4>
+</td></tr>
+<tr><td colspan="2">
 <p>{{=MARKMIN(sponsor.text)}}</p>
-</tr>
+</td></tr>
+{{pass}}
 {{pass}}
 </table>
+</div>

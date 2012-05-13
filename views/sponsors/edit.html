@@ -1,5 +1,7 @@
 {{extend 'layout.html'}}
+<div class="frame">
 <h1>{{=T("Submitted Sponsors")}}</h1>
 {{=SQLTABLE(rows, linkto=(lambda field, type, ref: URL(f="sign_up", args=field)),
             headers={'sponsor.id': T('ID'), 'sponsor.name': T('Name')}
         )}}
+</div>

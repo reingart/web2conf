@@ -12,12 +12,13 @@ db.define_table('activity',
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
     db.Field('duration','integer',label=T("Duration")), # era 45 min
-    db.Field('request_time_extension', 'boolean', default=False, label=T("I need a time extension"), comment=T("Please remember to fill the note field if you need more time.")),
-    db.Field('cc',label=T("cc"),length=512),
+    db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
+    db.Field('cc',label=T("cc"), length=512, readable=False, writable=False),
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),
     db.Field('categories','list:string',label=T("Categories")),
-    db.Field('level','text',label=T("Level"),represent=lambda x: T(x)),
+    db.Field('level','string',label=T("Level"),represent=lambda x: T(x)),
+    db.Field('track','string',label=T("Track"),represent=lambda x: T(x)),
     db.Field('logo','upload', comment=T("only used for sprints)")),
     db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
     db.Field('scheduled_room',label=T("Scheduled Room"),requires=IS_EMPTY_OR(IS_IN_SET(ACTIVITY_ROOMS)), writable=False,readable=False),
@@ -31,7 +32,8 @@ db.define_table('activity',
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
     db.Field('modified_by','integer',label=T("Modified By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('modified_on','datetime',label=T("Modified On"),readable=False,writable=False,default=request.now,update=request.now),
-    db.Field('note', 'text'),
+    db.Field('notes', 'text', comment=T("Additional remarks"), label=T("Notes")),
+    db.Field('license', 'string', default="CC BY-SA, Atribución - Compartir derivadas de la misma forma.", label=T("License")),
     format='%(title)s',
     migrate=migrate)
 
@@ -42,13 +44,14 @@ db.define_table("partaker", Field("activity", db.activity),
 
 if request.controller != 'appadmin':
     db.activity.description.represent=lambda value: XML(value)
-db.activity.title.requires=IS_NOT_IN_DB(db,'activity.title')
+db.activity.title.requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'activity.title')]
 db.activity.authors.requires=IS_NOT_EMPTY()
 db.activity.status.requires=IS_IN_SET(['pending','accepted','rejected', 'declined'])
 db.activity.type.requires=IS_IN_SET(ACTIVITY_TYPES)
-db.activity.type.default=ACTIVITY_TYPES[0]
-db.activity.level.requires=IS_IN_SET(ACTIVITY_LEVELS)
+db.activity.type.default=None
+db.activity.level.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_LEVELS])
 db.activity.level.default=ACTIVITY_LEVELS[0]
+db.activity.track.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_TRACKS])
 db.activity.abstract.requires=IS_NOT_EMPTY()
 db.activity.abstract.represent=lambda x: MARKMIN(x, sep="br")
 db.activity.abstract.comment= SPAN(T("WIKI format: "), A('MARKMIN', _target='_blank',
@@ -70,6 +73,7 @@ db.activity.represent=lambda activity: \
 db.activity.type.represent=lambda activity_type: T(activity_type.replace("_", " "))
 db.activity.duration.represent=lambda activity_duration: activity_duration and ("%s min" % activity_duration) or 'n/a'
 
+db.activity.notes.default = "Tipo de público: \nConocimientos previos: \nRequisitos Especiales: (hardware, materiales, ayuda financiera)"
 
 db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate)
 

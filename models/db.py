@@ -36,7 +36,7 @@ db.define_table('auth_user',
     db.Field('last_name',length=128,label=T('Last Name')),
     db.Field('email',length=128),
     db.Field('password','password',default='',label=T('Password'),readable=False),
-    db.Field('level','text',label=T('Level'),requires=IS_IN_SET(('principiante','intermedio','avanzado'))),
+    db.Field('level','text',label=T('Python knowledge level'),requires=IS_IN_SET(('principiante','intermedio','avanzado'))),
     db.Field('tutorials','list:string',label=T('Tutorials'),readable=False,writable=False),
     #db.Field('dni','integer'),
     db.Field('certificate','boolean',default=False,label=T('I want a certificate of attendance'),readable=False,writable=False),
@@ -45,12 +45,13 @@ db.define_table('auth_user',
     db.Field('state',label=T('State'),default='Buenos Aires'),
     db.Field('country',label=T('Country'),default='Argentina'),
     db.Field('zip_code',label=T('Zip/Postal Code'),default=''),    
-    db.Field('phone_number',label=T('Phone Number')),
+    db.Field('phone_number',label=T('Phone Number'),comment=T('(cellphone)')),
     db.Field('include_in_delegate_listing','boolean',default=True,label=T('Include in Delegates List')),
     db.Field('sponsors','boolean',default=True,label=T('Contacto con Auspiciantes'),readable=True,writable=True),
+    db.Field('twitter_username',length=64,label=T('Twitter username'),default=''),
     db.Field('personal_home_page',length=128,label=T('Personal Home Page'),default=''),
-    db.Field('company_name',label=T('Company Name'),default=''),
-    db.Field('company_home_page',length=128,label=T('Company Home Page'),default=''),
+    db.Field('company_name',label=T('Entity Name'),default=''),
+    db.Field('company_home_page',length=128,label=T('Entity Home Page'),default=''),
     db.Field('t_shirt_size',label=T('T-shirt Size')),
     db.Field('attendee_type',label=T('Registration Type'),default=ATTENDEE_TYPES[0][0],readable=False,writable=False),
     db.Field('discount_coupon',length=64,label=T('Discount Coupon'), readable=False,writable=False),
@@ -61,7 +62,7 @@ db.define_table('auth_user',
     db.Field('amount_paid','double',default=0.0,readable=False,writable=False),
     db.Field('amount_due','double',default=0.0,readable=False,writable=False),
     db.Field('resume','text',label=T('Resume (Bio)'),readable=True,writable=True),
-    db.Field('photo','upload',label=T('Photo'),readable=True,writable=True),
+    db.Field('photo','upload',label=T('Photo'), readable=True,writable=True),
     db.Field('cv','upload',label=T('CV'),readable=True,writable=True),
     db.Field('speaker','boolean',default=False,readable=False,writable=False),
     db.Field('session_chair','boolean',default=False,readable=False,writable=False),
@@ -102,24 +103,24 @@ db.auth_user.last_name.comment=T('(required)')
 db.auth_user.email.comment=T('(required)')
 db.auth_user.password.comment=not JANRAIN and T('(required)') or T('(optional)')
 db.auth_user.resume.widget=lambda field,value: SQLFORM.widgets.text.widget(field,value,_cols="10",_rows="8")
-db.auth_user.photo.comment=T('Your picture (for authors)')
+db.auth_user.photo.comment=T('Your picture (100px)')
 #db.auth_user.dni.comment=T('(required if you need a certificate)')
 #db.auth_user.certificate.comment=XML(A(str(T('El Costo de Certificado es $x.-')) + '[2]',_href='#footnote2'))
 db.auth_user.t_shirt_size.requires=IS_IN_SET(T_SHIRT_SIZES,T_SHIRT_SIZES_LABELS)
-db.auth_user.t_shirt_size.comment='Si desea remera, seleccione tamaño (con costo a definir)'
+db.auth_user.t_shirt_size.comment=XML(A(str(T('cost TBD')) + ' [2]',_href='#footnote2'))
 
-db.auth_user.level.comment="Conocimiento de Python, para organización"
+db.auth_user.level.comment=T("")
 
-db.auth_user.zip_code.comment=T('(also used for attendee mapping)')
+db.auth_user.zip_code.comment=T('(for map)')
 
-db.auth_user.company_name.comment=T('corporation, university, user group, etc.')
+db.auth_user.company_name.comment=T('company, university')
 
-db.auth_user.sponsors.comment=XML(A(str(T('Desmarcar si no desea que los Auspiciantes de la conferencia tengan acceso a sus datos de contacto')) + '[1]',_href='#footnote1'))
+db.auth_user.sponsors.comment=XML(A(str(T('Privacy policy')) + ' [1]',_href='#footnote1'))
 #db.auth_user.include_in_delegate_listing.comment=T('If checked, your Name, Company and Location will be displayed publicly')
-db.auth_user.include_in_delegate_listing.comment=XML(A(str(T('If checked, your Name, Company and Location will be displayed publicly')) + '[1]',_href='#footnote1'))
-db.auth_user.resume.comment=T('Short Biography and references (for authors)')
+db.auth_user.include_in_delegate_listing.comment=XML(A(str(T('Privacy policy')) + ' [1]',_href='#footnote1'))
+db.auth_user.resume.comment=T('Short Biografy and reference (required for speakers)')
 
-db.auth_user.cv.comment=T('If you want you can upload your CV to be available to our Sponsors in further laboral searchs:')
+db.auth_user.cv.comment=XML(A(str(T('Job Fair')) + ' [3]',_href='#footnote3'))
 
 ##db.auth_user.username.requires=[IS_LENGTH(512),IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'auth_user.username')]
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
@@ -197,9 +198,16 @@ if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.contr
     ##db.auth_user.confirmed.default = False
 else:
     db.auth_user.confirmed.default = False
+    db.auth_user.resume.requires = IS_NOT_EMPTY()
+    db.auth_user.photo.requires = IS_NOT_EMPTY()
     ##db.auth_user.confirmed.readable = True
     ##db.auth_user.confirmed.writable = True
-    
+    ##db.auth_user.address.requires = IS_NOT_EMPTY()
+    db.auth_user.city.requires = IS_NOT_EMPTY()
+    db.auth_user.state.requires = IS_NOT_EMPTY()
+    db.auth_user.country.requires = IS_NOT_EMPTY()
+    db.auth_user.phone_number.requires = IS_NOT_EMPTY()
+
 db.auth_user.confirmed.label = T("Confirm attendance")
 
 # conference options

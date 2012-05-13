@@ -111,12 +111,17 @@ def accepted():
 def propose():
     if request.args:
         duration = ACTIVITY_DURATION.get(request.args[0])
+        activity_type = len(request.args) > 1 and request.args[0].replace("_", " ")
+        track = len(request.args) > 1 and request.args[1]
+        if track:
+            db.activity.track.default = track
+        if activity_type:
+            db.activity.type.default = activity_type
         if duration is not None:
             db.activity.duration.default = duration
-            db.activity.type.default = request.args[0]
             db.activity.duration.writable = False
             db.activity.type.writable = False
-        else:
+        elif not activity_type:
             db.activity.type.requires=IS_IN_SET((T("talk"), T("extreme_talk"), T("tutorial"), T("sprint"), T("poster")))
 
     # TODO:  one-to-many author/activity relations

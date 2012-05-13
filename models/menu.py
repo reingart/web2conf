@@ -25,10 +25,12 @@ else:
         [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
         [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
         [T('Summit'),True,URL(r=request,c='conference',f='summit')],
+        [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')] ]
         ],
 
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
+        [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
         [T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
         [T('RSS'),True,None, menu_feeds]]]]
 

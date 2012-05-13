@@ -12,6 +12,14 @@ $(function()
 <h2>{{=T('Submit a Activity Proposal')}}</h2>
 {{if TODAY_DATE<PROPOSALS_DEADLINE_DATE:}}
 {{=form}}
+<script>
+   jQuery('#activity_type').change(function(){
+        var t = jQuery('#activity_type').val();
+        var d = {{=XML(repr(dict([(str(T(k)), v) for k, v in ACTIVITY_DURATION.items()])))}};
+        jQuery('#activity_duration').val("");
+        jQuery('#activity_duration').val(d[t]);
+        });
+</script>
 {{else:}}
 <h3>El período de propuestas de actividades finalizado el {{=PROPOSALS_DEADLINE_DATE}}</h3>
 <h3>¡Los eseperamos en el evento!</h3>
