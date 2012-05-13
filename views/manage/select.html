@@ -1,5 +1,7 @@
 {{extend 'layout.html'}}
 <h1>{{="%s %s" % (T("Table"), request.args[0])}}</h1>
+<div style="overflow: auto;" width="80%">
 {{=form or ''}}
+</div>
 <br/>
 {{=A(T("Insert new"), _href=URL('create', args=request.args))}}
