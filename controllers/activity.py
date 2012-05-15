@@ -110,8 +110,8 @@ def accepted():
 @auth.requires_login()
 def propose():
     if request.args:
-        duration = ACTIVITY_DURATION.get(request.args[0])
-        activity_type = len(request.args) > 1 and request.args[0].replace("_", " ")
+        activity_type = len(request.args) > 0 and request.args[0].replace("_", " ")
+        duration = ACTIVITY_DURATION.get(request.args[0].replace("_", " "))
         track = len(request.args) > 1 and request.args[1]
         if track:
             db.activity.track.default = track
@@ -269,7 +269,7 @@ def email_author(form):
     user = "%s %s" % (auth.user.first_name, auth.user.last_name)
     if request.function == "propose":
         cc = [text.strip() for text in get_option("ON_PROPOSE_EMAIL", "").split(";") if "@" in text]
-        for c in form.vars.cc.split(";"):
+        for c in (form.vars.cc or '').split(";"):
             if (not c.strip() in cc) and ("@" in c):
                 cc.append(c)
         activity = db.activity[form.vars.id]

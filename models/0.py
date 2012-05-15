@@ -116,11 +116,11 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= (T('talk'),T('extreme talk'),T('poster'),T('project'),
-                 T('keynote'),T('panel'),T('plenary'),T('tutorial'),
-                 T('stand'),T('summit'),T('open space'),
-                 T('social'),T('break'),T('lightning talk'),
-                 T('sprint'),T('workshop'),T('paper'))
+ACTIVITY_TYPES= ('talk', 'extreme talk', 'poster', 'project',
+                 'keynote', 'panel', 'plenary', 'tutorial',
+                 'stand', 'summit', 'open space',
+                 'social', 'break', 'lightning talk',
+                 'sprint', 'workshop', 'paper')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',

@@ -13,7 +13,7 @@ db.define_table('activity',
     db.Field('type','text',label=T("Type")),
     db.Field('duration','integer',label=T("Duration")), # era 45 min
     db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
-    db.Field('cc',label=T("cc"), length=512, readable=False, writable=False),
+    db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),
     db.Field('categories','list:string',label=T("Categories")),
@@ -47,7 +47,7 @@ if request.controller != 'appadmin':
 db.activity.title.requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'activity.title')]
 db.activity.authors.requires=IS_NOT_EMPTY()
 db.activity.status.requires=IS_IN_SET(['pending','accepted','rejected', 'declined'])
-db.activity.type.requires=IS_IN_SET(ACTIVITY_TYPES)
+db.activity.type.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_TYPES])
 db.activity.type.default=None
 db.activity.level.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_LEVELS])
 db.activity.level.default=ACTIVITY_LEVELS[0]
@@ -70,7 +70,7 @@ db.activity.represent=lambda activity: \
    A('[%s] %s' % (activity.status,activity.title),
      _href=URL(r=request,c='activity',f='display',args=[activity.id]))
 
-db.activity.type.represent=lambda activity_type: T(activity_type.replace("_", " "))
+db.activity.type.represent=lambda activity_type: T(activity_type and activity_type.replace("_", " ") or '')
 db.activity.duration.represent=lambda activity_duration: activity_duration and ("%s min" % activity_duration) or 'n/a'
 
 db.activity.notes.default = "Tipo de público: \nConocimientos previos: \nRequisitos Especiales: (hardware, materiales, ayuda financiera)"
