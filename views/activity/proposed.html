@@ -3,8 +3,10 @@
 <div class="frame">
 <h1>{{=T('Proposed Activities')}}</h1>
 
+{{for activity_type in ACTIVITY_TYPES:}}
+<h2>{{=T(activity_type)}}</h2>
 <ul>
-{{for activity in activities:}}
+{{for activity in [act for act in activities if act.type == activity_type]:}}
 {{review = reviews.get(activity.id)}}
 {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
       review and I(" %s " % T("review:"),
@@ -15,6 +17,7 @@
       )}}
 {{pass}}
 </ul>
+{{pass}}
 </div>
 
 {{if not activities:}}
