@@ -549,6 +549,7 @@
 'User %(id)s Registered': 'Usuario %(id)s Registrado',
 'User %(id)s Username retrieved': 'User %(id)s Username retrieved',
 'User %(id)s Verification email sent': 'Usuario %(id)s Verificación por email enviada',
+'User %(id)s is impersonating %(other_id)s': 'User %(id)s is impersonating %(other_id)s',
 'User ID': 'ID Usuario',
 'User Votes': 'User Votes',
 'User name': 'User name',
