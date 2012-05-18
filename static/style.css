@@ -417,9 +417,13 @@ A:hover
 .w2p_fw textarea {
     width: 340px;   
 }
+.w2p_fw {
+    width: 200px;
+}
 /*blog post*/
 hr {
-    color: #cabe57;
+    color: #c7c68d;
+    background-color: #c7c68d;
 }
 /*#c741007844535 h3 {
     background: url(img/H3_blog_posts.png) no-repeat;
@@ -486,6 +490,7 @@ TABLE TR TD
 }
 TABLE TR TD div {
     margin: 5px;
+    max-width: 510px;
 }
 #calendar
 {
@@ -515,10 +520,10 @@ TABLE TR TD div {
     display: block;
     float: right;
     margin: 0 20px 20px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	border-radius: 20px;
-	box-shadow: 1px 2px 2px #e4e3c3 inset, -1px -2px 2px #464415 inset;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    box-shadow: 1px 2px 2px #e4e3c3 inset, -1px -2px 2px #464415 inset;
 }
 #user_menu ul {
    list-style: none;
@@ -528,7 +533,7 @@ TABLE TR TD div {
     font-size: 1em;
     text-align: center;
     margin: 0;
-	padding: 20px 0;
+    padding: 20px 0;
     color: #7E0E10;
     /*background: url(img/user_menu_head.png) no-repeat;*/
 }
@@ -540,15 +545,15 @@ TABLE TR TD div {
     color: #052446;
 }
 #user_menu ul:first-child {
-	padding: 0 0 20px;
+    padding: 0 0 20px;
     width: 210px;
-	height: 95%;
-	margin: 5px;
-	background: #cabe57;
-	-moz-border-radius: 15px;
-	-webkit-border-radius: 15px;
-	border-radius: 15px;
-	box-shadow: 1px 2px 2px #e4e3c3, -1px -2px 2px #464415;
+    height: 95%;
+    margin: 5px;
+    background: #cabe57;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    box-shadow: 1px 2px 2px #e4e3c3, -1px -2px 2px #464415;
 }
 /*******************************************************************/
 #social {
