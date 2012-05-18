@@ -488,6 +488,7 @@
 'Student (on site), $250': 'Estudiante (en el sitio), $250',
 'Student (regular), $200': 'Estudiante (regular), $200',
 'Student Works': 'Trabajos Estudiantiles',
+'Student works contest': 'Concurso Trabajos Estudiantiles',
 'Submit': 'Enviar',
 'Submit a Activity Proposal': 'Enviar Propuesta de Actividad',
 'Submit a Talk Proposal': 'Envíe una propuesta de charla',
