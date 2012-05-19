@@ -26,6 +26,7 @@ else:
         [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
         [T('Summit'),True,URL(r=request,c='conference',f='summit')],
         [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
+        [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')] ]
         ],
 

@@ -198,15 +198,9 @@ if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.contr
     ##db.auth_user.confirmed.default = False
 else:
     db.auth_user.confirmed.default = False
-    db.auth_user.resume.requires = IS_NOT_EMPTY()
-    db.auth_user.photo.requires = IS_NOT_EMPTY()
     ##db.auth_user.confirmed.readable = True
     ##db.auth_user.confirmed.writable = True
     ##db.auth_user.address.requires = IS_NOT_EMPTY()
-    db.auth_user.city.requires = IS_NOT_EMPTY()
-    db.auth_user.state.requires = IS_NOT_EMPTY()
-    db.auth_user.country.requires = IS_NOT_EMPTY()
-    db.auth_user.phone_number.requires = IS_NOT_EMPTY()
 
 db.auth_user.confirmed.label = T("Confirm attendance")
 

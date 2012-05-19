@@ -4,9 +4,19 @@
 
 crud=Crud(globals(),db)
 
+# set required field for speakers
+if request.function in ('register', 'profile') and 'speaker' in request.args:
+    db.auth_user.resume.requires = IS_NOT_EMPTY()
+    db.auth_user.photo.requires = IS_NOT_EMPTY()
+    db.auth_user.city.requires = IS_NOT_EMPTY()
+    db.auth_user.state.requires = IS_NOT_EMPTY()
+    db.auth_user.country.requires = IS_NOT_EMPTY()
+    db.auth_user.phone_number.requires = IS_NOT_EMPTY()
+
+
 def index():
     # URL rewrite for backward compatibility (navbar)
-    f = request.args[0]
+    f = request.args and request.args[0] or 'profile'
     args = request.args and request.args[1:]
     if f == 'request_reset_password':
         f = 'password'
@@ -106,3 +116,8 @@ def confirm():
             redirect(URL(c="default", f="index", args="nocache"))
     session.flash = T("Not Confirmed, please enter into your profile and check '%s' field") % T("Confirm attendance")
     redirect(URL(c="user", f="profile"))
+
+
+def impersonate():
+    user = auth.impersonate(user_id=request.args[0])
+    redirect(URL(f="profile"))
