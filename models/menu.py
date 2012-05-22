@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 response.menu=[]
 
@@ -89,8 +89,8 @@ response.menu.append([T('Venue'),False,URL(r=request,c='venue',f='index'), [
 if auth.has_membership(role='manager'):
     submenu=[
         [T('Settings'),False,URL("manage", "control_panel"), []],
-        [T('Events'),False,URL("manage", "events"), []],
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
+        [T('Events'),False,URL("manage", "events"), []],        
         [T('Upload'),False,URL(r=request,c='manage',f='upload'), []],
         [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],

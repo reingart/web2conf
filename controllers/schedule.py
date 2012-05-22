@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # try something like
 
-#@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 #@auth.requires_membership(role="manager")
 def index():
     query = (db.activity.status=='accepted') & \
@@ -38,7 +38,7 @@ def index():
             headers.append(TH("%s (%s) %s" % (SCHEDULE_FRAME[day]["tracks"][track],
                                               track, int_to_roman(i+1))))
             position_track[i+1] = SCHEDULE_FRAME[day]["tracks"][track]
-
+        table_width = len(headers)
         thead = THEAD(TR(*headers))
         trs = []
 
@@ -46,40 +46,49 @@ def index():
             for i_dt, dt in enumerate(slots):
                 tds = []
                 activity_start = False
+                common = False
                 # Which activities start here?
                 for i in position_track.keys():
-                    cell = False
-                    if i != 0:
+                    if common:
+                        cell = True
+                    else:
+                        cell = False
+                    if (i != 0)  and (common == False):
                         for row in activities_per_date[day_as_date]:
                             if not cell:
-                                if (row.activity.track == position_track[i]) and \
-                                (row.activity.scheduled_datetime >= dt):
+                                this_track = row.activity.track == position_track[i]
+                                is_next = row.activity.scheduled_datetime >= dt
+                                is_common = row.activity.type in ACTIVITY_COMMON
+                                if (this_track or is_common) and is_next:
                                     try:
-                                        if row.activity.scheduled_datetime < slots[i_dt + 1]:
-                                            span = schedule_activity_spans(row.activity.duration)
-                                            tds.append(TD(row.activity.title, _rowspan=span))
-                                            cell = True
-                                            activity_start = True
-                                            break
+                                        next_slot = slots[i_dt + 1]
+                                        activity_start = row.activity.scheduled_datetime < next_slot
                                     except IndexError, e:
-                                        # out of time slots!
-                                        tds.append(TD(row.activity.title))
-                                        cell = True
+                                        # end of time slots!
                                         activity_start = True
+                                    if activity_start:
+                                        if is_common:
+                                            common = is_common
+                                            colspan = table_width -1
+                                        else:
+                                            colspan = None
+                                        rowspan = schedule_activity_spans(row.activity.duration)
+                                        tds.append(TD(row.activity.title,
+                                                        _rowspan=rowspan,
+                                                        _colspan=colspan,
+                                                        _class=row.activity.type.replace(" ", "-")))
+                                        cell = True
                                         break
                         if not cell:
-                            tds.append(TD())
-
+                            tds.append(TD(_class="empty"))
                 if activity_start:
                     tr_class = "odd"
                     # mark the time at the first cell
-                    tds.insert(0, TD(dt))
+                    tds.insert(0, TD(dt, _class="time"))
                 else:
                     tr_class = None
-                    tds.insert(0, TD())
-                    
+                    tds.insert(0, TD(_class="empty"))
                 trs.append(TR(*tds, _class=tr_class))
-                
         tbody = TBODY(*trs)
         schedule_tables[day] = TABLE(thead, tbody, _class="schedule")
 
