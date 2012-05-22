@@ -53,7 +53,8 @@ if ENABLE_TALKS:
    else:
         url = URL(r=request,c='conference',f='proposals')
    response.menu.append([T('Activities'),False,url,submenu_activities])
-   submenu_activities.append([T('Proposals'),False, url])   
+   submenu_activities.append([T('Proposals'),False, url])
+   submenu_activities.append([T('Events timeline'),False, URL(r=request,c='event',f='index')])
    submenu_activities.append([T('Timetable'),False,URL(r=request,c='schedule',f='index')])
    submenu_activities.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
@@ -87,7 +88,8 @@ response.menu.append([T('Venue'),False,URL(r=request,c='venue',f='index'), [
 
 if auth.has_membership(role='manager'):
     submenu=[
-        [T('Settings'),False,URL("manage", "control_panel"), []],    
+        [T('Settings'),False,URL("manage", "control_panel"), []],
+        [T('Events'),False,URL("manage", "events"), []],
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
         [T('Upload'),False,URL(r=request,c='manage',f='upload'), []],
         [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],

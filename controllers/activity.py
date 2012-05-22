@@ -302,3 +302,4 @@ def email_author(form):
         to = auth.user.email
         
     notify(subject, text, to=to, cc=cc)
+
