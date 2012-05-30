@@ -32,6 +32,7 @@ else:
 
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
         [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
+        [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],        
         [T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
         [T('RSS'),True,None, menu_feeds]]]]
 

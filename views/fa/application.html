@@ -8,59 +8,9 @@ $('TR TD:first').attr('width','150px');
 
 <div class="frame">
 <h2>{{=T('Edit Your Financial Aid Application')}}</h2>
-<p>In order to apply for financial aid, we need a bit of information from you, in the form below.
-<br>Each time you submit or update your application, it is emailed to you and the Financial Aid Administrator.</p>
-<h3>Please read these instructions BEFORE submitting your application.</h3>
-<p>Please consider your needs carefully.  PyCon financial aid can be used to help with only 3 sorts of costs, usually in this order: 
-<ol>
-<li>Registration - registration is the easiest for the PSF to provide and therefore, it should be the first thing you ask for help with.  If you receive any aid, it should start with registration assistance.</li>
-<li>Lodging costs - ask for help with your hotel stay next. PyCon should get some complimentary rooms from the conference hotel, which we can apply to financial aid.</li>
-<li>Transportation (flight etc.). Ask for help with transportation last, as there are no shortcuts here.</li>
-</ol>
-No other costs (food, tutorials, etc.) can be covered by financial aid awards and all expenses <b>MUST</b> be documented for reimbursement to be made.
-<p>
-For your application to be complete, you must complete each of the fields:
-</p>
-<dl>
-  <dt id="registration_amount"><i>Registration Amount:</i></dt>
-  <dd>Please include the amount you want for registration, to a maximum equal to the amount for early-bird registration for your registration type (student/hobbyist/etc.)  In almost all cases, if you're going to request any aid you should start with registration as we can handle this without reimbursement, so it's easier for you and easier for PyCon volunteers.
-  </dd>
-  <dt id="hotel_nights"><i>Hotel Nights:</i></dt>
-  <dd>
-  State the number of nights for which you are requesting assistance.
-  </dd> 
-  <dt id="total_logding"><i>Total Lodging Amount:</i></dt>
-  <dd>For financial aid purposes, room sharing is assumed; a maximum of 50% of the full room rate can be requested per person. You are encouraged to find someone (or two or three) to share a room with, to reduce the the cost and there  Room rate: $105/night (single & double) + 13% tax, total $110/night.  If you want to make reservations at they Hyatt, that's up to you, but we will still only reimburse at half the daily room-rate for the Crowne Plaza.  <a href="http://us.pycon.org/2009/registration/room_sharing/">More information on room sharing can be found here.</a> Regardless of your room sharing plans, <b>it is up to you or your roommates to make your own hotel arrangements.</b> PyCon volunteers cannot do this for you. Nevertheless, the <a href="https://www.cteusa.com/pycon2">housing bureau for PyCon 2009</a> is available for all arrangements with the conference hotel.
-  </dd>
-  
-  <dt id="roommate"><i>Roommate:</i></dt>	
-  <dd> If you're sharing a room with another attendee, please list their name(s).  If this changes, update your application and/or email <a href="mailto:pycon-aid@python.org">pycon-aid@python.org</a> Note: If any of your roommates will be arriving separately, be sure to list their names on the hotel reservation as having permission to check in and get a key to your shared room from the front desk by showing photo ID.
-  </dd>
-  
-  <dt id="transportation"><i>Transportation Details:</i></dt>
-  <dd>Please state how you'll be traveling to PyCon and describe any unique circumstances that will impact your travel expenses.
-  </dd>  
-  <dt id="transportation_amt"><i>Transportation Amount:</i></dt>
-  <dd> If you want assistance with your transportation costs, please provide a rough estimate (to the nearest US$50) of how much a round-trip will cost. Please update your request as soon as the final cost is known.
-  </dd>  
-  <dt id="total_amt"><i>Total Amount Requested:</i></dt>
-  <dd>This should be the total of the dollar-amounts you entered above.  Use it to double-check your expenses and to consider how much you're requesting.  PyCon has a limited financial aid budget so we ask all applicants to consider their needs carefully and work with us to help provide the most number of people with the chance to make it to the conference.
-  </dd>  
-  <dt id="min_amt"><i>Minimum Amount Requested:</i></dt>
-  <dd>state the minimum amount of aid you require, below which you will not be able to attend PyCon. If we are unable to allocate this minimum amount, we will decline your application and allocate the funds to others.  Again, please work with us so that we can help stretch the budget as much as is possible!
-  </dd> 
-  <dt id="rationale"><i>Rationale:</i></dt>
-  <dd>State why you should come to PyCon, and what you will be doing. We don't need an essay, but please provide a few sentences of explanation. Priority will be given to people who make significant contributions to PyCon and the Python community (e.g. students working on a task, conference speakers, sprint leaders, developers critical to a sprint, super-enthusiastic sprint newbies who will give 110% for their project, or people doing public service work with Python).
-  </dd> 
-</dl>
+<p>{{=T("In order to apply for financial aid, we need a bit of information from you, in the form below.")}}
+<br>{{=T("Each time you submit or update your application, it is emailed to you and the Financial Aid Administrator.")}}</p>
+<h3>{{=A(T("Please read these instructions BEFORE submitting your application."), _href=URL(f="index"))}}</h3>
 
-<i>Final Notes:</i>
-<ol>
-<li><i>NOTE:</i> all financial amounts must be in US Dollars. Reimbursements will be made in US Dollars as well.
-<li>If you do not need funding for any of these items, please enter '0' for the requested amount field.</li>
-<li>Applications that are not complete may not be considered, so please be thorough, though you may update your application up until the application deadline.</li>  
-<li>See <a href="http://us.pycon.org/2009/registration/financial-aid/">the financial aid page for additional details, including the application deadline and any news.</a></li>
-<li>If you have any questions, email: <a href="mailto:pycon-aid@python.org">pycon-aid@python.org</a></li>
-</ol>
 {{=form}}
 </div>

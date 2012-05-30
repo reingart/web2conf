@@ -2,14 +2,22 @@
 # Submit Financial Aid Application
 #############################################
 
+def index(): return plugin_flatpage()
+
 @auth.requires_login()
 def application():
     if datetime.datetime.today() > FACUTOFF_DATE:
         session.flash=XML(T('<b><font color="red">Applications are no longer being accepted.</b><br>(Financial Aid Application deadline: %s)</font>') % FACUTOFF_DATE)
         redirect(URL(r=request,c='default',f='index'))
 
-    form=SQLFORM(db.fa,onaccept=lambda form: email_fa('created'),next='fa_app')
-##    else:
-##        form=t2.update(db.fa,query=you,deletable=False,onaccept=lambda form: email_fa('updated'),next='fa_app')
-##    # email from here...
+    fa=db(db.fa.person==auth.user.id).select().first()
+    form=SQLFORM(db.fa, fa,)
+    if form.accepts(request.vars, session):
+        session.flash = "Thanks! Confirmation email sent!"
+        email_fa(fa and 'updated' or 'created')
+        redirect(URL("index"))
+    elif form.errors:
+        response.flash = "The form contains errors!"
+    else:
+        response.flash = "Please complete the form!"    
     return dict(form=form)
