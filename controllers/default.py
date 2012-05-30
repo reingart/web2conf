@@ -34,7 +34,7 @@ def twitter():
     try:
         if TWITTER_HASH:
             # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
-            tweets = urllib.urlopen("http://search.twitter.com/search.json?q=%%40%s" % TWITTER_HASH).read()
+            tweets = urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read()
             data = sj.loads(tweets, encoding="utf-8")
             the_tweets = dict()
             
@@ -82,6 +82,8 @@ def notify():
     response.headers['Content-Type']='text/xml'
     return l2controller.receive_xml(request.body.read())
 
+def user():
+    redirect(URL(c='user', f=request.args[0], args=request.args[1:]))
 
 #############################################
 # web2py planet

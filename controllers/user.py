@@ -79,6 +79,10 @@ def change_password():
 def password():
     return dict(form=auth.retrieve_password(next='login'))
 
+def reset_password():
+    response.view="user/password.html"
+    return dict(form=auth.reset_password(next=URL(f='profile')))
+
 def retrieve_username():
     return dict(form=auth.retrieve_username(next='login'))
 
