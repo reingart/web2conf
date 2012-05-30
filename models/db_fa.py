@@ -9,9 +9,9 @@ if ENABLE_FINANCIAL_AID:
        # - email address => fa.person.email
        # Registration:
        # - registration type => fa.percon.attendee_type
-       db.Field( 'person', db.auth_user ),
-       db.Field('created_on','datetime'),
-       db.Field('modified_on','datetime',default=now),
+       db.Field( 'person', db.auth_user, default=auth.user_id, readable=False, writable=False),
+       db.Field('created_on','datetime',default=now, readable=False, writable=False),
+       db.Field('modified_on','datetime',default=now, readable=False, writable=False),
        db.Field( 'registration_amount', 'double', default='0.00'),
        # Hotel Cost:
        # - number of nights of assitance requested;
