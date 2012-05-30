@@ -2,7 +2,7 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
 fake_migrate = False
 
 if SUSPEND_SERVICE:
@@ -162,7 +162,7 @@ if EMAIL_SERVER:
     auth.messages.verify_email = EMAIL_VERIFY_BODY
     
 if RECAPTCHA_PUBLIC_KEY:
-    auth.setting.captcha=Recaptcha(request,RECAPTCHA_PUBLIC_KEY,RECAPTCHA_PRIVATE_KEY)
+    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
 auth.define_tables()
 
 db.auth_membership.user_id.represent=lambda v: "%(last_name)s, %(first_name)s (%(id)s)" % db.auth_user[v]
