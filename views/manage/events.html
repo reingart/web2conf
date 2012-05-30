@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h2>{{=T('Current posted events')}}</h2>
+{{=SQLTABLE(events, columns=["event.id", "event.starts", "event.ends", "event.title", "event.url"])}}
+</div>

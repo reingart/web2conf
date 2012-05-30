@@ -1,0 +1,37 @@
+{{extend 'layout.html'}}
+<div class="frame">
+<h1>{{=T('Conference events')}}</h1>
+<ul>
+{{for event in events:}}
+  <li>
+    {{if event.url:}}
+      {{=H3(A(event.title, _href=event.url))}}
+    {{else:}}
+      {{=H3(event.title)}}
+      {{if is_manager:}}
+        {{=A("Edit this event", _href=URL(c="manage", f="event", args=["event", event.id]))}}
+      {{pass}}
+    {{pass}}
+    {{=HR()}}
+    {{=MARKMIN(event.body)}}
+    {{=HR()}}
+    <span>{{=T("Start time")}}</span>
+    <span>{{=event.starts}}</span>
+    <br />
+    <span>{{=T("End time")}}</span>
+    <span>{{=event.ends}}</span>
+    <br />
+    {{if event.ends > request.now and event.starts <= request.now:}}
+      {{ time_left = event.ends -request.now }}
+      <h5>{{=T("Time left")}}</h5>
+      <span>{{=time_left}}</span><br />
+    {{pass}}
+    {{if event.starts > request.now:}}
+      {{ starts_in = event.starts -request.now }}
+      <h5>{{=T("Starts in")}}</h5>
+      <span>{{=starts_in}}</span><br />
+    {{pass}}
+  </li>
+{{pass}}
+<ul>
+</div>

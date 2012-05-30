@@ -1,7 +1,4 @@
-# coding: utf8
-
-import datetime
-now=datetime.datetime.now()
+# -*- coding: utf-8 -*-
 
 ######################################
 ### MANAGE ACTIVITIES ("TALK" PROPOSALS)
@@ -11,7 +8,7 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
-    db.Field('duration','integer',label=T("Duration")), # era 45 min
+    db.Field('duration','integer',label=T("Duration in minutes")), # era 45 min
     db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
     db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
     db.Field('abstract','text',label=T("Abstract")),

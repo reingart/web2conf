@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # set user selected language (default spanish)
 
 if request.vars.lang: session.lang=request.vars.lang
@@ -120,13 +122,17 @@ ACTIVITY_TYPES= ('talk', 'extreme talk', 'poster', 'project',
                  'keynote', 'panel', 'plenary', 'tutorial',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
-                 'sprint', 'workshop', 'paper')
+                 'sprint', 'workshop', 'paper', 'conference break',
+                 'conference wide')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',
                              'ciencia','académico','comunidad','moviles',
                              'caso de estudio','redes','juegos','seguridad',
                              'testing'))
+
+# override other activities
+ACTIVITY_COMMON = ["keynote", "lightning talk", "conference break", "conference wide"]
 
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
