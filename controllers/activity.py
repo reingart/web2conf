@@ -245,9 +245,10 @@ def add_author():
     
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def speakers():
-    q = db.auth_user.speaker==True
     if request.args:
-        q &= db.auth_user.id == request.args[0]
+        q = db.auth_user.id == request.args[0]
+    else:
+        q = db.auth_user.speaker==True
     s=db(q)
     authors=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.last_name|db.auth_user.first_name)
@@ -302,4 +303,3 @@ def email_author(form):
         to = auth.user.email
         
     notify(subject, text, to=to, cc=cc)
-
