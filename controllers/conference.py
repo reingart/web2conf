@@ -28,3 +28,5 @@ def awards(): return plugin_flatpage()
 
 def science(): return plugin_flatpage()
 def publicize(): return plugin_flatpage()
+def volunteer(): return plugin_flatpage()
+def press(): return plugin_flatpage()
