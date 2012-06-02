@@ -167,7 +167,7 @@ JANRAIN = False
 ENABLE_TALKS=True
 ENABLE_EXPENSES = False
 ENABLE_FINANCIAL_AID = True
-ENABLE_PAYMENTS = False
+ENABLE_PAYMENTS = True
 
 if True and DEV_TEST:    # for local development
     HOST='localhost:8000'

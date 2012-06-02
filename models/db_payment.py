@@ -20,7 +20,7 @@ if ENABLE_PAYMENTS:
        db.Field('modified_on','datetime',default=now),
         migrate=migrate)
     
-    db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
+    db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     
     db.define_table('money_transfer',
        db.Field('from_person',db.auth_user),
@@ -33,8 +33,8 @@ if ENABLE_PAYMENTS:
        db.Field('created_by',db.auth_user),
        migrate=migrate)
     
-    db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
-    db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
+    db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
+    db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     
     ######################################
     ### MANAGE COUPONS
@@ -47,7 +47,7 @@ if ENABLE_PAYMENTS:
         db.Field('discount','double',default=100.0),
         db.Field('auto_match_registration', 'boolean', default=True),
         migrate=migrate)
-    db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]'))
+    db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]'))
     
     #db.coupon.represent=lambda row: SPAN(row.id,row.name,row.amount,row.description)
     
@@ -65,3 +65,14 @@ if ENABLE_PAYMENTS:
         try: message=message.decode('latin1').encode('utf8', 'xmlcharrefreplace')
         except: pass
         return message
+
+
+    # Callback: Called when any DineroMail record is updated
+    def update_dineromail_payment(data):
+        payment = db.payment[int(data["client_code"])]
+        status = PLUGIN_DINEROMAIL_STATUSES[data["status"]]
+        if payment.status != status:
+            payment.update_record(status=status, modified_on=request.now)
+
+    # Set dineromail callback on payment notification
+    PLUGIN_DINEROMAIL_ON_UPDATE = update_dineromail_payment

@@ -75,3 +75,57 @@ def pay_other_info():
 @auth.requires_login()
 def invoice():
     return dict(balance=session.balance)
+
+@auth.requires_login()
+def dineromail():
+    """ Compose a DineroMail purchase request
+    and redirect to DineroMail shop feature."""
+
+    import uuid
+    import urllib
+    
+    check_in= \
+        PLUGIN_DINEROMAIL_SHOP_CHECK_IN[PLUGIN_DINEROMAIL_COUNTRY]
+    
+    # Not really a payment, it just records the data for further update
+    payment_id = db.payment.insert(from_person=auth.user_id,
+                                   method="dineromail",
+                                   status="new",
+                                   invoice=\
+                                   request.vars.NombreItem,
+                                   amount=\
+                                   float(request.vars.PrecioItem))
+
+    arguments=["NombreItem",
+               "TipoMoneda",
+               "PrecioItem",
+               "E_Comercio",
+               "NroItem",
+               "image_url",
+               "DireccionExito",
+               "DireccionFracaso",
+               "DireccionEnvio",
+               "Mensaje"]
+
+    url = "%s?" % check_in
+    for x, argument in enumerate(arguments):
+        if x == 0:
+            url += "%s=%s" % (argument, 
+                             urllib.quote(request.vars[argument]))
+        else:
+            url += "&%s=%s" % (argument, 
+                              urllib.quote(request.vars[argument]))
+    url += "&trx_id=%s" % payment_id
+    
+    redirect(url)
+
+@auth.requires_login()
+def dineromail_update():
+    form = SQLFORM.factory(Field("starts", "date", default=request.now.date()), Field("ends", "date", default=request.now.date()))
+    if form.process().accept:
+        payments = db(db.payment).select()
+        for payment in payments:
+            # check status and update if needed
+            pass
+        response.flash = T("Done!")
+    return dict(form=form)
