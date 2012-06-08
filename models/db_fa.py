@@ -12,7 +12,7 @@ if ENABLE_FINANCIAL_AID:
        db.Field( 'person', db.auth_user, default=auth.user_id, readable=False, writable=False),
        db.Field('created_on','datetime',default=now, readable=False, writable=False),
        db.Field('modified_on','datetime',default=now, readable=False, writable=False),
-       db.Field( 'registration_amount', 'double', default='0.00'),
+       db.Field( 'registration_amount', 'boolean', default=False),
        # Hotel Cost:
        # - number of nights of assitance requested;
        db.Field( 'hotel_nights', 'integer', default=0 ),
@@ -46,7 +46,7 @@ if ENABLE_FINANCIAL_AID:
     
     db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(last_name)s, %(first_name)s [%(id)s]')
     
-    db.fa.registration_amount.comment= T('(in ARS pesos)')
+    db.fa.registration_amount.comment= T('(cost TBD)')
     db.fa.total_lodging_amount.comment= T('(in ARS pesos)')
     ##db.fa.roommates.comment= XML(str(T('(%s)',A('instructions',_href='#roommates'))))
     db.fa.transportation_details.comment = T('(dates, airports codes, bus stations, etc.)')
