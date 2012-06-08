@@ -6,12 +6,12 @@ crud=Crud(globals(),db)
 
 # set required field for speakers
 if request.function in ('register', 'profile') and 'speaker' in request.args:
-    db.auth_user.resume.requires = IS_NOT_EMPTY()
-    db.auth_user.photo.requires = IS_NOT_EMPTY()
-    db.auth_user.city.requires = IS_NOT_EMPTY()
-    db.auth_user.state.requires = IS_NOT_EMPTY()
-    db.auth_user.country.requires = IS_NOT_EMPTY()
-    db.auth_user.phone_number.requires = IS_NOT_EMPTY()
+    db.auth_user.resume.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.photo.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.city.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.state.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.country.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.phone_number.requires = IS_NOT_EMPTY(T("(required for speakers)"))
 
 
 def index():

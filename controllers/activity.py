@@ -106,9 +106,33 @@ def accepted():
         attachs.setdefault(attach.activity_id, []).append(attach) 
     d = dict(rows=rows,attachs=attachs)
     return response.render(d)
+
+def check_speaker_profile():
+
+    # refresh user data (warning: session is not changed!)
+    auth.user = db.auth_user[auth.user_id]
     
+    d = {'email':auth.user.email,
+         'bio': auth.user.resume, 
+         'photo': auth.user.photo,
+         'country': auth.user.country,
+         'city': auth.user.city,
+         'state': auth.user.state,
+         'phone_number': auth.user.phone_number,
+         }
+    
+    err = []
+    for k, v in d.items():
+        if not v: err.append(str(T(k)))
+    if err:
+        session.flash = "Debe completar previamente su perfil de disertante (%s)!" % ', '.join(err)
+        redirect(URL(c="user", f="profile", args=["speaker"]))
+    return 'Ok'
+   
 @auth.requires_login()
 def propose():
+
+    check_speaker_profile()
     if request.args:
         activity_type = len(request.args) > 0 and request.args[0].replace("_", " ")
         duration = ACTIVITY_DURATION.get(request.args[0].replace("_", " "))
@@ -301,5 +325,6 @@ def email_author(form):
         to = activity.created_by.email
     if to is None:
         to = auth.user.email
-        
-    notify(subject, text, to=to, cc=cc)
+
+    if to:
+        notify(subject, text, to=to, cc=cc)
