@@ -88,7 +88,13 @@ def index():
                 else:
                     tr_class = None
                     tds.insert(0, TD(_class="empty"))
-                trs.append(TR(*tds, _class=tr_class))
+                    
+                # *list function argument is not working
+                # trs.append(TR(*tds, _class=tr_class))
+                a_tr = TR(_class=tr_class)
+                [a_tr.append(td) for td in tds]
+                trs.append(a_tr)
+                
         tbody = TBODY(*trs)
         schedule_tables[day] = TABLE(thead, tbody, _class="schedule")
 
