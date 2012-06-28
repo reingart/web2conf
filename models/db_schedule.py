@@ -25,6 +25,7 @@ def schedule_slots(day, window=5):
     difference = ends - begins
     quantity = (difference.seconds/60)/window
     newtime = begins
+    slots.append(newtime)
     for i in range(quantity):
         newtime += datetime.timedelta(minutes=window)
         slots.append(newtime)
@@ -74,12 +75,15 @@ def rom_to_int(string):
 # day-tracks classified by track code
 # and track type.
 
-SCHEDULE_FRAME = {"2012-05-22": {
+SCHEDULE_FRAME = {"2012-07-01": {
     "begins": "09:00:00", "ends": "21:00:00", "tracks":{
         "D1":"Science", "D2": "Student Works", "D3": "General", "D4": "Extreme"}},
-                  "2012-05-23": {
+                  "2012-07-02": {
     "begins": "09:00:00", "ends": "21:00:00", "tracks":{
-        "D1":"Science", "D2": "Student Works", "D3": "General", "D4": "Extreme"}}
-                  }
+        "D1":"Science", "D2": "Student Works", "D3": "General", "D4": "Extreme"}},
+                  "2012-07-03": {
+    "begins": "09:00:00", "ends": "21:00:00", "tracks":{
+        "D1":"Science", "D2": "Student Works", "D3": "General", "D4": "Extreme"}        
+                  }}
 
 # ("General", "Science", "Student Works", "Extreme")

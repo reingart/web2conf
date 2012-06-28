@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #############################################
 # Submit payment
 #############################################
@@ -83,10 +85,10 @@ def dineromail():
 
     import uuid
     import urllib
-    
+
     check_in= \
         PLUGIN_DINEROMAIL_SHOP_CHECK_IN[PLUGIN_DINEROMAIL_COUNTRY]
-    
+
     # Not really a payment, it just records the data for further update
     payment_id = db.payment.insert(from_person=auth.user_id,
                                    method="dineromail",
@@ -110,13 +112,13 @@ def dineromail():
     url = "%s?" % check_in
     for x, argument in enumerate(arguments):
         if x == 0:
-            url += "%s=%s" % (argument, 
+            url += "%s=%s" % (argument,
                              urllib.quote(request.vars[argument]))
         else:
-            url += "&%s=%s" % (argument, 
+            url += "&%s=%s" % (argument,
                               urllib.quote(request.vars[argument]))
     url += "&trx_id=%s" % payment_id
-    
+
     redirect(url)
 
 @auth.requires_login()

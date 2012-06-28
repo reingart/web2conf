@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 if ENABLE_PAYMENTS:
     from gluon.tools import *
@@ -32,10 +32,10 @@ if ENABLE_PAYMENTS:
        db.Field('modified_on','datetime',default=now),
        db.Field('created_by',db.auth_user),
        migrate=migrate)
-    
+
     db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
-    
+
     ######################################
     ### MANAGE COUPONS
     ######################################
@@ -47,8 +47,9 @@ if ENABLE_PAYMENTS:
         db.Field('discount','double',default=100.0),
         db.Field('auto_match_registration', 'boolean', default=True),
         migrate=migrate)
+        
     db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]'))
-    
+
     #db.coupon.represent=lambda row: SPAN(row.id,row.name,row.amount,row.description)
     
     ## cleanup:

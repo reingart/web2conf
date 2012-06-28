@@ -21,3 +21,11 @@ def application():
     else:
         response.flash = "Please complete the form!"    
     return dict(form=form)
+
+@auth.requires(auth.has_membership(role="colaborator") 
+            or auth.has_membership(role="manager"))
+def view():
+    fa = db(db.fa.id==request.args[0]).select().first()
+    form = SQLFORM(db.fa, request.args[0], readonly=True)
+    response.view = 'generic.html'
+    return dict(form=form)

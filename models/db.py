@@ -136,6 +136,7 @@ if not JANRAIN:
     db.auth_user.password.requires.append(IS_NOT_EMPTY())
 
 auth.settings.table_user=db.auth_user
+auth.settings.cas_domains = None        # disable CAS
 auth.define_tables(username=False)
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')

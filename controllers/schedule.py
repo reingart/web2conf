@@ -33,11 +33,13 @@ def index():
         slots = schedule_slots(day)
         headers = [TH(),]
         position_track = {0: None}
-        
+        position_spans = {0: None}
         for i, track in enumerate(sorted(SCHEDULE_FRAME[day]["tracks"].keys())):
             headers.append(TH("%s (%s) %s" % (SCHEDULE_FRAME[day]["tracks"][track],
                                               track, int_to_roman(i+1))))
             position_track[i+1] = SCHEDULE_FRAME[day]["tracks"][track]
+            position_spans[i+1] = 0
+            
         table_width = len(headers)
         thead = THEAD(TR(*headers))
         trs = []
@@ -46,17 +48,18 @@ def index():
             for i_dt, dt in enumerate(slots):
                 tds = []
                 activity_start = False
+                start_of_activity = False
                 common = False
                 # Which activities start here?
-                for i in position_track.keys():
+                for i, track in position_track.iteritems():
                     if common:
                         cell = True
                     else:
                         cell = False
                     if (i != 0)  and (common == False):
                         for row in activities_per_date[day_as_date]:
-                            if not cell:
-                                this_track = row.activity.track == position_track[i]
+                            if cell == False:
+                                this_track = row.activity.track == track
                                 is_next = row.activity.scheduled_datetime >= dt
                                 is_common = row.activity.type in ACTIVITY_COMMON
                                 if (this_track or is_common) and is_next:
@@ -73,28 +76,35 @@ def index():
                                         else:
                                             colspan = None
                                         rowspan = schedule_activity_spans(row.activity.duration)
+                                        if rowspan > 0:
+                                            position_spans[i] = rowspan
                                         tds.append(TD(row.activity.title,
                                                         _rowspan=rowspan,
                                                         _colspan=colspan,
                                                         _class=row.activity.type.replace(" ", "-")))
                                         cell = True
-                                        break
+                                        start_of_activity = True
+
                         if not cell:
-                            tds.append(TD(_class="empty"))
-                if activity_start:
+                            if not position_spans[i] > 0:
+                                tds.append(TD(_class="empty"))
+                            else:
+                                position_spans[i] -= 1
+
+                if start_of_activity:
                     tr_class = "odd"
                     # mark the time at the first cell
                     tds.insert(0, TD(dt, _class="time"))
                 else:
                     tr_class = None
                     tds.insert(0, TD(_class="empty"))
-                    
+
                 # *list function argument is not working
                 # trs.append(TR(*tds, _class=tr_class))
                 a_tr = TR(_class=tr_class)
                 [a_tr.append(td) for td in tds]
                 trs.append(a_tr)
-                
+
         tbody = TBODY(*trs)
         schedule_tables[day] = TABLE(thead, tbody, _class="schedule")
 

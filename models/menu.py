@@ -18,7 +18,7 @@ else:
         [T('About'),True,URL(r=request,c='conference',f='about')],
         ##[T('Venue'),True,URL(r=request,c='conference',f='venue')],
         ##[T('Maps'),True,URL(r=request,c='conference',f='maps')],       
-        [ T('Conference'), True, None, [
+        [ T('Conference'), True, URL(r=request,c='conference',f='index'), [
         [T('Schedule'),True,URL(r=request,c='schedule',f='index')],
         [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
         [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
@@ -35,7 +35,6 @@ else:
         [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
         [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
         [T('Press Release'),True,URL(r=request,c='conference',f='press')],
-        [T('Events timeline'),False, URL(r=request,c='event',f='index')],
         [T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
         [T('RSS'),True,None, menu_feeds]]]]
 
@@ -63,6 +62,7 @@ if ENABLE_TALKS:
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
    submenu_activities.append([T('Speakers'),False,URL(r=request,c='activity',f='speakers')])
    submenu_activities.append([T('Ratings'),False,URL(r=request,c='activity',f='ratings')])
+   submenu_activities.append([T('Timeline'),False,URL(r=request,c='timeline',f='index')])
 
 response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index'), [
     [T('Index'),False,URL(r=request,c='sponsors',f='index')],
