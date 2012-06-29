@@ -123,8 +123,9 @@ def dineromail():
 
 @auth.requires_login()
 def dineromail_update():
+    raise HTTP(200, T("Not implemented"))
     form = SQLFORM.factory(Field("starts", "date", default=request.now.date()), Field("ends", "date", default=request.now.date()))
-    if form.process().accept:
+    if form.process().accepted:
         payments = db(db.payment).select()
         for payment in payments:
             # check status and update if needed

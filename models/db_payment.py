@@ -70,10 +70,21 @@ if ENABLE_PAYMENTS:
 
     # Callback: Called when any DineroMail record is updated
     def update_dineromail_payment(data):
-        payment = db.payment[int(data["client_code"])]
-        status = PLUGIN_DINEROMAIL_STATUSES[data["status"]]
-        if payment.status != status:
-            payment.update_record(status=status, modified_on=request.now)
+    
+        payment_data = dict()
+        payment_data["id"] = data["client_code"]
+        payment_data["from_person"] = db(db.auth_user.email == data["customer_email"]).select().first().id
+        payment_data["order_id"] = data["code"]
+        payment_data["status"] = PLUGIN_DINEROMAIL_STATUSES[data["status"]]
+        payment_data["method"] = "dineromail"
+        
+        payment = db(db.payment.id == int(payment_data["id"])).select().first()
+        
+        if payment is not None:
+            payment_data["modified_on"] = request.now
+            payment.update_record(**payment_data)
+        else:
+            db.payment.insert(**payment_data)
 
     # Set dineromail callback on payment notification
     PLUGIN_DINEROMAIL_ON_UPDATE = update_dineromail_payment
