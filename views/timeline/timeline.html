@@ -1,21 +1,25 @@
-{{response.files.append(URL(c="static", f="timeline/compiled/css/timeline.css"))}}
-{{response.files.append(URL(c="static", f="timeline/compiled/js/timeline.js"))}}
 {{extend 'layout.html'}}
 
 <!-- BEGIN Timeline Embed -->
 {{=DIV(_id="timeline-embed")}}
 <script type="text/javascript">
+/* {{
+# response.files.append(URL(c='static', f='timeline/compiled/css/timeline.css'))
+# Does not work unless = is used before the command (which generates improper html).
+}} */
+/*
 var timeline_config = {
     width:  "100%",
     height: "100%",
     source: '{{=URL(c="static", f="timeline/examples/example_kitchensink.json")}}',
-    //start_at_end: true,                   //OPTIONAL
-    //hash_bookmark: true,                  //OPTIONAL
+    // start_at_end: true,                   //OPTIONAL
+    // hash_bookmark: true,                  //OPTIONAL
     css:    '{{=URL(c="static", f="timeline/compiled/css/timeline.css")}}',     //OPTIONAL
     js:     '{{=URL(c="static", f="timeline/compiled/js/timeline.js")}}'    //OPTIONAL
-}
-
+};
 jQuery(function(){
+                  jQuery.getScript("{{=URL(c='static', f='timeline/compiled/js/timeline.js')}}");
                   jQuery.getScript("{{=URL(c='static', f='timeline/compiled/js/timeline-embed.js')}}");
                  });
+*/
 </script>

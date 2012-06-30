@@ -1,15 +1,19 @@
 {{extend 'layout.html'}}
+
 {{def tdif(t):}}
   {{hours=t.seconds/3600}}
   {{=T("%(days)s days, %(hours)s hours, %(minutes)s minutes") % dict(hours=t.seconds/3600, days=t.days, minutes=(t.seconds/60 - hours*60))}}
 {{pass}}
 <div class="frame">
 <h1>{{=T('Conference events')}}</h1>
+
+{{=DIV(table, _style="overflow: auto;width: 100%;")}}
+
 <ul>
 {{for event in events:}}
   <li>
     {{if event.url:}}
-      {{=H3(A(event.title, _href=event.url))}}
+      {{=H3(A(event.title, _href=event.url, _id=event.id ))}}
     {{else:}}
       {{=H3(event.title)}}
       {{if is_manager:}}
