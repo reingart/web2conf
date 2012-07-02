@@ -12,7 +12,12 @@ def proposed():
     activities=db(db.activity.id>0).select(orderby=db.activity.title)
     rows = db(db.review.created_by==auth.user.id).select()
     reviews = dict([(row.activity_id, row) for row in rows])
-    d = dict(activities=activities, reviews=reviews)
+
+    query = (db.auth_user.id==db.activity.created_by)
+    rows=db(query).select(db.auth_user.ALL)
+    authors = dict([(row.id, row) for row in rows])
+    
+    d = dict(activities=activities, reviews=reviews, authors=authors)
     return response.render(d)
 
 @auth.requires(auth.has_membership(role='reviewer') or TODAY_DATE>REVIEW_DEADLINE_DATE)
