@@ -82,7 +82,7 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
-PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,7,1,23,59,59)
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,15,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
@@ -146,6 +146,20 @@ ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 
 ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Aula D", 6: "Sala Internet"}
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
+
+PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
+    'talk': datetime.datetime(2012,6,30,23,59,59),
+    'extreme talk': datetime.datetime(2012,6,30,23,59,59),
+    'tutorial': datetime.datetime(2012,6,30,23,59,59),
+    'keynote': datetime.datetime(2012,9,12,0,0,0),
+    'plenary': datetime.datetime(2012,9,12,0,0,0),
+    'poster': datetime.datetime(2012,9,12,0,0,0),
+    'paper': datetime.datetime(2012,9,12,0,0,0),
+    'project': datetime.datetime(2012,10,12,0,0,0),
+    'stand': datetime.datetime(2012,10,12,0,0,0),
+    'sprint': datetime.datetime(2012,10,12,0,0,0),
+    }
+
 
 SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "")
 

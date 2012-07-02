@@ -32,6 +32,7 @@
 '%s people have registered for PyCon 2009': '%s personas se han registrado para PyCon 2009',
 '%s rows deleted': '%s filas borradas',
 '%s rows updated': '%s filas actualizadas',
+'%s submission closed on %s': '%s submission closed on %s',
 '%s:\n%s\n\nPlease do not respond this automated message\n%s': '%s:\r\n%s\r\n\r\nPlease do not respond this automated message\r\n%s',
 '(': '(',
 '(%s)': '(%s)',
