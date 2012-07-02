@@ -1,0 +1,11 @@
+plugin_dineromail is a web2py plugin that allows to receive and manage
+ payment notifications with DineroMail?(r) webservices.
+It will store a transaction database for local site payment management
+tasks and will provide DineroMail? user account automated services such
+as payment forms and reports.
+
+Copyright (C) 2011 Alan Etkin <spametki@gmail.com>
+
+Released under the terms of AGPLv3 license
+
+Developed with web2py.

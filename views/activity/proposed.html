@@ -9,6 +9,7 @@
 {{for activity in [act for act in activities if act.type == activity_type]:}}
 {{review = reviews.get(activity.id)}}
 {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
+      " (%s) " % activity.authors if auth.has_membership(role='reviewer') else '',
       review and I(" %s " % T("review:"),
           A(review.rating, 
            _href=URL(r=request,f='review',args=activity.id), 

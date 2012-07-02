@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 if ENABLE_PAYMENTS:
     from gluon.tools import *
@@ -20,7 +20,7 @@ if ENABLE_PAYMENTS:
        db.Field('modified_on','datetime',default=now),
         migrate=migrate)
     
-    db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
+    db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     
     db.define_table('money_transfer',
        db.Field('from_person',db.auth_user),
@@ -32,10 +32,10 @@ if ENABLE_PAYMENTS:
        db.Field('modified_on','datetime',default=now),
        db.Field('created_by',db.auth_user),
        migrate=migrate)
-    
-    db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
-    db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
-    
+
+    db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
+    db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
+
     ######################################
     ### MANAGE COUPONS
     ######################################
@@ -47,8 +47,9 @@ if ENABLE_PAYMENTS:
         db.Field('discount','double',default=100.0),
         db.Field('auto_match_registration', 'boolean', default=True),
         migrate=migrate)
-    db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]'))
-    
+        
+    db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]'))
+
     #db.coupon.represent=lambda row: SPAN(row.id,row.name,row.amount,row.description)
     
     ## cleanup:
@@ -65,3 +66,25 @@ if ENABLE_PAYMENTS:
         try: message=message.decode('latin1').encode('utf8', 'xmlcharrefreplace')
         except: pass
         return message
+
+
+    # Callback: Called when any DineroMail record is updated
+    def update_dineromail_payment(data):
+    
+        payment_data = dict()
+        payment_data["id"] = data["client_code"]
+        payment_data["from_person"] = db(db.auth_user.email == data["customer_email"]).select().first().id
+        payment_data["order_id"] = data["code"]
+        payment_data["status"] = PLUGIN_DINEROMAIL_STATUSES[data["status"]]
+        payment_data["method"] = "dineromail"
+        
+        payment = db(db.payment.id == int(payment_data["id"])).select().first()
+        
+        if payment is not None:
+            payment_data["modified_on"] = request.now
+            payment.update_record(**payment_data)
+        else:
+            db.payment.insert(**payment_data)
+
+    # Set dineromail callback on payment notification
+    PLUGIN_DINEROMAIL_ON_UPDATE = update_dineromail_payment

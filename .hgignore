@@ -3,6 +3,8 @@ syntax: glob
 *.pyo
 *.bak
 *~
+*.orig
+*.backup
 .directory
 #*
 models/0_override.py
@@ -13,3 +15,4 @@ errors/*
 cache/*
 uploads/*
 static/slideshow/*
+static/docs/*

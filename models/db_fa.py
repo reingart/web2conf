@@ -9,7 +9,7 @@ if ENABLE_FINANCIAL_AID:
        # - email address => fa.person.email
        # Registration:
        # - registration type => fa.percon.attendee_type
-       db.Field( 'person', db.auth_user, default=auth.user_id, readable=False, writable=False),
+       db.Field( 'person', db.auth_user, default=auth.user_id, readable=True, writable=False),
        db.Field('created_on','datetime',default=now, readable=False, writable=False),
        db.Field('modified_on','datetime',default=now, readable=False, writable=False),
        db.Field( 'registration_amount', 'boolean', default=False),
@@ -42,7 +42,9 @@ if ENABLE_FINANCIAL_AID:
        #   sprint leaders, developers critical to a sprint, super-enthusiastic sprint newbies
        #   who will give 110% for their project, or people doing public service work with Python)."
        db.Field( 'rationale', 'text', default='' ),
-       migrate=migrate)
+       db.Field('status',default='pending',label=T("Status"), writable=False,readable=False),
+       db.Field( 'grant_amount', 'double', default='0.00', writable=False,readable=False),
+       migrate=True)
     
     db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(last_name)s, %(first_name)s [%(id)s]')
     
@@ -54,6 +56,10 @@ if ENABLE_FINANCIAL_AID:
     db.fa.total_amount_requested.comment= T('(in ARS pesos)')
     db.fa.minimum_amount_requested.comment= T('(in ARS pesos)')
     db.fa.rationale.comment= T('describe why you want to come to PyCon')
+
+    db.fa.status.writable=db.fa.status.readable=auth.has_membership('manager')
+    db.fa.grant_amount.writable=db.fa.grant_amount.readable=auth.has_membership('manager')
+
     #### ---< END: F/A forms >---
     
     #### end fixup
