@@ -125,3 +125,13 @@ def confirm():
 def impersonate():
     user = auth.impersonate(user_id=request.args[0])
     redirect(URL(f="profile"))
+
+@auth.requires_login()
+def join_reviewers():
+    group_id = auth.id_group('reviewer')
+    if not auth.has_membership(group_id, auth.user_id):
+        auth.add_membership(group_id, auth.user_id)
+        session.flash = T("Added to Reviewer Group!")
+    else:
+        session.flash = T("Already in the Reviewer Group!") 
+    redirect(URL(c='activity', f='proposed'))
