@@ -7,7 +7,49 @@
 <div class="frame">
 <h1>{{=T('Conference events')}}</h1>
 
-{{=DIV(table, _style="overflow: auto;width: 100%;")}}
+{{ tbody = TBODY() }}
+
+<!-- Cells is a rectangular array with the following data codes:
+* any integer but 0 is an event id (an event start)
+* 0 means do not fill with a table cell (it's within an event cell space)
+* None means fill with a table cell (it's empty but should be present)
+-->
+
+{{ for number, row in enumerate(cells):}}
+  {{ row_class = "odd" }}
+  {{ if number % 2 == 0:}}
+    {{ row_class = "even" }}
+  {{ pass }}
+  {{ tr = TR(_class=row_class) }}
+  {{ for cell in row: }}
+    {{ if cell is None: }}
+      {{ tr.append(TD(_class="empty")) }}
+    {{ elif cell != 0: }}
+      <!-- Here goes the event data if found -->
+      {{ event = db.event[cell] }}
+      <!-- Calculate event cell colspan -->
+      {{ colspan = event_spans(event) }}
+      {{ td_class = "event"}}
+      <!-- Check wether it's the nearest event (append next to the element classes)-->
+      {{ if event.id == next_event: }}
+        {{ td_class += " next"}}
+      {{ pass }}
+
+      {{ tr.append(TD(A(H5(event.title), _href="#%s" % event.id), _class=td_class, _colspan=colspan)) }}
+    {{ pass }}
+  {{ pass}}
+  {{ tbody.append(tr) }}
+{{ pass }}
+
+{{ =DIV(TABLE(tbody), _style="overflow: auto;width: 100%;") }}
+
+<!-- Focus on the next event when page starts -->
+
+{{=SCRIPT("""
+jQuery(function(){
+  jQuery(".event.next").focus();
+});
+""")}}
 
 <ul>
 {{for event in events:}}
