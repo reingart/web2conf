@@ -1,0 +1,14 @@
+{{ul = UL()}}
+{{ for i, key in enumerate(sorted(stack)):}}
+  {{title = stack[key]["event"].title}}
+  {{if stack[key]["kind"] == "start":}}
+    {{ul.append(LI(P(T("Start of %s: %s") % (title, stack[key]["event"].starts))))}}
+  {{else:}}
+    {{ul.append(LI(P(T("End of %s: %s") % (title, stack[key]["event"].ends))))}}
+  {{pass}}
+  {{if i >= 2:}}
+    {{break}}
+  {{pass}}
+{{ pass }}
+{{=ul}}
+ 
