@@ -117,7 +117,9 @@ def check_speaker_profile():
     # refresh user data (warning: session is not changed!)
     auth.user = db.auth_user[auth.user_id]
     
-    d = {'email':auth.user.email,
+    d = {'first_name': auth.user.first_name,
+         'last_name': auth.user.last_name,
+         'email':auth.user.email,
          'bio': auth.user.resume, 
          'photo': auth.user.photo,
          'country': auth.user.country,
@@ -173,6 +175,7 @@ def propose():
 def update():
     if not db(db.activity.created_by==auth.user.id and db.activity.id==request.args[0]).count():
         redirect(URL(r=reuqest,f='index'))
+    check_speaker_profile()
     form=crud.update(db.activity, request.args[0],
                      next='display/[id]',
                      ondelete=lambda form: redirect(URL(r=request,f='index')))
@@ -231,18 +234,19 @@ def review():
     activity = db(db.activity.id==request.args[0]).select()[0]
     reviews = db((db.review.activity_id==activity.id)&(db.review.created_by==auth.user_id)).select()
     
+    #  onaccept=email_author
     if reviews:
         form=crud.update(db.review, reviews[0].id,
                          next=URL(r=request,f='proposed'),
-                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')), onaccept=email_author)
+                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')),)
     else:
         db.review.activity_id.default=activity.id
         form=crud.create(db.review, 
-                         next=URL(r=request,f='proposed'), onaccept=email_author)
+                         next=URL(r=request,f='proposed'))
     return dict(activity=activity,form=form)
 
 
-@auth.requires(auth.has_membership(role='manager') or user_is_author())
+@auth.requires((auth.has_membership(role='manager') or user_is_author()) and TODAY_DATE>REVIEW_DEADLINE_DATE)
 def confirm(): 
     activity_id = request.args[0]
     activity = db.activity[activity_id]

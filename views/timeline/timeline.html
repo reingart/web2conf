@@ -23,3 +23,25 @@ jQuery(function(){
                  });
 */
 </script>
+
+{{ tbody = TBODY() }}
+
+{{ for number, row in enumerate(cells):}}
+  {{ row_class = "odd" }}
+  {{ if number % 2 == 0:}}
+    {{ row_class = "even" }}
+  {{ pass }}
+  {{ tr = TR(_class=row_class) }}
+  {{ for cell in row: }}
+    {{ if cell is None: }}
+      {{ tr.append(TD(_class="empty")) }}
+    {{ elif cell != 0: }}
+      {{ event = db.event[cell] }}
+      {{ colspan = event_spans(event) }}
+      {{ tr.append(TD(event.title, _class="event", _colspan=colspan)) }}
+    {{ pass }}
+  {{ pass}}
+  {{ tbody.append(tr) }}
+{{ pass }}
+
+{{ =TABLE(tbody) }}

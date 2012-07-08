@@ -4,9 +4,12 @@
 <h1>{{=T('Proposed Activities')}}</h1>
 
 {{for activity_type in ACTIVITY_TYPES:}}
-<h2>{{=T(activity_type)}}</h2>
+{{for track in ACTIVITY_TRACKS:}}
+{{activities_filtered = [act for act in activities if act.type == activity_type and act.track==track]}}
+{{if activities_filtered:}}
+<h2>{{=T(activity_type)}} - track {{=T(track).lower()}}</h2>
 <ul>
-{{for activity in [act for act in activities if act.type == activity_type]:}}
+{{for activity in activities_filtered:}}
 {{review = reviews.get(activity.id)}}
 {{author = authors.get(activity.created_by)}}
 {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
@@ -20,6 +23,8 @@
       )}}
 {{pass}}
 </ul>
+{{pass}}
+{{pass}}
 {{pass}}
 </div>
 
