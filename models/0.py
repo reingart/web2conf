@@ -83,10 +83,10 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
 PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
-REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,15,23,59,59)
+REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
-FACUTOFF_DATE=datetime.datetime(2012,7,10,23,59,0)
+FACUTOFF_DATE=datetime.datetime(2012,7,31,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
