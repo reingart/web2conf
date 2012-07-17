@@ -58,6 +58,7 @@ if ENABLE_FINANCIAL_AID:
     db.fa.rationale.comment= T('describe why you want to come to PyCon')
 
     db.fa.status.writable=db.fa.status.readable=auth.has_membership('manager')
+    db.fa.status.requires=IS_IN_SET(['pending', 'approved', 'denied'])
     db.fa.grant_amount.writable=db.fa.grant_amount.readable=auth.has_membership('manager')
 
     #### ---< END: F/A forms >---

@@ -26,6 +26,23 @@ def application():
             or auth.has_membership(role="manager"))
 def view():
     fa = db(db.fa.id==request.args[0]).select().first()
-    form = SQLFORM(db.fa, request.args[0], readonly=True)
+    manager = auth.has_membership(role="manager")
+    form = SQLFORM(db.fa, request.args[0], readonly=not manager, deletable=manager)
+    if form.accepts(request.vars, session):
+        redirect(URL('edit'))
     response.view = 'generic.html'
     return dict(form=form)
+
+@auth.requires_membership(role="manager")
+def edit():
+    rows = db(db.fa.person==db.auth_user.id).select(db.fa.id, db.auth_user.last_name, db.auth_user.first_name, db.auth_user.email, db.fa.grant_amount)
+    table = SQLTABLE(rows, truncate=None, linkto=lambda fld, typ, ref: URL('view', args=fld))
+    response.view = 'generic.html'
+    return dict(table=table)
+
+@auth.requires_membership(role="manager")
+def grant_all():
+    rows = db(db.fa).select()
+    for fa in rows:
+        db(db.fa.id==fa.id).update(grant_amount=fa.total_amount_requested, status='approved')
+    redirect(URL('edit'))
