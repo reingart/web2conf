@@ -128,8 +128,12 @@ def impersonate():
 
 @auth.requires_login()
 def join_reviewers():
+    import datetime
     group_id = auth.id_group('reviewer')
-    if not auth.has_membership(group_id, auth.user_id):
+    deadline = REVIEW_DEADLINE_DATE - datetime.timedelta(days=31)
+    if TODAY_DATE>deadline:
+        session.flash = T("Deadline to join reviewers group was %s" % deadline)
+    elif not auth.has_membership(group_id, auth.user_id):
         auth.add_membership(group_id, auth.user_id)
         session.flash = T("Added to Reviewer Group!")
     else:
