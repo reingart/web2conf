@@ -61,6 +61,7 @@ db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=
 db.activity.video.writable=db.activity.video.readable=auth.has_membership('reviewer')
 db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=auth.has_membership('manager')
 db.activity.scheduled_room.writable=db.activity.scheduled_room.readable=auth.has_membership('manager')
+db.activity.created_by.writable=db.activity.created_by.readable=auth.has_membership('manager')
 db.activity.scheduled_room.represent = lambda x: x and ACTIVITY_ROOMS[int(x)] or ''
 
 db.activity.represent=lambda activity: \
