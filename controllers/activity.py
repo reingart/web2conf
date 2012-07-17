@@ -311,6 +311,8 @@ def download():
 def email_author(form):
     to = subject = text = cc = None
     user = "%s %s" % (auth.user.first_name, auth.user.last_name)
+    if isinstance(user, unicode):
+        user = user.encode('utf-8', 'replace')
     if request.function == "propose":
         cc = [text.strip() for text in get_option("ON_PROPOSE_EMAIL", "").split(";") if "@" in text]
         for c in (form.vars.cc or '').split(";"):
