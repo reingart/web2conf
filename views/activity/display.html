@@ -26,8 +26,8 @@
   {{for author in authors:}}
     <LI>
 {{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}} ({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
-{{=author.resume}}
-({{=A("...", _href=URL(r=request,f='speakers',args=author.id), _target='new')}})
+{{=I(A(("full bio..."), _href=URL(r=request,f='speakers',args=author.id), _target='new'))}}
+{{=MARKMIN(author.resume)}}
     </LI>
   {{pass}}
   </UL>
@@ -61,7 +61,8 @@
   <UL>
   {{for comment in comments:}}
     <LI>
-    {{=T('User %(created_signature)s on %(created_on)s says: %(body)s') % comment}}
+    {{comment.body = MARKMIN(comment.body.replace('\n', ''))}}
+    {{=XML(T('User %(created_signature)s on %(created_on)s says: %(body)s') % comment, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
     </LI>
   {{pass}}
   </UL>
@@ -77,10 +78,12 @@
   <UL>
   {{for review in reviews:}}
     <LI>
+    {{review.body = MARKMIN(review.body.replace('\n', ''))}}
+
     {{if auth.has_membership(role='manager'):}}
-    {{=T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s') % review}}
+    {{=XML(T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
     {{else:}}
-    {{=T('Rating %(rating)s: %(body)s') % review}}
+    {{=XML(T('Rating %(rating)s: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
     {{pass}}
     </LI>
   {{pass}}

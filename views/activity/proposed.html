@@ -4,6 +4,7 @@
 <h1>{{=T('Proposed Activities')}}</h1>
 
 {{for activity_type in ACTIVITY_TYPES:}}
+{{if activity_type not in ACTIVITY_REVIEWABLE: continue}}
 {{for track in ACTIVITY_TRACKS:}}
 {{activities_filtered = [act for act in activities if act.type == activity_type and act.track==track]}}
 {{if activities_filtered:}}
@@ -15,10 +16,12 @@
 {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
       " (", activity.authors, " ", 
       IMG(_alt=author.country, _src=URL(c='static', f='img', args=FLAGS[author.country])), ") ",
-      review and I(" %s " % T("review:"),
+      review and I(DIV(" %s " % T("review:"),
           A(review.rating, 
            _href=URL(r=request,f='review',args=activity.id), 
-           _title=review.body))  or '',  
+           _title=review.body),
+          ' ', T("last modification: %s") % activity.modified_on),
+           )  or '',  
           activity.confirmed and " (%s) " % T("confirmed") or "",
       )}}
 {{pass}}

@@ -21,22 +21,22 @@ def upload():
             f.write(data)
             f.close()
         ret = dict(filename=filename, data=data, request=request, folder=request.folder, data2=data2)
-        
+
     else:
         ret = dict(form=form, request=request)
     return ret
-    
+
 def testwiki():
     return dict(t=MARKMIN("visita http://www.web2py.com "))
-    
+
 @auth.requires(auth.has_membership(role='manager'))
 def autores():
     query = (db.activity.id>0)
     rows =db(query).select(
         db.activity.authors,
-        db.activity.id.count(), 
+        db.activity.id.count(),
         groupby=(db.activity.authors,),
-        orderby=~(db.activity.id.count()))        
+        orderby=~(db.activity.id.count()))
     return dict(rows=rows)
 
 @auth.requires(auth.has_membership(role='manager'))
@@ -73,7 +73,7 @@ def rename_activity():
             tutorials.remove(old)
             tutorials.append(new)
             db(db.auth_user.id==user.id).update(tutorials=tutorials)
-            
+
             ret.append((user.id, tutorials))
     return dict(ret=ret)
 
@@ -90,7 +90,7 @@ def activity_accept_bulk():
     for id in ids:
         if id.strip():
             db(db.activity.id==id).update(status="accepted")
-        
+
     return ids
 
 
@@ -115,7 +115,7 @@ def create_badge():
 @auth.requires(auth.has_membership(role='manager'))
 def info():
     return {'request': request, 'response': response, 'session': session}
-    
+
 @auth.requires(auth.has_membership(role='manager'))
 def create_cert():
     pdf_template_id = db.pdf_template.insert(title="sample cert", format="A4")
@@ -132,7 +132,7 @@ def create_cert():
 
 @auth.requires_membership(role='manager')
 def copy_labels():
-    # read base label/badge elements from db 
+    # read base label/badge elements from db
     elements = db(db.pdf_element.pdf_template_id==1).select(orderby=db.pdf_element.priority)
     # setup initial offset and width and height:
     x0, y0 = 10, 10
@@ -163,7 +163,7 @@ def copy_labels():
 
 @auth.requires_membership(role='manager')
 def copy_temp():
-    # read base label/badge elements from db 
+    # read base label/badge elements from db
     pdf_template_id = 4
     elements = db(db.pdf_element.pdf_template_id==3).select(orderby=db.pdf_element.priority)
     for element in elements:
@@ -180,3 +180,17 @@ def update_username():
     for row in db(db.auth_user.id>0).select():
         db(db.auth_user.id==row.id).update(username=row.email)
     return "ok"
+
+@auth.requires_membership(role='reviewer')
+def authors_stats():
+    q = db.author.activity_id==db.activity.id
+    q &= ((db.activity.type.contains('talk'))|(db.activity.type=='tutorial'))
+    ##q &= (db.activity.status=='pending')    
+    q &= db.auth_user.id==db.author.user_id
+    qty=db.activity.id.count()#.with_alias('qty')
+    rows = db(q).select(db.auth_user.id, db.auth_user.first_name, db.auth_user.last_name, 
+                        qty, 
+                        groupby=db.auth_user.id|db.auth_user.first_name|db.auth_user.last_name,
+                        orderby=~qty)
+    response.view = "generic.html"
+    return {'rows': rows, 'authors': len(rows)}

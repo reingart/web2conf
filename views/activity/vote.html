@@ -1,7 +1,6 @@
 {{extend 'layout.html'}}
 
 {{ if ALLOW_VOTE: }}
-{{="allow vote is " + str(ALLOW_VOTE)}}
 <div class="frame">
 <h2>{{=T('Voting')}}</h2>
 
@@ -10,8 +9,11 @@
 {{for level in ACTIVITY_LEVELS:}}
 <span>{{=levels[level]}} {{=T(level)}}&nbsp;&nbsp;</span>
 {{pass}}
-<br/>
-{{=message}}
+</p>
+<p>
+Seleccione su preferencia de actividades para la organización del evento. <br/>
+Dado que el proceso de selección no ha finalizado, algunas charlas no estarán disponibles en el cronograma final.
+Las actividades pueden variar sin previo aviso. Listado en orden aleatorio.
 </p>
 
 {{=form}}

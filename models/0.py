@@ -124,11 +124,12 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= ('talk', 'extreme talk', 'poster', 'project',
-                 'keynote', 'panel', 'plenary', 'tutorial',
+ACTIVITY_TYPES= ('keynote', 'panel', 'plenary', 
+                 'talk', 'extreme talk', 'poster', 
+                 'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
-                 'sprint', 'workshop', 'paper', 'conference break',
+                 'sprint', 'paper', 'conference break',
                  'conference wide')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
@@ -139,7 +140,9 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
 
 # override other activities
 ACTIVITY_COMMON = ["keynote", "lightning talk", "conference break", "conference wide"]
-
+ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
+ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
+ 
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}

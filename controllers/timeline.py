@@ -36,7 +36,7 @@ def fill_free_slots(event, fields, start, end):
                 fs.append(value)
         else:
             fs.append(value)
-
+            
     if spans == 0:
         return fs
     else:
@@ -67,10 +67,10 @@ def index():
     for i, event in enumerate(events):
         # loop trough each created table line
         free = None
-
+        
         deltas[time_distance(request.now, event.starts)] = event.id
         deltas[time_distance(request.now, event.ends)] = event.id
-
+        
         for j, fields in enumerate(filled):
             # search a free space
             free = fill_free_slots(event, fields, start, end)
@@ -102,4 +102,3 @@ def events():
         e = dict(event=event, kind="end")
         stack[time_distance(request.now, event.ends)] = e
     return dict(stack=stack)
-    

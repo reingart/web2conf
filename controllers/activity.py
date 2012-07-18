@@ -9,7 +9,7 @@ if not request.function in ('accepted', 'propossed', 'ratings', 'vote'):
 
 @auth.requires_login()
 def proposed():
-    activities=db(db.activity.id>0).select(orderby=db.activity.title)
+    activities=db(db.activity.id>0).select(orderby=~db.activity.modified_on)
     rows = db(db.review.created_by==auth.user.id).select()
     reviews = dict([(row.activity_id, row) for row in rows])
 
@@ -34,7 +34,8 @@ def ratings():
         orderby=~avg)
     
     votes = {}
-    for k,item in enumerate(TUTORIALS_LIST):
+    tutorial_list = [r.activity.title for r in ratings]
+    for k,item in enumerate(tutorial_list ):
         m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
         votes[item] = m
                 
@@ -44,32 +45,59 @@ def ratings():
 
 @auth.requires_login()
 def vote():
-
-    rows = db(db.activity.id>=1).select(
+    import random
+    
+    rows = db(db.activity.status=='pending').select(
             db.activity.id, 
             db.activity.title, 
             db.activity.authors, 
             db.activity.level, 
             db.activity.abstract,
             db.activity.categories, 
+            db.activity.created_by,
+            db.activity.type,
+            db.activity.track,
             orderby=db.activity.title)
     
     activities = {}
+    rows = list(rows)
+    random.shuffle(rows)
     
     fields = []
-    for row in rows:
-        activities[row.id] = row.title
-        fields.append(LI(
-            INPUT(_name='check.%s' % row.id, 
-                  _type="checkbox", 
-                  value=(auth.user.tutorials and row.title in auth.user.tutorials) and "on" or "",
-                  ),
-            LABEL(B(row.title), " ",  
-                  ACTIVITY_LEVEL_HINT[row.level],
-                  I(" %s (%s): " % (', '.join(row.categories or []), row.authors)), row.abstract,
-                  _for='check.%s' % row.id),
-            ))
-    
+    for activity_type in ACTIVITY_TYPES:
+        if activity_type in ('panel', 'poster', 'plenary', 'project'):
+            continue
+        for track in ACTIVITY_TRACKS:
+            activities_filtered = [act for act in rows if act.type == activity_type and act.track==track]
+            if not activities_filtered:
+                continue
+            fields.append(H3(T(activity_type), " - track ", T(track).lower()))    
+            
+            for row in activities_filtered:
+                activities[row.id] = row.title
+                activity = row
+                author = db.auth_user[activity.created_by]
+                u = PluginMModal(title="%s, %s" % (author.last_name, author.first_name),
+                    content=(author.photo and IMG(_alt=author.last_name, 
+                                                  _src=URL(r=request,c='default',f='fast_download', args=author.photo),  
+                                                  _width="100px",_height="100px", 
+                                                  _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; "
+                             ).xml() or '')+MARKMIN(author.resume or '').xml(),close=T('close'),width=50,height=50)
+                a = PluginMModal(title=activity.title,content=MARKMIN(activity.abstract or '').xml(),close=T('close'),width=50,height=50)
+                fields.append(a)
+                fields.append(u)
+                fields.append(LI(
+                    INPUT(_name='check.%s' % row.id, 
+                          _type="checkbox", 
+                          value=(auth.user.tutorials and row.title in auth.user.tutorials) and "on" or "",
+                          ),
+                    LABEL(a.link(activity.title), " ",  
+                          ACTIVITY_LEVEL_HINT[row.level],
+                          I(" %s " % (', '.join(row.categories or []) ), " (", u.link(activity.authors), ")"),
+                          _for='check.%s' % row.id),
+                    ))
+        
+        
     form = FORM(UL(fields, INPUT(_type="submit"), _class="checklist"))
         
     selected = []
@@ -206,6 +234,8 @@ def info():
 
 @auth.requires(auth.has_membership(role='manager')  or auth.has_membership(role='reviewer') or user_is_author())
 def comment():
+    ##session.flash = "los comentarios estan deshabilitados temporalmente, por favor reintente luego"
+    ##redirect(URL('display', args=request.args[0]))
     activity = db(db.activity.id==request.args[0]).select()[0]
     db.comment.activity_id.default=activity.id
     form=crud.create(db.comment, 
@@ -348,4 +378,5 @@ def email_author(form):
         to = auth.user.email
 
     if to:
+        db.commit()   # just in case, save the changes to the db if email fails
         notify(subject, text, to=to, cc=cc)
