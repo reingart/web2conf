@@ -1,10 +1,10 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 db.define_table("pdf_template",
     Field("pdf_template_id","id"),
     Field("title"),
     Field("format", requires=IS_IN_SET(["A4","legal","letter"])),
-)
+    migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table("pdf_element",
     Field("pdf_template_id", db.pdf_template, requires=IS_IN_DB(db,'pdf_template.pdf_template_id', 'pdf_template.title')),
@@ -24,4 +24,4 @@ db.define_table("pdf_element",
     Field("align", "string", length=1, default="L", requires=IS_IN_SET(['L', 'R', 'C', 'J'])),
     Field("text", "text", comment="Default text"),
     Field("priority", "integer", default=0, comment="Z-Order"),
-    )
+    migrate=migrate, fake_migrate=fake_migrate)

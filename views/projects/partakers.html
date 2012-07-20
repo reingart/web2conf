@@ -1,9 +1,9 @@
 {{extend 'layout.html'}}
 {{=H3(T("Partakers of %s") % project.title)}}
 {{for partaker in partakers:}}
-  {{=H5(partaker.user.first_name + " " + partaker.user.last_name)}}
+  {{=H5(partaker.user_id.first_name + " " + partaker.user_id.last_name)}}
   {{=DIV(partaker.comment)}}
-  {{=DIV(partaker.user.email)}}
+  {{=DIV(partaker.user_id.email)}}
   {{=BR()}}
 {{pass}}
 {{=BR()}}

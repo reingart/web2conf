@@ -16,4 +16,4 @@ db.define_table('event',
           comment=T("You can use markmin syntax here"),
           represent=lambda x: MARKMIN(x)),
     Field("tags", "list:string"),
-    Field("show", "boolean", default=False))
+    Field("show", "boolean", default=False), migrate=migrate, fake_migrate=fake_migrate)
