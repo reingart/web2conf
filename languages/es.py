@@ -445,6 +445,7 @@
 'Prospectus': 'Prospecto',
 'Prymatex, un editor de texto extensible en tu lenguaje': 'Prymatex, un editor de texto extensible en tu lenguaje',
 'Publicize': 'Difusión',
+'PyAfipWs': 'PyAfipWs',
 'PyCon Argentina 2011 Confirmación de Inscripción': 'PyCon Argentina 2011 Confirmación de Inscripción',
 'PyConAr Blog': 'PyConAr Blog',
 'PyConAr Sprint Projects': 'PyConAr Sprint Projects',
