@@ -37,9 +37,8 @@ if DEV_TEST:
     if request.vars.force_language: session.language=request.vars.force_language
     if session.language: T.force(session.language)
 else:
-    # DBURI set in 0_private.py
-    DBURI='postgres://web2py:password@localhost/pycon2011'
-    DBPOOLS=0
+    # set dburi in 0_private.py
+    DBURI = None
 
 TWITTER_HASH = "pyconar"
 

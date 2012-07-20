@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 # dynamic menu (enable in 0.py, remember to add navbar records!)
 
@@ -12,7 +12,7 @@ if NAVBAR:
         Field("sortable", "integer"),
         Field("parent_id", "reference navbar"),
         format="%(title)s",
-        migrate=migrate,
+        migrate=migrate, fake_migrate=fake_migrate
         )
 
     def get_sub_menus(parent_id, default_c=None, default_f=None):

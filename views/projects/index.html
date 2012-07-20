@@ -16,9 +16,9 @@
 {{=MARKMIN(project.abstract)}}
 
 {{project_partakers = db(db.partaker.activity == project.id).select()}}
-{{confirmed=[LI(A(str(partaker.user.first_name) + " " + str(partaker.user.last_name), _href=partaker.user.personal_home_page)) for partaker in project_partakers if partaker.add_me]}}
+{{confirmed=[LI(A(str(partaker.user_id.first_name) + " " + str(partaker.user_id.last_name), _href=partaker.user_id.personal_home_page)) for partaker in project_partakers if partaker.add_me]}}
 
-{{partaker_ids = [partaker.user.id for partaker in project_partakers]}}
+{{partaker_ids = [partaker.user_id.id for partaker in project_partakers]}}
 
 {{if len(confirmed) > 0:}}
   {{=H4("Confirmed assistance")}}

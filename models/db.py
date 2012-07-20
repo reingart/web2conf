@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = False
+migrate = True
 fake_migrate = False
 
 if SUSPEND_SERVICE:
@@ -137,7 +138,9 @@ if not JANRAIN:
 
 auth.settings.table_user=db.auth_user
 auth.settings.cas_domains = None        # disable CAS
+
 auth.define_tables(username=False)
+
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
