@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 response.menu=[]
 
@@ -18,7 +18,7 @@ else:
         [T('About'),True,URL(r=request,c='conference',f='about')],
         ##[T('Venue'),True,URL(r=request,c='conference',f='venue')],
         ##[T('Maps'),True,URL(r=request,c='conference',f='maps')],       
-        [ T('Conference'), True, None, [
+        [ T('Conference'), True, URL(r=request,c='conference',f='index'), [
         [T('Schedule'),True,URL(r=request,c='schedule',f='index')],
         [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
         [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
@@ -32,6 +32,9 @@ else:
 
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
         [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
+        [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
+        [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
+        [T('Press Release'),True,URL(r=request,c='conference',f='press')],
         [T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
         [T('RSS'),True,None, menu_feeds]]]]
 
@@ -53,12 +56,13 @@ if ENABLE_TALKS:
    else:
         url = URL(r=request,c='conference',f='proposals')
    response.menu.append([T('Activities'),False,url,submenu_activities])
-   submenu_activities.append([T('Proposals'),False, url])   
+   submenu_activities.append([T('Proposals'),False, url])
    submenu_activities.append([T('Timetable'),False,URL(r=request,c='schedule',f='index')])
    submenu_activities.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
    submenu_activities.append([T('Speakers'),False,URL(r=request,c='activity',f='speakers')])
    submenu_activities.append([T('Ratings'),False,URL(r=request,c='activity',f='ratings')])
+   submenu_activities.append([T('Timeline'),False,URL(r=request,c='timeline',f='index')])
 
 response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index'), [
     [T('Index'),False,URL(r=request,c='sponsors',f='index')],
@@ -87,8 +91,9 @@ response.menu.append([T('Venue'),False,URL(r=request,c='venue',f='index'), [
 
 if auth.has_membership(role='manager'):
     submenu=[
-        [T('Settings'),False,URL("manage", "control_panel"), []],    
+        [T('Settings'),False,URL("manage", "control_panel"), []],
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
+        [T('Events'),False,URL("manage", "events"), []],        
         [T('Upload'),False,URL(r=request,c='manage',f='upload'), []],
         [T('Attendee Mail-List'),False, URL(r=request,c='manage',f='maillist')],
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],

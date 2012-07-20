@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 {{if form and format=='HTML':}}
-<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.js')}}"></script>
-<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.css')}}" />
+<script type="text/javascript" src="{{=URL(a=request.application, c='static', f='plugin_flatpages/jquery.wysiwyg.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(a=request.application, c='static', f='plugin_flatpages/jquery.wysiwyg.css')}}" />
 <script type="text/javascript">
 $(function()
   {
@@ -19,16 +19,22 @@ $(function()
 {{pass}}
 
 {{ =HR() }}
+
+{{=H3(T("Nearest events"))}}
+{{=LOAD(c="timeline", f="events.load")}}
+{{=A(T("more"), _href=URL(c="timeline", f="index"))}}
+
+{{ =HR() }}
 <div>
-  {{ =LOAD("default", "planet.load") }}
+  {{ =LOAD(c="default", f="planet.load") }}
 </div>
 {{ =HR() }}
 {{if True or TWITTER_HASH:}}
   <div>
-    <h3><img src={{=URL(c="static",f="/img/twitter.png")}} alt="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}} &nbsp;
+    <h3><img src={{=URL(c="static", f="img/twitter.png")}} alt="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}} &nbsp;
     <a href="https://twitter.com/pyconar" class="twitter-follow-button" data-show-count="false" data-lang="es">Seguir a @pyconar</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></h3>
       <div class="tweets" class="tweets">
-        {{ =LOAD("default", "twitter.load") }}
+        {{ =LOAD(c="default", f="twitter.load") }}
       </div>
   </div>
 {{pass}}

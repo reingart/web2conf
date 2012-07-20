@@ -34,10 +34,7 @@ colors=['#ff0000','#ff0033','#ff0066','#ff0099','#ff00cc','#ff00ff',
         '#669900','#669933','#669966','#669999','#6699cc','#cc99ff',
         '#33cc00','#33cc33','#33cc66','#33cc99','#33cccc','#33ccff',
         '#00ff00','#00ff33','#00ff66','#00ff99','#00ffcc','#00ffff',
-        '#000000','#000000','#000000','#000000','#000000','#000000',
-        '#000000','#000000','#000000','#000000','#000000','#000000',
-        '#000000','#000000','#000000','#000000','#000000','#000000',
-                ]
+        ] + ['#000000']*100
 
 def barchart(data,width=400,height=15,scale=None,
              label_width=50,values_width=50):
@@ -139,7 +136,7 @@ def brief():
     for row in db().select(db.activity.ALL):
         status = "%s%s" % (row.status, row.confirmed and " (confirmed)" or "")
         activity_status[status]=activity_status.get(status,0)+1
-        if row.status=="accepted":
+        if not request.args or request.args[0] == row.status:
             activity_types[row.type]=activity_types.get(row.type,0)+1
             activity_levels[row.level]=activity_levels.get(row.level,0)+1
             for category in row.categories:
@@ -152,9 +149,11 @@ def brief():
     authors_country={}
     q = db.auth_user.id==db.author.user_id
     q &=db.activity.id==db.author.activity_id
-    q &=db.activity.status=="accepted"
-    for row in db(q).select():
-        authors_country[row.auth_user.country]=authors_country.get(row.auth_user.country,0)+1
+    q &= db.auth_user.country != None
+    if request.args and request.args[0] in ("accepted", "rejected", "pending", "declined"): 
+        q &=db.activity.status==request.args[0]
+    for row in db(q).select(db.auth_user.id, db.auth_user.country, groupby=db.auth_user.id):
+        authors_country[row.country]=authors_country.get(row.country,0)+1
     chart_country=colorize(authors_country)
 
     d = dict(chart_status=chart_status,
@@ -164,7 +163,7 @@ def brief():
                 chart_country=chart_country,
                 )
     return response.render(d)
-    
+
 ##@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def maps():
     rows=db(db.auth_user.id>0).select(

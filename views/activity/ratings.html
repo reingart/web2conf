@@ -3,33 +3,40 @@
 <div class="frame">
 <h1>{{=T('Ratings Summary')}} ({{=T('reviewers')}})</h1>
 
-{{for status in ['accepted','pending', 'rejected', 'declined']:}}
-<h3>{{="%s %s" % (T("Activities"), T(status))}}</h3>
+{{for activity_type in ACTIVITY_TYPES:}}
+{{if activity_type  not in ACTIVITY_REVIEWABLE: continue}}
+{{for track in ACTIVITY_TRACKS:}}
+{{activities_filtered = [act for act in ratings if act.activity.type == activity_type and act.activity.track==track]}}
+{{if activities_filtered:}}
+<h3>{{=T(activity_type)}} - track {{=T(track).lower()}}</h3>
+
 <table class="schedule" id="sortable_table">
 <thead>
 <tr>
-    <th width="10%">{{=T("ID")}}</th>
+    <th width="10%">{{=T("Nª")}}</th>
     <th >{{=T("Title")}}</th>
     <th width="30%">{{=T("Authors")}}</th>
     <th width="10%">{{=T("Duration")}}</th>
+    <th width="10%">{{=T("Status")}}</th>
     <th width="5%">{{=T("User Votes")}}</th>
     <th width="5%">{{=T("# Reviews")}}</th>
     <th width="5%">{{=T("Rating Average")}}</th>
 </tr>   
 </thead>
 <tbody>
-{{for i, row in enumerate([r for r in ratings if r.activity.status==status]):}}
+{{for i, row in enumerate(activities_filtered):}}
 {{activity=row.activity}}
 {{author=row.auth_user}}
 {{a=PluginMModal(title=activity.title,content=(activity.abstract or ''),close=T('close'),width=50,height=50)}}
 {{=a}}
-{{u=PluginMModal(title="%s, %s" % (author.last_name, author.first_name),content=(author.photo and IMG(_alt=author.last_name, _src=URL(r=request,c='default',f='fast_download', args=author.photo),  _width="100px",_height="100px", _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; ").xml() or '')+(author.resume or ''),close=T('close'),width=50,height=50)}}
+{{u=PluginMModal(title="%s, %s" % (author.last_name, author.first_name),content=(author.photo and IMG(_alt=author.last_name, _src=URL(r=request,c='default',f='fast_download', args=author.photo),  _width="100px",_height="100px", _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; ").xml() or '')+MARKMIN(author.resume or '').xml(),close=T('close'),width=50,height=50)}}
 {{=u}}
 <tr class="{{=i%2 and 'even' or 'odd'}}">
-<td style="text-align: right">{{=A(activity.id, _href=URL("display",args=activity.id))}}</td>
+<td style="text-align: right">{{=A(i+1, _href=URL("display",args=activity.id))}}</td>
 <td>{{=a.link(activity.title)}} </td>
 <td>{{=u.link(activity.authors)}}</td>
 <td style="text-align: center">{{=activity.duration}}' {{=levels.get(activity.level, "")}}</td>
+<td style="text-align: center">{{=T(activity.status)}}</td>
 <td style="text-align: right">{{=votes.get(activity.title,"")}}</td>
 <td style="text-align: right">{{=row["COUNT(review.rating)"]}}</td>
 <td style="text-align: right">{{=row["COUNT(review.rating)"] and "%0.2f" % (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"])) or ''}}</td>
@@ -40,6 +47,9 @@
 </table>
 
 {{pass}}
+{{pass}}
+
+{{pass}}
 
 <p/>
 <p><b>Metodología</b>: Cada revisor otorga un puntaje de 0 a 5 según su criterio (de menor a mayor valoración), puede abstenerse de puntuar una propuesta y no pueden revisar sus propias propuestas. Al finalizar, se suman y promedian los puntajes de todos los revisores, las charlas con mejor puntuación son preseleccionadas para la confección definitiva del programa, teniendo en cuenta el resto de los criterios (voto de usuarios, disponibilidad, organización, contenidos, etc.).
@@ -48,7 +58,6 @@
 <p><b>Nota</b>: los votos de usuarios pueden haber variado desde el momento en que se relizó el corte para la selección de propuestas (los usuarios pueden cambiar sus preferencias luego de definir el programa pero esto no es tenido en cuenta).</p>
 </div>
 
-{{pass}}
 
 {{if not ratings:}}
 No ratings yet

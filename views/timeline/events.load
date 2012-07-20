@@ -1,0 +1,23 @@
+{{ul = UL()}}
+{{ for i, key in enumerate(sorted(stack)):}}
+  {{title = stack[key]["event"].title}}
+  {{try:}}
+    {{ start = stack[key]["event"].starts.strftime("%a, %d %b %Y %H:%M:%S")}}
+  {{except AttributeError:}}
+    {{ start = None }}
+  {{pass}}
+  {{try:}}
+    {{ end = stack[key]["event"].ends.strftime("%a, %d %b %Y %H:%M:%S")}}
+  {{except AttributeError:}}
+    {{ end = None }}
+  {{pass}}
+  {{if stack[key]["kind"] == "start":}}
+    {{ul.append(LI(P(T("Start of %s: %s") % (title, start))))}}
+  {{else:}}
+    {{ul.append(LI(P(T("End of %s: %s") % (title, end))))}}
+  {{pass}}
+  {{if i >= 2:}}
+    {{break}}
+  {{pass}}
+{{ pass }}
+{{=ul}}

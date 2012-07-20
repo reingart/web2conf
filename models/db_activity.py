@@ -1,7 +1,4 @@
-# coding: utf8
-
-import datetime
-now=datetime.datetime.now()
+# -*- coding: utf-8 -*-
 
 ######################################
 ### MANAGE ACTIVITIES ("TALK" PROPOSALS)
@@ -11,7 +8,7 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
-    db.Field('duration','integer',label=T("Duration")), # era 45 min
+    db.Field('duration','integer',label=T("Duration in minutes")), # era 45 min
     db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
     db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
     db.Field('abstract','text',label=T("Abstract")),
@@ -35,10 +32,11 @@ db.define_table('activity',
     db.Field('notes', 'text', comment=T("Additional remarks"), label=T("Notes")),
     db.Field('license', 'string', default="CC BY-SA, Atribución - Compartir derivadas de la misma forma.", label=T("License")),
     format='%(title)s',
-    migrate=migrate)
+    migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table("partaker", Field("activity", db.activity),
                 Field("user", db.auth_user),
+                Field("user_id", db.auth_user),
                 Field("add_me", "boolean", default=True, comment=T("Confirm my assistance")),
                 Field("comment", "text", comment=T("Write a comment for the project's owner")))
 
@@ -64,6 +62,7 @@ db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=
 db.activity.video.writable=db.activity.video.readable=auth.has_membership('reviewer')
 db.activity.scheduled_datetime.writable=db.activity.scheduled_datetime.readable=auth.has_membership('manager')
 db.activity.scheduled_room.writable=db.activity.scheduled_room.readable=auth.has_membership('manager')
+db.activity.created_by.writable=db.activity.created_by.readable=auth.has_membership('manager')
 db.activity.scheduled_room.represent = lambda x: x and ACTIVITY_ROOMS[int(x)] or ''
 
 db.activity.represent=lambda activity: \
@@ -75,7 +74,7 @@ db.activity.duration.represent=lambda activity_duration: activity_duration and (
 
 db.activity.notes.default = "Tipo de público: \nConocimientos previos: \nRequisitos Especiales: (hardware, materiales, ayuda financiera)"
 
-db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate)
+db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table('attachment',
    db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
@@ -86,7 +85,7 @@ db.define_table('attachment',
    db.Field('filename'),
    db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
    db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
-   migrate=migrate)
+   migrate=migrate, fake_migrate=fake_migrate)
 db.attachment.name.requires=IS_NOT_EMPTY()
 db.attachment.file.requires=IS_NOT_EMPTY()
 db.attachment.filename.requires=IS_NOT_EMPTY()
@@ -99,7 +98,7 @@ db.define_table('comment',
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
    db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
    db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
-   migrate=migrate)
+   migrate=migrate, fake_migrate=fake_migrate)
 db.comment.body.requires=IS_NOT_EMPTY()
 
 db.define_table('review',
@@ -110,7 +109,7 @@ db.define_table('review',
    db.Field('created_signature',label=T("Created Signature"),readable=False,writable=False,
              default=('%s %s' % (auth.user.first_name,auth.user.last_name)) if auth.user else ''),
    db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
-   migrate=migrate)
+   migrate=migrate, fake_migrate=fake_migrate)
 #db.review.body.requires=IS_NOT_EMPTY()
 db.review.rating.requires=IS_IN_SET([x for x in range(0,6)])
 
@@ -119,7 +118,7 @@ db.define_table('author',
     db.Field('activity_id', db.activity),
     db.Field('created_by','integer',label=T("Created By"),readable=False,writable=False,default=auth.user.id if auth.user else 0),
     db.Field('created_on','datetime',label=T("Created On"),readable=False,writable=False,default=request.now),
-    migrate=migrate)
+    migrate=migrate, fake_migrate=fake_migrate)
 
 def user_is_author(activity_id=None):
     if not auth.is_logged_in() or (not request.args and activity_id is None) or not request.args[0].isdigit():

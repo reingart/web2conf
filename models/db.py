@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
@@ -72,6 +73,9 @@ db.define_table('auth_user',
     db.Field('longitude','double',default=0.0,readable=False,writable=False),
     db.Field('confirmed','boolean',default=False,writable=False,readable=False),
     db.Field('registration_key',length=64,default='',readable=False,writable=False),
+    db.Field('reset_password_key',length=64,default='',readable=False,writable=False),
+    Field('reset_password_key', length=512, writable=False, readable=False, default=''),
+    Field('registration_id', length=512, writable=False, readable=False, default=''),
     db.Field('created_by_ip',readable=False,writable=False,default=request.client),
     db.Field('created_on','datetime',readable=False,writable=False,default=request.now),
     ##db.Field('cena_viernes','boolean', comment="-con cargo-"),
@@ -133,7 +137,10 @@ if not JANRAIN:
     db.auth_user.password.requires.append(IS_NOT_EMPTY())
 
 auth.settings.table_user=db.auth_user
+auth.settings.cas_domains = None        # disable CAS
+
 auth.define_tables(username=False)
+
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
@@ -159,7 +166,7 @@ if EMAIL_SERVER:
     auth.messages.verify_email = EMAIL_VERIFY_BODY
     
 if RECAPTCHA_PUBLIC_KEY:
-    auth.setting.captcha=Recaptcha(request,RECAPTCHA_PUBLIC_KEY,RECAPTCHA_PRIVATE_KEY)
+    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
 auth.define_tables()
 
 db.auth_membership.user_id.represent=lambda v: "%(last_name)s, %(first_name)s (%(id)s)" % db.auth_user[v]

@@ -1,0 +1,85 @@
+{{extend 'layout.html'}}
+
+{{def tdif(t):}}
+  {{hours=t.seconds/3600}}
+  {{=T("%(days)s days, %(hours)s hours, %(minutes)s minutes") % dict(hours=t.seconds/3600, days=t.days, minutes=(t.seconds/60 - hours*60))}}
+{{pass}}
+<div class="frame">
+<h1>{{=T('Conference events')}}</h1>
+
+{{ tbody = TBODY() }}
+
+<!-- Cells is a rectangular array with the following data codes:
+* any integer but 0 is an event id (an event start)
+* 0 means do not fill with a table cell (it's within an event cell space)
+* None means fill with a table cell (it's empty but should be present)
+-->
+
+{{ for number, row in enumerate(cells):}}
+  {{ row_class = "odd" }}
+  {{ if number % 2 == 0:}}
+    {{ row_class = "even" }}
+  {{ pass }}
+  {{ tr = TR(_class=row_class) }}
+  {{ for cell in row: }}
+    {{ if cell is None: }}
+      {{ tr.append(TD(_class="empty")) }}
+    {{ elif cell != 0: }}
+      <!-- Here goes the event data if found -->
+      {{ event = db.event[cell] }}
+      <!-- Calculate event cell colspan -->
+      {{ colspan = event_spans(event) }}
+      {{ td_class = "event"}}
+      <!-- Check wether it's the nearest event (append next to the element classes)-->
+      {{ if event.id == next_event: }}
+        {{ td_class += " next"}}
+      {{ pass }}
+
+      {{ tr.append(TD(A(H5(event.title), _href="#%s" % event.id), _class=td_class, _colspan=colspan)) }}
+    {{ pass }}
+  {{ pass}}
+  {{ tbody.append(tr) }}
+{{ pass }}
+
+{{ =DIV(TABLE(tbody), _style="overflow: auto;width: 100%;") }}
+
+<!-- Focus on the next event when page starts -->
+
+{{=SCRIPT("""
+jQuery(function(){
+  jQuery(".event.next").focus();
+});
+""")}}
+
+<ul>
+{{for event in events:}}
+  <li>
+    {{if event.url:}}
+      {{=H3(A(event.title, _href=event.url, _id=event.id ))}}
+    {{else:}}
+      {{=H3(event.title)}}
+      {{if is_manager:}}
+        {{=A("Edit this event", _href=URL(c="manage", f="event", args=["event", event.id]))}}
+      {{pass}}
+    {{pass}}
+    {{if not event.body in (None, ""):}}
+    
+      {{=HR()}}
+      {{=MARKMIN(event.body)}}
+      {{=HR()}}
+    {{pass}}
+    <span>{{=T("Start time")}} {{=event.starts}}</span>
+    <br />
+    <span>{{=T("End time")}} {{=event.ends}}</span>
+    <br />
+    {{if event.ends > request.now and event.starts <= request.now:}}
+      <h5>{{=T("Time left")}}: {{tdif(event.ends -request.now)}}</h5>
+    {{pass}}
+    {{if event.starts > request.now:}}
+      <h5>{{=T("Starts in")}} {{tdif(event.starts -request.now)}}</h5>
+    {{pass}}
+    {{=BR()}}
+  </li>
+{{pass}}
+<ul>
+</div>

@@ -9,10 +9,15 @@ if not request.function in ('accepted', 'propossed', 'ratings', 'vote'):
 
 @auth.requires_login()
 def proposed():
-    activities=db(db.activity.id>0).select(orderby=db.activity.title)
+    activities=db(db.activity.id>0).select(orderby=~db.activity.modified_on)
     rows = db(db.review.created_by==auth.user.id).select()
     reviews = dict([(row.activity_id, row) for row in rows])
-    d = dict(activities=activities, reviews=reviews)
+
+    query = (db.auth_user.id==db.activity.created_by)
+    rows=db(query).select(db.auth_user.ALL)
+    authors = dict([(row.id, row) for row in rows])
+    
+    d = dict(activities=activities, reviews=reviews, authors=authors)
     return response.render(d)
 
 @auth.requires(auth.has_membership(role='reviewer') or TODAY_DATE>REVIEW_DEADLINE_DATE)
@@ -29,7 +34,8 @@ def ratings():
         orderby=~avg)
     
     votes = {}
-    for k,item in enumerate(TUTORIALS_LIST):
+    tutorial_list = [r.activity.title for r in ratings]
+    for k,item in enumerate(tutorial_list ):
         m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
         votes[item] = m
                 
@@ -39,32 +45,59 @@ def ratings():
 
 @auth.requires_login()
 def vote():
-
-    rows = db(db.activity.id>=1).select(
+    import random
+    
+    rows = db(db.activity.status=='pending').select(
             db.activity.id, 
             db.activity.title, 
             db.activity.authors, 
             db.activity.level, 
             db.activity.abstract,
             db.activity.categories, 
+            db.activity.created_by,
+            db.activity.type,
+            db.activity.track,
             orderby=db.activity.title)
     
     activities = {}
+    rows = list(rows)
+    random.shuffle(rows)
     
     fields = []
-    for row in rows:
-        activities[row.id] = row.title
-        fields.append(LI(
-            INPUT(_name='check.%s' % row.id, 
-                  _type="checkbox", 
-                  value=(auth.user.tutorials and row.title in auth.user.tutorials) and "on" or "",
-                  ),
-            LABEL(B(row.title), " ",  
-                  ACTIVITY_LEVEL_HINT[row.level],
-                  I(" %s (%s): " % (', '.join(row.categories or []), row.authors)), row.abstract,
-                  _for='check.%s' % row.id),
-            ))
-    
+    for activity_type in ACTIVITY_TYPES:
+        if activity_type in ('panel', 'poster', 'plenary', 'project'):
+            continue
+        for track in ACTIVITY_TRACKS:
+            activities_filtered = [act for act in rows if act.type == activity_type and act.track==track]
+            if not activities_filtered:
+                continue
+            fields.append(H3(T(activity_type), " - track ", T(track).lower()))    
+            
+            for row in activities_filtered:
+                activities[row.id] = row.title
+                activity = row
+                author = db.auth_user[activity.created_by]
+                u = PluginMModal(title="%s, %s" % (author.last_name, author.first_name),
+                    content=(author.photo and IMG(_alt=author.last_name, 
+                                                  _src=URL(r=request,c='default',f='fast_download', args=author.photo),  
+                                                  _width="100px",_height="100px", 
+                                                  _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; "
+                             ).xml() or '')+MARKMIN(author.resume or '').xml(),close=T('close'),width=50,height=50)
+                a = PluginMModal(title=activity.title,content=MARKMIN(activity.abstract or '').xml(),close=T('close'),width=50,height=50)
+                fields.append(a)
+                fields.append(u)
+                fields.append(LI(
+                    INPUT(_name='check.%s' % row.id, 
+                          _type="checkbox", 
+                          value=(auth.user.tutorials and row.title in auth.user.tutorials) and "on" or "",
+                          ),
+                    LABEL(a.link(activity.title), " ",  
+                          ACTIVITY_LEVEL_HINT[row.level],
+                          I(" %s " % (', '.join(row.categories or []) ), " (", u.link(activity.authors), ")"),
+                          _for='check.%s' % row.id),
+                    ))
+        
+        
     form = FORM(UL(fields, INPUT(_type="submit"), _class="checklist"))
         
     selected = []
@@ -106,9 +139,35 @@ def accepted():
         attachs.setdefault(attach.activity_id, []).append(attach) 
     d = dict(rows=rows,attachs=attachs)
     return response.render(d)
+
+def check_speaker_profile():
+
+    # refresh user data (warning: session is not changed!)
+    auth.user = db.auth_user[auth.user_id]
     
+    d = {'first_name': auth.user.first_name,
+         'last_name': auth.user.last_name,
+         'email':auth.user.email,
+         'bio': auth.user.resume, 
+         'photo': auth.user.photo,
+         'country': auth.user.country,
+         'city': auth.user.city,
+         'state': auth.user.state,
+         'phone_number': auth.user.phone_number,
+         }
+    
+    err = []
+    for k, v in d.items():
+        if not v: err.append(str(T(k)))
+    if err:
+        session.flash = "Debe completar previamente su perfil de disertante (%s)!" % ', '.join(err)
+        redirect(URL(c="user", f="profile", args=["speaker"]))
+    return 'Ok'
+   
 @auth.requires_login()
 def propose():
+
+    check_speaker_profile()
     if request.args:
         activity_type = len(request.args) > 0 and request.args[0].replace("_", " ")
         duration = ACTIVITY_DURATION.get(request.args[0].replace("_", " "))
@@ -126,14 +185,25 @@ def propose():
 
     # TODO:  one-to-many author/activity relations
     insert_author = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)
+
+    # check deadline per activity type    
+    def my_form_processing(form):
+        activity_type = form.vars.type
+        deadline = PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE.get(activity_type)
+        if deadline and deadline<request.now:
+           form.errors.type = T('%s submission closed on %s') % (activity_type, deadline)
+           
+    validate = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)
     return dict(form=crud.create(db.activity, 
                                  next='display/[id]', 
+                                 onvalidation=my_form_processing,
                                  onaccept=[insert_author, email_author]))
 
 @auth.requires(auth.has_membership(role='manager') or (user_is_author() and TODAY_DATE<PROPOSALS_DEADLINE_DATE))
 def update():
     if not db(db.activity.created_by==auth.user.id and db.activity.id==request.args[0]).count():
         redirect(URL(r=reuqest,f='index'))
+    check_speaker_profile()
     form=crud.update(db.activity, request.args[0],
                      next='display/[id]',
                      ondelete=lambda form: redirect(URL(r=request,f='index')))
@@ -164,6 +234,8 @@ def info():
 
 @auth.requires(auth.has_membership(role='manager')  or auth.has_membership(role='reviewer') or user_is_author())
 def comment():
+    ##session.flash = "los comentarios estan deshabilitados temporalmente, por favor reintente luego"
+    ##redirect(URL('display', args=request.args[0]))
     activity = db(db.activity.id==request.args[0]).select()[0]
     db.comment.activity_id.default=activity.id
     form=crud.create(db.comment, 
@@ -192,18 +264,19 @@ def review():
     activity = db(db.activity.id==request.args[0]).select()[0]
     reviews = db((db.review.activity_id==activity.id)&(db.review.created_by==auth.user_id)).select()
     
+    #  onaccept=email_author
     if reviews:
         form=crud.update(db.review, reviews[0].id,
                          next=URL(r=request,f='proposed'),
-                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')), onaccept=email_author)
+                         ondelete=lambda form: redirect(URL(r=request,c='default',f='index')),)
     else:
         db.review.activity_id.default=activity.id
         form=crud.create(db.review, 
-                         next=URL(r=request,f='proposed'), onaccept=email_author)
+                         next=URL(r=request,f='proposed'))
     return dict(activity=activity,form=form)
 
 
-@auth.requires(auth.has_membership(role='manager') or user_is_author())
+@auth.requires((auth.has_membership(role='manager') or user_is_author()) and TODAY_DATE>REVIEW_DEADLINE_DATE)
 def confirm(): 
     activity_id = request.args[0]
     activity = db.activity[activity_id]
@@ -245,9 +318,10 @@ def add_author():
     
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def speakers():
-    q = db.auth_user.speaker==True
     if request.args:
-        q &= db.auth_user.id == request.args[0]
+        q = db.auth_user.id == request.args[0]
+    else:
+        q = db.auth_user.speaker==True
     s=db(q)
     authors=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.last_name|db.auth_user.first_name)
@@ -267,6 +341,8 @@ def download():
 def email_author(form):
     to = subject = text = cc = None
     user = "%s %s" % (auth.user.first_name, auth.user.last_name)
+    if isinstance(user, unicode):
+        user = user.encode('utf-8', 'replace')
     if request.function == "propose":
         cc = [text.strip() for text in get_option("ON_PROPOSE_EMAIL", "").split(";") if "@" in text]
         for c in (form.vars.cc or '').split(";"):
@@ -300,5 +376,7 @@ def email_author(form):
         to = activity.created_by.email
     if to is None:
         to = auth.user.email
-        
-    notify(subject, text, to=to, cc=cc)
+
+    if to:
+        db.commit()   # just in case, save the changes to the db if email fails
+        notify(subject, text, to=to, cc=cc)

@@ -6,12 +6,12 @@ crud=Crud(globals(),db)
 
 # set required field for speakers
 if request.function in ('register', 'profile') and 'speaker' in request.args:
-    db.auth_user.resume.requires = IS_NOT_EMPTY()
-    db.auth_user.photo.requires = IS_NOT_EMPTY()
-    db.auth_user.city.requires = IS_NOT_EMPTY()
-    db.auth_user.state.requires = IS_NOT_EMPTY()
-    db.auth_user.country.requires = IS_NOT_EMPTY()
-    db.auth_user.phone_number.requires = IS_NOT_EMPTY()
+    db.auth_user.resume.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.photo.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.city.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.state.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.country.requires = IS_NOT_EMPTY(T("(required for speakers)"))
+    db.auth_user.phone_number.requires = IS_NOT_EMPTY(T("(required for speakers)"))
 
 
 def index():
@@ -79,6 +79,10 @@ def change_password():
 def password():
     return dict(form=auth.retrieve_password(next='login'))
 
+def reset_password():
+    response.view="user/password.html"
+    return dict(form=auth.reset_password(next=URL(f='profile')))
+
 def retrieve_username():
     return dict(form=auth.retrieve_username(next='login'))
 
@@ -121,3 +125,17 @@ def confirm():
 def impersonate():
     user = auth.impersonate(user_id=request.args[0])
     redirect(URL(f="profile"))
+
+@auth.requires_login()
+def join_reviewers():
+    import datetime
+    group_id = auth.id_group('reviewer')
+    deadline = REVIEW_DEADLINE_DATE - datetime.timedelta(days=31)
+    if TODAY_DATE>deadline:
+        session.flash = T("Deadline to join reviewers group was %s" % deadline)
+    elif not auth.has_membership(group_id, auth.user_id):
+        auth.add_membership(group_id, auth.user_id)
+        session.flash = T("Added to Reviewer Group!")
+    else:
+        session.flash = T("Already in the Reviewer Group!") 
+    redirect(URL(c='activity', f='proposed'))

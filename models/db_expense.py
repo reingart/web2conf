@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 
 if ENABLE_EXPENSES:
 
@@ -6,8 +6,7 @@ if ENABLE_EXPENSES:
         db.Field( 'person', db.auth_user ),
         db.Field( 'event','string', length=20, default='PyCon 09'),
         db.Field( 'created_on','datetime'),
-        migrate=migrate,
-    )
+        migrate=migrate, fake_migrate=fake_migrate)
     
     db.expense_form.person.requires=IS_IN_DB(db,'auth_user.id','%(name)s [%(id)s]')
     
@@ -21,6 +20,6 @@ if ENABLE_EXPENSES:
         db.Field( 'serial_no', 'string', length=30, default='' ),
         db.Field( 'location', 'text', default='' ),
         db.Field( 'amount', 'double', default='0.00'),
-        migrate=migrate)
+        migrate=migrate, fake_migrate=fake_migrate)
     
     db.expense_item.exp_form.requires=IS_IN_DB(db,'expense_form.person','%(id)s')

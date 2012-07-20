@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 # try something like
 def index(): 
     rows = db((db.activity.type=='project')&(db.activity.status=='accepted')).select()
@@ -10,11 +10,11 @@ def index():
 @auth.requires_login()
 def apply():
     project = db.activity[request.args(1)]
-    partaker = db((db.partaker.activity == request.args(1)) & (db.partaker.user == auth.user_id)).select().first()
+    partaker = db((db.partaker.activity == request.args(1)) & (db.partaker.user_id == auth.user_id)).select().first()
     
-    db.partaker.user.default = auth.user_id
-    db.partaker.user.writable = False
-    db.partaker.user.readable = False    
+    db.partaker.user_id.default = auth.user_id
+    db.partaker.user_id.writable = False
+    db.partaker.user_id.readable = False    
     db.partaker.activity.default = request.args(1)
     db.partaker.activity.writable = False
     db.partaker.activity.readable = False    
@@ -23,7 +23,7 @@ def apply():
         form = SQLFORM(db.partaker)
         if form.accepts(request.vars, session, formname="new"):
             if not form.vars.activity in (None, ""):
-                db.partaker.insert(user=auth.user_id, activity=form.vars.activity)
+                db.partaker.insert(user_id=auth.user_id, activity=form.vars.activity)
             session.flash = T("Thanks for joining the partakers list")
             redirect(URL(c="projects", f="index"))
     else:

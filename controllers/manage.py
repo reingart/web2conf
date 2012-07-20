@@ -333,3 +333,24 @@ def upload():
         ret = dict(form=form, request=request)
 
     return ret
+
+@auth.requires_membership(role='manager')
+def event():
+    event = request.args(1)
+    if event is not None:
+        form = crud.update(db.event, request.args(1))
+    else:
+        form = crud.create(db.event)
+    return dict(form=form)
+
+@auth.requires_membership(role='manager')
+def events():
+    db.event.id.represent = lambda event, \
+                            row: A(T("Edit") + " (%s)" % event,
+                            _href=URL(c="manage",
+                                      f="event",
+                                      args=["event",
+                                      event]))
+    events = db(db.event).select()
+    return dict(events=events)
+
