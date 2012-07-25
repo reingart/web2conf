@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
 fake_migrate = False
 
 if SUSPEND_SERVICE:
@@ -138,9 +137,7 @@ if not JANRAIN:
 
 auth.settings.table_user=db.auth_user
 auth.settings.cas_domains = None        # disable CAS
-
 auth.define_tables(username=False)
-
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
@@ -165,8 +162,8 @@ if EMAIL_SERVER:
     auth.messages.verify_email_subject = EMAIL_VERIFY_SUBJECT
     auth.messages.verify_email = EMAIL_VERIFY_BODY
     
-if RECAPTCHA_PUBLIC_KEY:
-    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
+##if RECAPTCHA_PUBLIC_KEY:
+##    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
 auth.define_tables()
 
 db.auth_membership.user_id.represent=lambda v: "%(last_name)s, %(first_name)s (%(id)s)" % db.auth_user[v]

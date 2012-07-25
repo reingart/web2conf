@@ -58,6 +58,10 @@ def verify():
     return auth.verify_email(next=URL(r=request,f='login'))
 
 def register():
+    # request captcha only in the registration form:
+    if RECAPTCHA_PUBLIC_KEY:
+        auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
+
     alt_login_form, signals = create_rpx_login_form(f="janrain")
 
     if (signals and
@@ -137,5 +141,5 @@ def join_reviewers():
         auth.add_membership(group_id, auth.user_id)
         session.flash = T("Added to Reviewer Group!")
     else:
-        session.flash = T("Already in the Reviewer Group!") 
+        session.flash = T("Already in the Reviewer Group!")
     redirect(URL(c='activity', f='proposed'))
