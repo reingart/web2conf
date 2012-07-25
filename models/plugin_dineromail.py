@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 
 #    plugin_dineromail: DineroMail web2py plugin
 #    Copyright (C) 2012 Alan Etkin
@@ -80,8 +80,7 @@ db.define_table("plugin_dineromail_notification",
                       comment=T("Date and time of submission")),
                 Field("category", comment=T("Type of notification")),
                 Field("operation_type", comment=T("Type of operation")),
-                Field("code", comment=T("Operation number")),
-                migrate=migrate, fake_migrate=fake_migrate)
+                Field("code", comment=T("Operation number")))
 
 # Stores webservice updated operation status
 db.define_table("plugin_dineromail_operation",
@@ -113,8 +112,7 @@ db.define_table("plugin_dineromail_operation",
                 Field("item_descriptions", "list:string"),
                 Field("item_currencies", "list:string"),
                 Field("item_prices", "list:string"),
-                Field("item_quantities", "list:string"),
-                migrate=migrate, fake_migrate=fake_migrate)
+                Field("item_quantities", "list:string"))
 
 def plugin_dineromail_update_reports(data):
     # retrieve webservice reports

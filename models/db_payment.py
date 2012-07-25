@@ -18,7 +18,7 @@ if ENABLE_PAYMENTS:
        db.Field('invoice','text'),
        db.Field('created_on','datetime',default=now),
        db.Field('modified_on','datetime',default=now),
-        migrate=migrate, fake_migrate=fake_migrate)
+        migrate=migrate)
     
     db.payment.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     
@@ -31,7 +31,7 @@ if ENABLE_PAYMENTS:
        db.Field('created_on','datetime',default=now),
        db.Field('modified_on','datetime',default=now),
        db.Field('created_by',db.auth_user),
-       migrate=migrate, fake_migrate=fake_migrate)
+       migrate=migrate)
 
     db.money_transfer.from_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
     db.money_transfer.to_person.requires=IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]')
@@ -46,7 +46,7 @@ if ENABLE_PAYMENTS:
         db.Field('comment','text', default='#--- Change this when you distribute: ---#\n To Who:  \nPurpose:  '),
         db.Field('discount','double',default=100.0),
         db.Field('auto_match_registration', 'boolean', default=True),
-        migrate=migrate, fake_migrate=fake_migrate)
+        migrate=migrate)
         
     db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]'))
 

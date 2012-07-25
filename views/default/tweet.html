@@ -1,0 +1,7 @@
+{{extend "layout.html"}}
+{{if auth.is_logged_in():}}
+  {{=H3(T("You can tweet here"))}}
+  {{=form}}
+{{else:}}
+  <p>{{=T("Tweet feature disabled (user not logged in)")}}<p>
+{{pass}}

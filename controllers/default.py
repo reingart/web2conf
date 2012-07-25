@@ -25,6 +25,50 @@ def index():
 def about():
     return response.render(dict())
 
+
+def twitter_post(username,password,message):
+    """ Example from web2py-users group by Massimo Di Pierro
+
+    Send a tweet with twitter API"""
+    import urllib, urllib2, base64, gluon.contrib.simplejson
+    args = urllib.urlencode([('status',message)])
+    headers={}
+    headers['Authorization'] = 'Basic '+ base64.b64encode(username + ':' + password)
+    req = urllib2.Request('http://twitter.com/statuses/update.json', args, headers)
+    try:
+        return  gluon.contrib.simplejson.loads(urllib2.urlopen(req).read())
+    except urllib2.HTTPError, e:
+        return e
+
+
+def tweet():
+    if session.has_key("tweet_password"):
+        hidden=dict(password=session.tweet_password,
+                    account=session.tweet_account,
+                    remember=True)
+    else:
+        hidden = dict()
+
+    form = SQLFORM.factory(Field("account"),
+                           Field("password", "password",
+                                 label=T("password")),
+                           Field("remember", "boolean",
+                                 label=T("remember my twitter password"),
+                                 default=False),
+                           Field("message", "text", requires=IS_NOT_EMPTY()),
+                           hidden=hidden)
+
+    if form.process(formname="tweet").accepted:
+        data = twitter_post(form.vars.account,
+                            form.vars.password,
+                            "#%s %s" % (TWITTER_HASH, form.vars.message))
+        response.flash = DIV(H5("Twitter API:"), data)
+    elif form.errors:
+        response.flash = DIV(H5(T("Could not send the tweet"), "<br />".join(errors)))
+
+    return dict(form=form)
+
+
 # @cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
 def twitter():
     session.forget()

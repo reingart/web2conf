@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 
 db.define_table("pdf_template",
     Field("pdf_template_id","id"),
