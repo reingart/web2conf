@@ -9,7 +9,7 @@ T.force(session.lang or "es")
 # for maintenance
 
 SUSPEND_SERVICE = False
-ALLOW_VOTE = False
+ALLOW_VOTE = True
 
 ######################################
 ### PARAMETERS
