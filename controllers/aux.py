@@ -64,18 +64,39 @@ def active_authors():
 
 @auth.requires(auth.has_membership(role='manager'))
 def rename_activity():
-    #old = "The Bad, The bad and Ugly."
-    #new = "The Good, the Bad and the Ugly"
-    ret = []
-    for user in  db(db.auth_user.tutorials.like('%%|%s|%%'%old)).select():
-        tutorials = user.tutorials
-        if tutorials and old in tutorials:
-            tutorials.remove(old)
-            tutorials.append(new)
-            db(db.auth_user.id==user.id).update(tutorials=tutorials)
+    response.view = 'generic.html'
+    form = SQLFORM.factory(
+            Field("old", default="pydos y pytres, todo junto"),
+            Field("new", default="Código compatible con python 2 y 3, en el mismo fuente"),
+            )
+    ret = []       
+    if form.accepts(request.vars, session, keepvalues=True):
+        old = form.vars.old
+        new = form.vars.new
+        for user in  db(db.auth_user.tutorials.like('%%|%s|%%'%old)).select():
+            tutorials = user.tutorials
+            if tutorials and old in tutorials:
+                tutorials.remove(form.vars.old)
+                tutorials.append(form.vars.new)
+                db(db.auth_user.id==user.id).update(tutorials=tutorials)
+    
+                ret.append((user.id, tutorials))
+    return dict(ret=ret, q=len(ret), form=form)
 
-            ret.append((user.id, tutorials))
-    return dict(ret=ret)
+@auth.requires(auth.has_membership(role='manager'))
+def missing_activity():
+    response.view = 'generic.html'
+    ret = []    
+    q=0   
+    tutorials = [a.title for a in db(db.activity).select(db.activity.title)]
+    for user in  db(db.auth_user).select():
+        if user.tutorials:
+            q+=1
+            for tutorial in user.tutorials:
+                if tutorial not in tutorials and tutorial not in ret:
+                    ret.append(tutorial)
+    return dict(ret=ret, q=q)
+
 
 @auth.requires(auth.has_membership(role='manager'))
 def activity_accept_bulk():
