@@ -1,7 +1,7 @@
 # coding: utf8
 
 TEST_ADDRESS = "reingart@gmail.com"
-BCC_ADDRESS = ['reingart@gmail.com', 'juanrodriguezmonti@gmail.com']
+BCC_ADDRESS = ['reingart@gmail.com', 'jbc.develop@gmail.com']
 AUTHOR_BODY="""
 %(authors)s:
 
@@ -119,7 +119,7 @@ def authors():
 
 @auth.requires(auth.has_membership(role='manager'))
 def attendees():
-
+    response.view = "generic.html"
     #TODO: track sent mails!
     
     ret  = []
@@ -131,7 +131,7 @@ def attendees():
               comment="Only sent a mail to test address"),
         )
 
-    if form.accepts(request.vars, session):
+    if form.accepts(request.vars, session, keepvalues=True):
        
         query = db.auth_user.id>0
         testing = form.vars.test
