@@ -35,10 +35,10 @@ db.define_table('activity',
     migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table("partaker", Field("activity", db.activity),
-                Field("user", db.auth_user),
                 Field("user_id", db.auth_user),
                 Field("add_me", "boolean", default=True, comment=T("Confirm my assistance")),
-                Field("comment", "text", comment=T("Write a comment for the project's owner")))
+                Field("comment", "text", comment=T("Write a comment for the project's owner")),
+                migrate=migrate, fake_migrate=fake_migrate)
 
 if request.controller != 'appadmin':
     db.activity.description.represent=lambda value: XML(value)
@@ -74,7 +74,8 @@ db.activity.duration.represent=lambda activity_duration: activity_duration and (
 
 db.activity.notes.default = "Tipo de público: \nConocimientos previos: \nRequisitos Especiales: (hardware, materiales, ayuda financiera)"
 
-db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate, fake_migrate=fake_migrate)
+db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity),
+                migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table('attachment',
    db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
