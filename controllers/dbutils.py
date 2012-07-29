@@ -5,7 +5,10 @@ response.generic_patterns = ["*",]
 
 def index(): return dict(message="hello from dbutils.py")
 
-@auth.requires_membership("manager")
+
+@auth.requires((db(db.auth_user).count() < 1) or \
+               (auth.has_membership(role="manager")), \
+               requires_login=False)
 def data():
     datafile = os.path.join(request.folder, "private/db.csv")
     if request.args[0] == "export":
@@ -30,7 +33,7 @@ def movefieldvalues():
     else:
         return dict(form=form)
 
-@auht.requires_membership("manager")
+@auth.requires_membership("manager")
 def pg_keywords():
     from gluon import reserved_sql_keywords
     keywords = reserved_sql_keywords.POSTGRESQL
