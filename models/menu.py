@@ -51,7 +51,7 @@ submenu_info=[
 ]
 if ENABLE_TALKS:
    submenu_activities = []
-   if REVIEW_DEADLINE_DATE<TODAY_DATE:
+   if PROPOSALS_DEADLINE_DATE<TODAY_DATE:
         url = URL(r=request,c='schedule',f='index')
    else:
         url = URL(r=request,c='conference',f='proposals')
