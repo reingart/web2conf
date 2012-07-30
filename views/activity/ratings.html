@@ -51,6 +51,16 @@
 
 {{pass}}
 
+<script type="text/javascript" id="js">$(document).ready(function() {
+  // call the tablesorter plugin
+  $("table").tablesorter({
+      // sort on the first column and third column, order asc
+      sortList: [[0,0],[2,0]]
+  });
+}); </script>
+<p><em>{{=T("TIP: To change the sort order of the table, click over the column header")}}</em></p>
+
+
 <p/>
 <p><b>Metodología</b>: Cada revisor otorga un puntaje de 0 a 5 según su criterio (de menor a mayor valoración), puede abstenerse de puntuar una propuesta y no pueden revisar sus propias propuestas. Al finalizar, se suman y promedian los puntajes de todos los revisores, las charlas con mejor puntuación son preseleccionadas para la confección definitiva del programa, teniendo en cuenta el resto de los criterios (voto de usuarios, disponibilidad, organización, contenidos, etc.).
 <br/>Las actividades pendientes pueden quedar en espera para cubrir eventuales bajas de propuestas aprobadas.

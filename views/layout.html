@@ -22,7 +22,10 @@ Released   : 20080425
 <script src="{{=URL(r=request,c='static',f='scripts/sfmenu.js')}}"></script>
 <script src="{{=URL(r=request,c='static',f='scripts/jquery.dimensions.js')}}"></script><script src="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.css')}}" />
-
+{{if request.controller=='activity':}}
+<script type="text/javascript" src="{{=URL(r=request,c='static',f='scripts/jquery.tablesorter.js')}}"></script>
+<script type="text/javascript" src="{{=URL(r=request,c='static',f='scripts/jquery.tablesorter.pager.js')}}"></script>
+{{pass}}
 <script>
 $(document).ready(function() { $('.sf-menu').superfish({ animation: {height:'show'}, delay:500 });
 $('#auth_user_tutorials').multiSelect({selectAll: false});
