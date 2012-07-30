@@ -418,7 +418,7 @@ A:hover
     width: 370px;   
 }
 .w2p_fw {
-	width: 100%;
+    width: 100%;
 }
 /*blog post*/
 hr {
@@ -489,7 +489,7 @@ TABLE TR TD
 }
 TABLE TR TD div {
     margin: 5px;
-	max-width: 510px;
+    max-width: 510px;
 }
 #calendar
 {
@@ -519,10 +519,10 @@ TABLE TR TD div {
     display: block;
     float: right;
     margin: 0 20px 20px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	border-radius: 20px;
-	box-shadow: 1px 2px 2px #e4e3c3 inset, -1px -2px 2px #464415 inset;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    box-shadow: 1px 2px 2px #e4e3c3 inset, -1px -2px 2px #464415 inset;
 }
 #user_menu ul {
    list-style: none;
@@ -532,7 +532,7 @@ TABLE TR TD div {
     font-size: 1em;
     text-align: center;
     margin: 0;
-	padding: 20px 0;
+    padding: 20px 0;
     color: #7E0E10;
     /*background: url(img/user_menu_head.png) no-repeat;*/
 }
@@ -544,15 +544,15 @@ TABLE TR TD div {
     color: #052446;
 }
 #user_menu ul:first-child {
-	padding: 0 0 20px;
+    padding: 0 0 20px;
     width: 210px;
-	height: 95%;
-	margin: 5px;
-	background: #cabe57;
-	-moz-border-radius: 15px;
-	-webkit-border-radius: 15px;
-	border-radius: 15px;
-	box-shadow: 1px 2px 2px #e4e3c3, -1px -2px 2px #464415;
+    height: 95%;
+    margin: 5px;
+    background: #cabe57;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    box-shadow: 1px 2px 2px #e4e3c3, -1px -2px 2px #464415;
 }
 /*******************************************************************/
 #social {
@@ -1361,13 +1361,6 @@ a.headerlink:hover {
     color: #c60f0f;
 }
 
-/* schedule table: */
-table.schedule thead { background-color:#ccc; color:#FF5C1F; font-weight: bold; cursor: default; }
-table.schedule tbody tr th { text-align: 'center';}
-table.schedule tbody tr.odd td { background-color: #eee;}
-table.schedule tbody tr.even td { background-color: #ddd;  }
-table.schedule tbody tr.highlight td { background-color: #FFFF99; }
-
 
 .checklist {
 list-style: none;
@@ -1506,4 +1499,61 @@ a.btn-sponsor span {
 
 a.btn-sponsor:hover {
   background-position: 0 -51px;
+}
+
+ 
+/* <Pedro Guridi> fixes */
+ 
+ 
+/* Table Sorter Style */
+ 
+table.schedule {
+  font-family:arial;
+  background-color: #CDCDCD;
+  margin:10px 0pt 15px;
+  font-size: 8pt;
+  width: 100%;
+  text-align: left;
+}
+table.schedule thead tr th, table.tablesorter tfoot tr th {
+  background-color: #e6EEEE;
+  border: 1px solid #FFF;
+  font-size: 8pt;
+  padding: 4px;
+}
+table.schedule thead tr .header {
+  background-image: url(bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+ table.schedule tbody td {
+   color: #3D3D3D;
+  padding: 4px;
+  background-color: #FFF;
+  vertical-align: top;
+ }
+ table.schedule tbody tr.odd td {
+  background-color:#F0F0F6;
+}
+table.schedule thead tr .headerSortUp {
+  background-image: url(asc.gif);
+}
+table.schedule thead tr .headerSortDown {
+  background-image: url(desc.gif);
+}
+table.schedule thead tr .headerSortDown, table.schedule thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+table.schedule A {
+  color: #333333;
+}
+
+table.schedule thead {
+  color: #333333;
+}
+
+table.schedule td {
+  color: #333333;
 }
