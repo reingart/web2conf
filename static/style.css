@@ -1522,7 +1522,7 @@ table.schedule thead tr th, table.tablesorter tfoot tr th {
   padding: 4px;
 }
 table.schedule thead tr .header {
-  background-image: url(bg.gif);
+  background-image: url(img/bg.gif);
   background-repeat: no-repeat;
   background-position: center right;
   cursor: pointer;
@@ -1537,10 +1537,10 @@ table.schedule thead tr .header {
   background-color:#F0F0F6;
 }
 table.schedule thead tr .headerSortUp {
-  background-image: url(asc.gif);
+  background-image: url(img/asc.gif);
 }
 table.schedule thead tr .headerSortDown {
-  background-image: url(desc.gif);
+  background-image: url(img/desc.gif);
 }
 table.schedule thead tr .headerSortDown, table.schedule thead tr .headerSortUp {
 background-color: #8dbdd8;
