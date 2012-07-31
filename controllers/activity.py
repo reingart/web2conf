@@ -201,12 +201,14 @@ def propose():
 
 @auth.requires(auth.has_membership(role='manager') or (user_is_author() and TODAY_DATE<PROPOSALS_DEADLINE_DATE))
 def update():
+    deletable = db.activity.title.writable = not ALLOW_VOTE
     if not db(db.activity.created_by==auth.user.id and db.activity.id==request.args[0]).count():
         redirect(URL(r=reuqest,f='index'))
     check_speaker_profile()
     form=crud.update(db.activity, request.args[0],
                      next='display/[id]',
-                     ondelete=lambda form: redirect(URL(r=request,f='index')))
+                     ondelete=lambda form: redirect(URL(r=request,f='index')),
+                     deletable=deletable)
     return dict(form=form)
 
 @auth.requires(auth.has_membership(role='manager') or user_is_author() or auth.has_membership(role='reviewer'))
