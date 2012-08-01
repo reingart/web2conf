@@ -22,25 +22,33 @@ def proposed():
 
 @auth.requires(auth.has_membership(role='reviewer') or TODAY_DATE>REVIEW_DEADLINE_DATE)
 def ratings():
-    query = (db.review.activity_id==db.activity.id) & (db.auth_user.id==db.activity.created_by)
+    query = (db.auth_user.id==db.activity.created_by)
+    activities_author = db(query).select(db.auth_user.ALL, db.activity.ALL)
     avg = db.review.rating.sum() / db.review.rating.count()
-    ratings=db(query).select(
-        db.activity.ALL,
-        db.auth_user.ALL,
+    rows = db(db.review.id>0).select(
+        db.review.activity_id,
         db.review.rating.sum(), 
         db.review.rating.count(), 
         avg, 
-        groupby=(db.activity.ALL,),
+        groupby=(db.review.activity_id,),
         orderby=~avg)
-    
+    ratings = {}
+
+    for row in rows:
+        ratings[row.review.activity_id] = {
+            'avg': row[avg], 
+            'sum': row[db.review.rating.sum()], 
+            'count':row[ db.review.rating.count()],
+            }
+
     votes = {}
-    tutorial_list = [r.activity.title for r in ratings]
+    tutorial_list = [r.activity.title for r in activities_author]
     for k,item in enumerate(tutorial_list ):
         m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
         votes[item] = m
                 
-    ratings = sorted(ratings, key=lambda row: (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"]), row["COUNT(review.rating)"]), reverse=True)     
-    d = dict(ratings=ratings, votes=votes, levels=ACTIVITY_LEVEL_HINT)
+    ##ratings = sorted(ratings, key=lambda row: (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"]), row["COUNT(review.rating)"]), reverse=True)     
+    d = dict(activities_author =activities_author , ratings=ratings, votes=votes, levels=ACTIVITY_LEVEL_HINT)
     return response.render(d)
 
 @auth.requires_login()
