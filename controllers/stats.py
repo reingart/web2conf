@@ -5,7 +5,7 @@
 def index():
     redirect(URL("attendees"))
     
-#@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def companies():
     if auth.has_membership(role='manager'): s=db()
     else: s=db(db.auth_user.include_in_delegate_listing==True)
@@ -17,11 +17,19 @@ def companies():
     
 @cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def attendees():
+    import unicodedata
     if auth.has_membership(role='manager'): s=db(db.auth_user.attendee_type!='non_attending')
     else: s=db((db.auth_user.include_in_delegate_listing==True)&(db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0))
     rows=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.first_name|db.auth_user.last_name)
-    d = dict(rows=rows)
+    ret = {}
+    # avoid duplicates (remove spaces, acents, etc)
+    for row in rows:
+        name = ''.join([l.lower() for l in (row.first_name+row.last_name) if l.isalpha()])
+        name = unicodedata.normalize('NFD', unicode(name, 'utf8'))
+        if name in ret: continue
+        ret[name] = row
+    d = dict(rows=sorted(ret.values()))
     return response.render(d) 
 
 
@@ -164,7 +172,7 @@ def brief():
                 )
     return response.render(d)
 
-##@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def maps():
     rows=db(db.auth_user.id>0).select(
             db.auth_user.first_name,
