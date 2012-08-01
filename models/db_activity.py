@@ -8,6 +8,7 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
+    db.Field('code', readable=False, writable=False,),
     db.Field('duration','integer',label=T("Duration in minutes")), # era 45 min
     db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
     db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
@@ -161,3 +162,5 @@ A('más información',_target='_blank',_href='/2011/activity/accepted'),T(", la 
 ACTIVITY_LEVEL_HINT = {}
 for i, level in enumerate(ACTIVITY_LEVELS):
     ACTIVITY_LEVEL_HINT[level] = XML("&loz;"* (i+1),)
+
+db.activity.code.requires = IS_EMPTY_OR(IS_NOT_IN_DB(db, db.activity.code))
