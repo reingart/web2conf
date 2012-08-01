@@ -45,6 +45,10 @@ def ratings():
 
 @auth.requires_login()
 def vote():
+    if get_option("ALLOW_VOTE") == False:
+        response.generic_patterns = ["*",]
+        return dict(message=H3(T("Voting is disabled")))
+
     import random
     
     rows = db(db.activity.status=='pending').select(
@@ -217,7 +221,9 @@ def display():
     rows = db(db.activity.id==activity_id).select()
     activity = rows[0]
     item=crud.read(db.activity,activity_id)
-    authors = db(db.auth_user.id==activity.created_by).select()
+    q = db.auth_user.id==db.author.user_id
+    q &= db.author.activity_id==activity_id
+    authors = db(q).select(db.auth_user.ALL)
     comments=db(db.comment.activity_id==activity_id).select()
     attachments=db(db.attachment.activity_id==activity_id).select()
     query = db.review.activity_id==activity_id
@@ -382,7 +388,6 @@ def email_author(form):
     if to:
         db.commit()   # just in case, save the changes to the db if email fails
         notify(subject, text, to=to, cc=cc)
-
 
 @auth.requires_membership("manager")
 def challenged():
