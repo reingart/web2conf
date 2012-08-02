@@ -4,14 +4,15 @@
 
 <h1>{{=T('Accepted Activities')}}</h1>
 
-<p><b>Nota: </b>El listado de actividades es provisorio, próximamente será actualizado con las charlas plenarias, paneles y talleres</p>
+<p><b>Nota: </b>El listado de actividades es provisorio y parcial, próximamente será actualizado.</p>
 <p><i><b>¡Quedate conectado con PyConAr para más info y novedades!.</b></i></p>
 
 {{for activity_type in ACTIVITY_TYPES:}}
-{{rows_by_activity = [row for row in rows if row.activity.type.lower().strip()==activity_type]}}
+{{for track in ACTIVITY_TRACKS:}}
+{{rows_by_activity = [row for row in rows if row.activity.type.lower().strip()==activity_type and row.activity.track==track]}}
 {{if rows_by_activity: }}
 <p/>
-<h2>{{=T(activity_type).capitalize()}}</h2>
+<h2>{{=T(activity_type)}} - track {{=T(track).lower()}}</h2>
 {{for row in sorted(rows_by_activity, key=lambda x:x.activity.title.upper()):}}
 {{activity=row.activity}}
 {{author=row.auth_user}}
@@ -50,6 +51,7 @@
     <embed src="{{=activity.video}}" type="application/x-shockwave-flash" width="480" height="350" allowscriptaccess="always" allowfullscreen="true"></embed> <br/> 
   </div>
 </div>
+{{pass}}
 {{pass}}
 {{pass}}
 {{pass}}

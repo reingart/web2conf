@@ -130,14 +130,14 @@ def vote():
 
     return dict(form=form, levels=ACTIVITY_LEVEL_HINT, message=db.auth_user.tutorials.comment)
 
-##@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def accepted():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))
     query=(db.activity.status=='accepted')&(db.auth_user.id==db.activity.created_by)
     
-    activities = (T('keynote'),T('panel'),T('plenary'),T('tutorial'),
-                 T('talk'),T('extreme talk'))
+    activities = ('keynote','panel','plenary','tutorial',
+                 'talk','extreme talk')
                  
     # change the next line for GAE
     query &= (db.activity.type.belongs(activities))
