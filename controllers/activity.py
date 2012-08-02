@@ -24,21 +24,21 @@ def proposed():
 def ratings():
     query = (db.auth_user.id==db.activity.created_by)
     activities_author = db(query).select(db.auth_user.ALL, db.activity.ALL)
-    avg = db.review.rating.sum() / db.review.rating.count()
     rows = db(db.review.id>0).select(
         db.review.activity_id,
         db.review.rating.sum(), 
         db.review.rating.count(), 
-        avg, 
         groupby=(db.review.activity_id,),
-        orderby=~avg)
+        )
     ratings = {}
 
     for row in rows:
+        s = row[db.review.rating.sum()]
+        c = row[db.review.rating.count()]
         ratings[row.review.activity_id] = {
-            'avg': row[avg], 
-            'sum': row[db.review.rating.sum()], 
-            'count':row[ db.review.rating.count()],
+            'avg': c and s/float(c), 
+            'sum': s, 
+            'count': c,
             }
 
     votes = {}
