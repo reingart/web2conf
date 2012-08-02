@@ -43,11 +43,6 @@ else:
 
 TWITTER_HASH = "pyconar"
 
-# PLUGIN_DINEROMAIL
-PLUGIN_DINEROMAIL_ACCOUNT = None
-PLUGIN_DINEROMAIL_PASSWORD = None
-PLUGIN_DINEROMAIL_COUNTRY = "argentina"
-
 response.title=T('web2conf')
 response.subtitle=''
 response.footer=T("""Conference description<b>dates</b> city (organized by <a href="#">users group</a>). <br/>
@@ -109,7 +104,11 @@ if session.manager:
      ('gratis',T('Gratuito, $0')),
    )
 ATTENDEE_TYPE_COST=dict(
-     gratis=0.0,
+     professional=300,
+     enthusiast=150,
+     student=50,
+     test=0.01,
+     gratis=0.00,
    )
 ATTENDEE_TYPE_COST[None]=0.0
 
@@ -190,7 +189,7 @@ JANRAIN = False
 ENABLE_TALKS=True
 ENABLE_EXPENSES = False
 ENABLE_FINANCIAL_AID = True
-ENABLE_PAYMENTS = False
+ENABLE_PAYMENTS = True
 
 if True and DEV_TEST:    # for local development
     HOST='localhost:8000'
