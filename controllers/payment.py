@@ -6,73 +6,26 @@
 
 @auth.requires_login()
 def pay():
-    person=db(db.auth_user.id==auth.user.id).select()[0]
-    balance=session.balance
+    rate = request.vars.rate
+    if rate:
+        cost = ATTENDEE_TYPE_COST[rate]
+        db(db.auth_user.id==auth.user.id).update(attendee_type=rate)
+        person=db(db.auth_user.id==auth.user.id).select()[0]
+        balance=cost
+        
+        # Not really a payment, it just records the data for further update
+        payment_id = db.payment.insert(from_person=auth.user_id,
+                                       method="dineromail",
+                                       status="new",
+                                       invoice=rate,
+                                       amount=cost)
+    
+    payments = db(db.payment.from_person==auth.user_id).select()
     pay=H2(T('No payment due at this time'))
     return dict(person=person,transfers_in=[],
-                transfers_out=[],payments=[],
+                transfers_out=[],payments=payments,
                 pay=pay,balance=balance)
 
-@auth.requires_login()
-def cancel_transfer():
-    try:
-         db((db.money_transfer.id==request.args[0])&(db.money_transfer.to_person==auth.user.id)&(db.money_transfer.approved==False)).delete()
-         session.flash=T('Transfer cancelled')
-         redirect(URL(r=request,f='pay'))
-    except Exception:
-         session.flash=T('Invalid operation')
-         redirect(URL(r=request,f='pay'))
-
-@auth.requires_login()
-def register_other():
-    transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-    form=SQLFORM(db.auth_user,fields=['first_name','last_name','email','attendee_type','tutorials','discount_coupon'])
-    errors=[]
-    due=0.0
-    if form.accepts(request.vars,session):
-        amount=update_person(form)
-        db.money_transfer.insert(from_person=form.vars.id,
-                   to_person=auth.user.id,amount=amount,approved=False,
-                   description="%s %s (%s) 's Fees transferred to %s %s (%s)" % (form.vars.first_name, form.vars.last_name, form.vars.id, auth.user.first_name,auth.user.last_name,auth.user.id))
-        transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-        session.flash=T('Attendee registered and balance transferred')
-        redirect(URL(r=request,f='pay'))
-    return dict(form=form,transfers_in=transfers_in)
-
-@auth.requires_login()
-def pay_check(): return dict()
-
-@auth.requires_login()
-def pay_other():
-    transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-    form=FORM('Tokens: ',INPUT(_name='codes',requires=IS_NOT_EMPTY()),INPUT(_type='submit'))
-    errors=[]
-    due=0.0
-    if form.accepts(request.vars,session):
-        for code in request.vars.codes.split(','):
-            try:
-                id,pay_token=code.strip().split('-')
-                if id==auth.user.id: raise Exception
-                if int(id) in [r.from_person for r in transfers_in]: raise Exception
-                row=db(db.auth_user.id==id).select()[0]
-                if not row.pay_token.upper()==pay_token.upper(): raise Exception                
-                amount=max(0.0,row.amount_billed-row.amount_paid)
-                db.money_transfer.insert(from_person=row.id,
-                        to_person=auth.user.id,amount=amount,approved=False,
-                        description="%s %s (%s)'s Fees transferred to %s %s (%s)" % (row.first_name, row.last-name, row.id, auth.user.first_name, auth.user.last_name, auth.user.id))
-                transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-            except:
-                errors.append(code.strip())
-        if not errors:
-            session.flash=T('Balance transferred')
-            redirect(URL(r=request,f='pay'))
-        else:
-            response.flash='Invalid Tokens: '+', '.join(errors)
-    return dict(form=form,transfers_in=transfers_in)
-
-@auth.requires_login()
-def pay_other_info():
-    return dict(person=db(db.auth_user.id==auth.user.id).select()[0])
 
 @auth.requires_login()
 def invoice():
@@ -83,40 +36,38 @@ def dineromail():
     """ Compose a DineroMail purchase request
     and redirect to DineroMail shop feature."""
 
+    payment_id = request.args[0]
+    payment = db(db.payment.id==payment_id).select().first()
+    
     import uuid
     import urllib
 
     check_in= \
         PLUGIN_DINEROMAIL_SHOP_CHECK_IN[PLUGIN_DINEROMAIL_COUNTRY]
 
-    # Not really a payment, it just records the data for further update
-    payment_id = db.payment.insert(from_person=auth.user_id,
-                                   method="dineromail",
-                                   status="new",
-                                   invoice=\
-                                   request.vars.NombreItem,
-                                   amount=\
-                                   float(request.vars.PrecioItem))
+##https://argentina.dineromail.com/Shop/Shop_Ingreso.asp?NombreItem=Patrocinio+Oro+PyCon+Argentina+2012&TipoMoneda=1&PrecioItem=7500%2E00&E_Comercio=1415311&
+##NroItem=PyConAr2012&image_url=http%3A%2F%2Far%2Epycon%2Eorg%2F2012%2Fstatic%2Fimg%2Flogo%5Fdineromail%2Ejpg&
+##DireccionExito=http%3A%2F%2F&DireccionFracaso=http%3A%2F%2F&DireccionEnvio=0&Mensaje=1
 
-    arguments=["NombreItem",
-               "TipoMoneda",
-               "PrecioItem",
-               "E_Comercio",
-               "NroItem",
-               "image_url",
-               "DireccionExito",
-               "DireccionFracaso",
-               "DireccionEnvio",
-               "Mensaje"]
+    arguments= {"NombreItem": payment.invoice,
+               "TipoMoneda": "1",
+               "PrecioItem": str(payment.amount),
+               "E_Comercio": "1415311",
+               "NroItem": "PyConAr2012",
+               "image_url": "http://ar.pycon.org/2012/static/img/logo_dineromail.jpg",
+               "DireccionExito": "http://ar.pycon.org/2012/payment/sucess",
+               "DireccionFracaso": "http://ar.pycon.org/2012/payment/failure",
+               "DireccionEnvio": "0",
+               "Mensaje": "1"}
 
     url = "%s?" % check_in
-    for x, argument in enumerate(arguments):
+    for x, (argument, value) in enumerate(arguments.items()):
         if x == 0:
             url += "%s=%s" % (argument,
-                             urllib.quote(request.vars[argument]))
+                             urllib.quote(value))
         else:
             url += "&%s=%s" % (argument,
-                              urllib.quote(request.vars[argument]))
+                              urllib.quote(value))
     url += "&trx_id=%s" % payment_id
 
     redirect(url)
