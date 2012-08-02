@@ -116,13 +116,18 @@ def index():
 
 @auth.requires_membership(role="manager")
 def agenda():
-    rows = db(db.activity.id>=1).select(db.activity.id,
+    response.view = 'generic.html'
+    q = db.activity.type!='poster'
+    q &= db.activity.type!='project'
+    rows = db(q).select(db.activity.id,
                                         db.activity.title,
+                                        db.activity.status,
                                         db.activity.scheduled_datetime,
                                         db.activity.scheduled_room,
-                                        orderby=db.activity.title)
+                                        orderby=(db.activity.type, db.activity.track, db.activity.title))
     
     rooms = ACTIVITY_ROOMS.copy()
+    statuses = ['pending','accepted','rejected', 'declined']
     rooms[None] = ""
     fields = []
     for row in rows:
@@ -132,6 +137,11 @@ def agenda():
             INPUT(_name='date.%s' % row.id,
                    requires=IS_EMPTY_OR(IS_DATETIME()),
                   _value=row.scheduled_datetime),
+            SELECT([OPTION(opt,
+                           _value=opt,
+                           _selected=row.status==opt) for \
+                           opt in statuses],
+                           _name='status.%s' % row.id),
             SELECT([OPTION(rooms[opt],
                            _value=opt,
                            _selected=row.scheduled_room==opt) for \
@@ -150,6 +160,9 @@ def agenda():
             if var.startswith("date") and val and activity_id :
                 db(db.activity.id==activity_id).update(scheduled_datetime=val)
                 out.append("setting %s=%s" % (var, val))
+            if var.startswith("status") and val and activity_id :
+                db(db.activity.id==activity_id).update(status=val)
+                out.append("setting %s=%s" % (var, val))
             if var.startswith("room") and val and activity_id :
                 db(db.activity.id==activity_id).update(scheduled_room=val)
                 out.append("setting %s=%s" % (var, val))
@@ -163,6 +176,7 @@ def agenda():
 
 @auth.requires_membership(role="manager")
 def agenda2():
+    response.view = 'generic.html'
     rows = db(db.activity.id>=1).select(db.activity.id,
                                         db.activity.title,
                                         db.activity.scheduled_datetime,
