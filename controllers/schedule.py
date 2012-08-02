@@ -116,6 +116,15 @@ def index():
 
 @auth.requires_membership(role="manager")
 def agenda():
+    if 'order' in request.vars:
+        order = {'title': db.activity.title,
+                 'track': db.activity.title,
+                 'status': db.activity.status,
+                 'scheduled_datetime': db.activity.scheduled_datetime,
+                 'scheduled_room': db.activity.scheduled_room,
+                }[request.vars['order']]
+    else:
+        order = (db.activity.type, db.activity.track, db.activity.title)
     response.view = 'generic.html'
     q = db.activity.type!='poster'
     q &= db.activity.type!='project'
@@ -124,7 +133,7 @@ def agenda():
                                         db.activity.status,
                                         db.activity.scheduled_datetime,
                                         db.activity.scheduled_room,
-                                        orderby=(db.activity.type, db.activity.track, db.activity.title))
+                                        orderby=order)
     
     rooms = ACTIVITY_ROOMS.copy()
     statuses = ['pending','accepted','rejected', 'declined']
