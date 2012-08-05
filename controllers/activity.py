@@ -341,7 +341,11 @@ def speakers():
     s=db(q)
     authors=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.last_name|db.auth_user.first_name)
-    rows = db((db.activity.id==db.author.activity_id)&(db.activity.status=='accepted')).select()
+    activities = ('keynote','panel','plenary','tutorial',
+                 'talk','extreme talk')
+    q = (db.activity.id==db.author.activity_id)&(db.activity.status=='accepted')
+    q &= db.activity.type.contains(activities)             
+    rows = db(q).select()
     activities_by_author = {}
     for row in rows:
         activities_by_author.setdefault(row.author.user_id, []).append(row.activity) 

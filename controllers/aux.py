@@ -53,7 +53,14 @@ def insert_authors():
 
 @auth.requires(auth.has_membership(role='manager'))
 def active_authors():
-    authors = db(db.author.id>0).select(db.author.user_id)
+    response.view="generic.html"
+    db(db.auth_user.id>0).update(speaker=False)
+    q = db.author.id>0
+    q &= db.activity.id == db.author.activity_id
+    q &= db.activity.type != 'project'
+    q &= db.activity.type != 'workshop'
+    q &= db.activity.status == 'accepted'
+    authors = db(q).select(db.author.user_id)
     ret = []
     for author in authors:
         q = db.auth_user.id==author.user_id
@@ -114,6 +121,12 @@ def activity_accept_bulk():
 
     return ids
 
+
+def activity_grid():
+    q = db.activity.id>0
+    form = SQLFORM.smartgrid(db(q).select())
+    response.view = 'generic.html'
+    return dict(form=form)
 
 # badges/labels/certs
 

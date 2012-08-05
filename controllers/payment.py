@@ -68,7 +68,7 @@ def dineromail():
         else:
             url += "&%s=%s" % (argument,
                               urllib.quote(value))
-    url += "&trx_id=%s" % payment_id
+    url += "&TRX_ID=%s" % payment_id
 
     redirect(url)
 
@@ -83,3 +83,10 @@ def dineromail_update():
             pass
         response.flash = T("Done!")
     return dict(form=form)
+
+@auth.requires_membership("manager")
+def checkpayment():
+    response.generic_patterns = ["*",]
+    payment = request.args[0]
+    result = plugin_dineromail_check_status(payment, update=True)
+    return dict(result=result)

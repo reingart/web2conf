@@ -107,7 +107,7 @@ ATTENDEE_TYPE_COST=dict(
      professional=300,
      enthusiast=150,
      student=50,
-     test=0.01,
+     test=2.00,
      gratis=0.00,
    )
 ATTENDEE_TYPE_COST[None]=0.0

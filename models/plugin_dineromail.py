@@ -25,9 +25,9 @@
 
 # function or lambda, for calling after each payment notification
 # example:
-# PLUGIN_DINEROMAIL_ON_UPDATE = lambda data: my_function(data["client_code"])
+# PLUGIN_DINEROMAIL_ON_UPDATE = lambda data: my_function(data["transaction_code"])
 # where data stores the updated record fields
-# client_code is the alphanumeric id used for the web-store button or form
+# transaction_code is the alphanumeric id used for the web-store button or form
 
 if not "PLUGIN_DINEROMAIL_ON_UPDATE" in globals():
     PLUGIN_DINEROMAIL_ON_UPDATE = None
@@ -92,7 +92,7 @@ db.define_table("plugin_dineromail_operation",
                 Field("status", "integer",
                       represent=lambda status, row: \
                       PLUGIN_DINEROMAIL_STATUSES[status]),
-                Field("client_code"), # client transaction_id
+                Field("transaction_code"), # client transaction_id
                 Field("customer_email"),
                 Field("customer_address"),
                 Field("customer_comment"),
@@ -100,62 +100,68 @@ db.define_table("plugin_dineromail_operation",
                 Field("customer_phone"),
                 Field("customer_document_type"),
                 Field("customer_document_number"),
-                Field("amount"),
-                Field("net_amount"),
+                Field("amount", "double"),
+                Field("net_amount", "double"),
                 Field("method", "integer",
                       represent=lambda method, row: \
                       PLUGIN_DINEROMAIL_METHODS[method]),
                 Field("means"),
-                Field("installments"),
+                Field("installments", "integer"),
                 Field("sales_document_type"),
                 Field("sales_document_number"),
                 Field("item_descriptions", "list:string"),
-                Field("item_currencies", "list:string"),
+                Field("item_currencies", "list:integer"),
                 Field("item_prices", "list:string"),
-                Field("item_quantities", "list:string"))
+                Field("item_quantities", "list:integer"))
 
 def plugin_dineromail_update_reports(data):
     # retrieve webservice reports
     # TODO: complete transaction xml mapping to local db
     # and return readable report logs
-    message = None
     import urllib
-    import urllib2
+    import urllib2    
+    message = None
+    updated = 0
+    
     query = plugin_dineromail_create_query(data)
-    query_data = urllib.urlencode({"data": query})
+    query_data = urllib.urlencode({"DATA": query})
+    
     f = urllib2.urlopen(PLUGIN_DINEROMAIL_URLS[PLUGIN_DINEROMAIL_COUNTRY],
                         query_data)
     tag = TAG(f.read())
+    
     # check if report is ok
-    if int(tag.element("estadoreporte").flatten()) == 1:
+    status = int(tag.element("estadoreporte").flatten())
+    if status == 1:
         for operation in tag.elements("operacion"):
             row_data = dict(item_descriptions=list(),
                             item_quantities=list(),
                             item_currencies=list(),
                             item_prices=list())
 
-            row_data["report_status"] = tag.element("estadoreporte").flatten()
+            row_data["report_status"] = int(tag.element("estadoreporte").flatten())
             row_data["code"] = operation.element("id").flatten()
             row_data["posted"] = operation.element("fecha").flatten()
-            row_data["status"] = operation.element("estado").flatten()
-            row_data["client_code"] = \
+            row_data["status"] = int(operation.element("estado").flatten())
+            row_data["transaction_code"] = \
                 operation.element("numtransaccion").flatten()
             row_data["customer_email"] = \
                 operation.element("comprador").element("email").flatten()
             row_data["customer_name"] = \
-                peration.element("comprador").element("nombre").flatten()
+                operation.element("comprador").element("nombre").flatten()
             row_data["customer_document_number"] = \
                 operation.element("comprador").element("numerodoc").flatten()
-            
+            row_data["amount"] = float(operation.element("monto").flatten())
+            row_data["net_amount"] = float(operation.element("montoneto").flatten())
+            row_data["method"] = int(operation.element("metodopago").flatten())
+            row_data["means"] = operation.element("mediopago").flatten()
+            row_data["installments"] = int(operation.element("cuotas").flatten())
+
             for item in operation.elements("item"):
-                row_data["item_descriptions"].append(
-                    item.element("descripcion").flatten())
-                row_data["item_currencies"].append(
-                    PLUGIN_DINEROMAIL_CURRENCIES[
-                        int(item.element("moneda").flatten())]
-                        )
-                row_data["item_prices"].append(item.element("preciounitario").flatten())
-                row_data["item_quantities"].append(item.element("cantidad").flatten())
+                row_data["item_descriptions"].append(item.element("descripcion").flatten())
+                row_data["item_currencies"].append(int(item.element("moneda").flatten()))
+                row_data["item_prices"].append(float(item.element("preciounitario").flatten()))
+                row_data["item_quantities"].append(int(item.element("cantidad").flatten()))
 
             # operation id lookup
             row = db(db.plugin_dineromail_operation.code == \
@@ -163,17 +169,25 @@ def plugin_dineromail_update_reports(data):
             
             if row is not None:
                 row.update_record(**row_data)
+                operation_id = row.id
             else:
-                db.plugin_dineromail_operation.insert(**row_data)
+                operation_id = db.plugin_dineromail_operation.insert(**row_data)
+                
+            row_data["id"] = operation_id
+            updated += 1
 
             # Send data to the app's callback if defined
             if PLUGIN_DINEROMAIL_ON_UPDATE is not None:
                 PLUGIN_DINEROMAIL_ON_UPDATE(row_data)
 
+        message = T("Updated %s operations") % updated
         return (True, message)
-    # for each report instance
-    # update local operation records
-    return (False, message)
+    else:
+        error = PLUGIN_DINEROMAIL_REPORT_STATUSES[status]
+        message = T("Message: %(noops)s. Error: %(error)s") % \
+    dict(noops=T("No operations updated"),
+         error=T(error))
+        return (False, message)
 
 # build a basic query for the remote payment database
 def plugin_dineromail_create_query(data):
@@ -186,8 +200,7 @@ def plugin_dineromail_create_query(data):
     password = PLUGIN_DINEROMAIL_PASSWORD
 
     report = 1
-    query = """
-<REPORTE>
+    query = """<REPORTE>
   <NROCTA>%(account)s</NROCTA>
   <DETALLE>
     <CONSULTA>
@@ -196,16 +209,15 @@ def plugin_dineromail_create_query(data):
       %(operations)s
     </CONSULTA>
   </DETALLE>
-</REPORTE>
-    """ % {"account": account, "password": password,
-           "report": report, "operations": operations}
+</REPORTE>""" % {"account": account, "password": password,
+                 "report": report, "operations": operations}
     return query
 
-def plugin_dineromail_check_status(transaction, update=False):
+def plugin_dineromail_check_status(code, update=False):
     """ Return transaction status updating
     from webservice if specified.
 
-    transaction is the id generated for button, form or link
+    code is the id generated for button, form or link
     used in the client application.
     returns the (state, description) of the operation if found or
     (None, None)
@@ -213,21 +225,18 @@ def plugin_dineromail_check_status(transaction, update=False):
     details update.
     """
 
-    # Get the locally stored transaction detail
-    operation = db(db.plugin_dineromail.client_code == \
-    transaction).select().first()
-    
-    if update and operation is not None:
+    if update:
         result, message = \
-        plugin_dineromail_update_reports([operation.code,])
-        # reload record from db
-        operation = db.plugin_dineromail_operation[operation.id]
-
+        plugin_dineromail_update_reports([code,])
+    else:
+        result = message = None
     try:
+        # Get the locally stored transaction detail
+        operation = db(db.plugin_dineromail_operation.code == \
+        code).select().first()
         status = operation.status
         description = PLUGIN_DINEROMAIL_STATUSES[status]
-    except (AttributeError, KeyError), e:
-        status = None
-        description = None
+    except (AttributeError, KeyError, ValueError), e:
+        status = description = None
         
     return status, description

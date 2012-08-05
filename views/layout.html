@@ -83,7 +83,7 @@ except: pass
     {{if response.flash:}}<div class="flash">{{=response.flash}}</div>{{pass}}
     {{if auth.user and request.controller=="default":}}<h3>{{=T('Hello')}} {{=auth.user.first_name}}
     {{if auth.has_membership('manager'):}} (manager){{pass}}
-    {{if session.balance is not None and session.balance>0 and not request.function=='pay':}}, {{=T('You have not paid for your registration; the cost is')}} ${{=T('%0.2f' % session.balance)}} [{{=A(T('pay now'),_href=URL(r=request,c='payment',f='pay'))}}]
+    {{if False and session.balance is not None and session.balance>0 and not request.function=='pay':}}, {{=T('You have not paid for your registration; the cost is')}} ${{=T('%0.2f' % session.balance)}} [{{=A(T('pay now'),_href=URL(r=request,c='payment',f='pay'))}}]
     {{elif session.balance is not None and session.balance<0 and not request.function=='pay':}}, {{=T('You have a credit of')}} ${{=T('%0.2f' % -session.balance)}} [{{=A(T('info'),_href=URL(r=request,c='payment',f='pay'))}}]{{pass}}</h3>{{pass}}
     {{include}}
     <br/><div class="frame">

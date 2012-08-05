@@ -1,7 +1,7 @@
 # coding: utf8
 
 TEST_ADDRESS = "reingart@gmail.com"
-BCC_ADDRESS = ['reingart@gmail.com', 'jbc.develop@gmail.com']
+BCC_ADDRESS = ['reingart@gmail.com', 'jbc.develop@gmail.com', 'alecura@gmail.com']
 AUTHOR_BODY="""
 %(authors)s:
 
@@ -66,6 +66,7 @@ def index(): return dict(message="hello from mailing.py")
 
 @auth.requires(auth.has_membership(role='manager'))
 def authors():
+    response.view = "generic.html"
 
     #TODO: track sent mails!
     
@@ -79,7 +80,7 @@ def authors():
               comment="Only sent a mail to test address"),
         )
 
-    if form.accepts(request.vars, session):
+    if form.accepts(request.vars, session, keepvalues=True):
         
         query = db.activity.created_by==db.auth_user.id
         query &= db.activity.status==form.vars.status
@@ -88,10 +89,11 @@ def authors():
         
         for row in db(query).select():
             try:
-                subject = form.vars.subject
                 d = dict(row.activity)
                 d['status'] = T(row.activity.status)
-                d['scheduled_room'] = ACTIVITY_ROOMS[int(row.activity.scheduled_room)] #TODO: represents
+                subject = form.vars.subject % d
+                if row.activity.scheduled_room:
+                    d['scheduled_room'] = ACTIVITY_ROOMS[int(row.activity.scheduled_room)] #TODO: represents
                 body = form.vars.body % d
     
                 attachments = []#[Mail.Attachment(payload=open(cred), filename=filename),]
@@ -101,7 +103,9 @@ def authors():
                           subject,
                           body, # (body.encode("utf8"), None),
                           attachments,
-                          bcc=not testing and BCC_ADDRESS or [])
+                          cc=not testing and BCC_ADDRESS,
+                          #bcc=not testing and BCC_ADDRESS or [],
+                          )
             
                 #db.commit()
                 ret.append("Ok %s %s" % (row.activity.title, row.auth_user.email))

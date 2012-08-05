@@ -25,8 +25,14 @@
 def index(): return dict(message="hello from plugin_dineromail_default.py")
 
 def notify():
-    data = request.vars["NOTIFICACION"]
-    tag = TAG(data)
+    data = request.vars["Notificacion"]
+    
+    try:
+        tag = TAG(data)
+    except (KeyError, ValueError, TypeError, AttributeError), e:
+        # Invalid or malformed data
+        raise HTTP(500, T("Error parsing request data %s") % e)
+
     category = str(tag.element("tiponotificacion").flatten())
     operations = []
     
@@ -38,8 +44,10 @@ def notify():
         db.plugin_dineromail_notification.insert(category=category,
                                                  operation_type=operation_type,
                                                  code=code)
-                                                 
+
+    # commit notifications in case there's a webservice error
+    db.commit()
+
     # Command for retrieving operation details for each transaction
     result, message = plugin_dineromail_update_reports(operations)
     return T("Done!")
-
