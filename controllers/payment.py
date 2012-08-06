@@ -9,22 +9,38 @@ def pay():
     rate = request.vars.rate
     if rate:
         cost = ATTENDEE_TYPE_COST[rate]
+
+        # Does this user have pending payments with the same rate?
+        same_cost = db((db.payment.from_person == auth.user.id) & \
+        (db.payment.amount == cost)).count()
         db(db.auth_user.id==auth.user.id).update(attendee_type=rate)
         person=db(db.auth_user.id==auth.user.id).select()[0]
         balance=cost
+        new_payments_query = (db.payment.from_person==auth.user_id) & \
+        (db.payment.status == "new")
+        new_payments = db(new_payments_query).count()
         
-        # Not really a payment, it just records the data for further update
-        payment_id = db.payment.insert(from_person=auth.user_id,
-                                       method="dineromail",
-                                       status="new",
-                                       invoice=rate,
-                                       amount=cost)
-    
-    payments = db(db.payment.from_person==auth.user_id).select()
+        # Only create new payments if there are no
+        # new operations waiting for checkout
+        if (new_payments < 1) or (same_cost < 1):
+            # Not really a payment, it just records the data for further update
+            payment_id = db.payment.insert(from_person=auth.user_id,
+                                           method="dineromail",
+                                           status="new",
+                                           invoice=rate,
+                                           amount=cost)
+                                           
+            # for payment lookup on dineromail notification
+            db.payment[payment_id].update_record(order_id=payment_id)
+
+    payments = db(new_payments_query).select()
     pay=H2(T('No payment due at this time'))
+    previous_payments = db((db.payment.from_person==auth.user_id) & \
+    (db.payment.status != "new")).select()
     return dict(person=person,transfers_in=[],
                 transfers_out=[],payments=payments,
-                pay=pay,balance=balance)
+                pay=pay,balance=balance,
+                previous_payments=previous_payments)
 
 
 @auth.requires_login()
@@ -55,7 +71,7 @@ def dineromail():
                "E_Comercio": "1415311",
                "NroItem": "PyConAr2012",
                "image_url": "http://ar.pycon.org/2012/static/img/logo_dineromail.jpg",
-               "DireccionExito": "http://ar.pycon.org/2012/payment/sucess",
+               "DireccionExito": "http://ar.pycon.org/2012/payment/success",
                "DireccionFracaso": "http://ar.pycon.org/2012/payment/failure",
                "DireccionEnvio": "0",
                "Mensaje": "1"}
@@ -90,3 +106,12 @@ def checkpayment():
     payment = request.args[0]
     result = plugin_dineromail_check_status(payment, update=True)
     return dict(result=result)
+
+def success():
+    response.generic_patterns = ["*",]
+    return dict(message=T("You have successfully finished the payment process. Thanks you."))
+
+def failure():
+    response.generic_patterns = ["*",]
+    return dict(message=T("The payment process has failed."))
+
