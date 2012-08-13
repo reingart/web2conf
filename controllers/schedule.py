@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # try something like
 
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+#@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 #@auth.requires_membership(role="manager")
 def index():
     query = (db.activity.status=='accepted') & \
@@ -211,3 +211,91 @@ def agenda2():
         response.flash = 'form has errors'
 
     return dict(form=form)
+
+
+@auth.requires_membership(role="manager")
+def grid():
+    response.view = 'generic.html'
+    q = db.activity.type!='poster'
+    q &= db.activity.type!='project'
+    q &= db.activity.status=='accepted'
+    rows = db(q).select(db.activity.id,
+                        db.activity.title,
+                        db.activity.status,
+                        db.activity.scheduled_datetime,
+                        db.activity.scheduled_room,
+                        )
+
+    rooms = ACTIVITY_ROOMS.copy()
+    slots = ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:30', '18:30', '19:30']
+    days = ['2012-11-16', '2012-11-17']
+
+    fields = []
+    activities = {None: ""}
+    activities.update(dict([(row.id, row.title) for row in rows]))
+    schedule = dict([((row.scheduled_datetime, row.scheduled_room), row.id) for row in rows])
+    
+    ##fields.append(BEAUTIFY(schedule))
+
+    table = []
+    for day in days:
+        th = [TH(day)] + [TH(room) for room in rooms.values()]
+        table.append(TR(*th))
+        for slot in slots:
+            tr = [TH(slot)]
+            for room in rooms:
+                dt = datetime.datetime.strptime("%s %s" % (day, slot), "%Y-%m-%d %H:%M")
+                selected = schedule.get((dt, str(room)))
+                selected = selected and int(selected)
+                
+                tr.append(
+                    TD( 
+                        SELECT([OPTION(v,
+                                   _value=k,
+                                   _selected=k and int(k)==selected) for \
+                                   (k, v) in sorted(activities.items(), 
+                                                    key=lambda x: x[1].lower())],
+                                   _name='slot.%s.%s.%s' % (day, slot, room),
+                                   _style='width: 100px')
+                    ))
+            table.append(TR(*tr))
+    
+    fields.append(TABLE(*table))
+    
+    fields.append(INPUT(_type="submit"))
+    
+    form = FORM(*fields)
+        
+    out = []
+    if form.accepts(request.vars, session, keepvalues=True):
+        response.flash = 'form accepted'
+        for var in form.vars.keys() :
+            val = form.vars[var]
+            if var.startswith('slot'):
+                #slot.%s.%s
+                activity_id = val
+                slot, slot_day, slot_time, slot_room = var.split(".")
+                dt = datetime.datetime.strptime("%s %s" % (slot_day, slot_time), "%Y-%m-%d %H:%M")
+                # clean up slot if previously allocated
+                q = db.activity.scheduled_datetime == dt
+                q &= db.activity.scheduled_room == slot_room
+                db(q).update(scheduled_datetime=None, scheduled_room=None)
+                # allocate activity (if selected for this slot) 
+                if activity_id:
+                    q = db.activity.id==activity_id
+                    db(q).update(scheduled_datetime=dt, 
+                                 scheduled_room=slot_room)
+                out.append("setting %s = d%s %s %s" % (activity_id, slot_day, slot_time, slot_room))
+            #if var.startswith("status") and val and activity_id :
+            #    db(db.activity.id==activity_id).update(status=val)
+            #    out.append("setting %s=%s" % (var, val))
+            #if var.startswith("room") and val and activity_id :
+            #    db(db.activity.id==activity_id).update(scheduled_room=val)
+            #    out.append("setting %s=%s" % (var, val))
+            pass
+
+    elif form.errors:
+        response.flash = 'form has errors'
+
+    
+    return dict(form=form, out=out)
