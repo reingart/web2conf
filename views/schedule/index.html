@@ -2,7 +2,7 @@
 {{tr_classes = ['odd', 'even']}}
 <div class="frame">
 
-<h2>{{=T('Timetable')}}</h2>
+<h1>{{=T('Timetable')}}</h1>
 
 <p>Para mayor información y detalle de las actividades y oradores, ver:
 <ul>
@@ -11,9 +11,8 @@
 </ul>
 </p>
 
-{{=H3("tables")}}
-{{for name, schedule_table in schedule_tables.iteritems():}}
-  {{=H5(name)}}
+{{for day, schedule_table in schedule_tables.iteritems():}}
+  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}}</h3>
   {{=schedule_table}}
 {{pass}}
 
@@ -25,3 +24,4 @@
 </p>
 <p><b>Importante:</b> eventualmente las fechas y horarios pueden cambiar sin previo aviso por cuestiones agenas a la organización del evento. Por favor, revise esta página frecuentemente.</p>
 </div>
+{{=DIV(hidden)}}

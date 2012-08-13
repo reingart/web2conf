@@ -1,14 +1,28 @@
 # -*- coding: utf-8 -*-
 # try something like
 
-#@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def index():
+    def cram(text, maxlen):
+        """Omit part of a string if needed to make it fit in a maximum length."""
+        text = text.decode('utf-8')
+        if len(text) > maxlen:
+            pre = max(0, (maxlen-3))
+            text = text[:pre] + '...' 
+        return text.encode('utf8')
+        
     q = db.activity.type!='poster'
     q &= db.activity.type!='project'
     q &= db.activity.status=='accepted'
     rows = db(q).select(db.activity.id,
                         db.activity.title,
                         db.activity.status,
+                        db.activity.abstract,
+                        db.activity.level,
+                        db.activity.type,
+                        db.activity.created_by,
+                        db.activity.authors,
+                        db.activity.categories ,
                         db.activity.scheduled_datetime,
                         db.activity.scheduled_room,
                         )
@@ -23,15 +37,16 @@ def index():
             []).append(row)
             
     rooms = ACTIVITY_ROOMS.copy()
-    slots = ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:30', '18:30', '19:30']
+    slots = ['8:30', '9:00', '10:00', '11:00', '12:00', '12:45', '14:00', '15:00', '16:00', '16:45', '17:30', '18:30', '19:30', '20:00']
     days = ['2012-11-16', '2012-11-17']
 
     schedule_tables = {}
     activities = {None: ""}
-    activities.update(dict([(row.id, row.title) for row in rows]))
+    activities.update(dict([(row.id, row) for row in rows]))
     schedule = dict([((row.scheduled_datetime, row.scheduled_room), row.id) for row in rows])
     
     ##fields.append(BEAUTIFY(schedule))
+    hidden = []
 
     for day in days:
         table = []
@@ -42,19 +57,41 @@ def index():
             for room in rooms:
                 dt = datetime.datetime.strptime("%s %s" % (day, slot), "%Y-%m-%d %H:%M")
                 selected = schedule.get((dt, str(room)))
-                selected = selected and int(selected)
+                activity = selected and activities[int(selected)] or None
                 
-                tr.append(
-                    TD( 
-                        activities[selected],
-                                   _style='width: 150px')
-                    )
+                if activity:
+                    author = db.auth_user[activity.created_by]
+                    if activity.authors and len(activity.authors.strip()) > 1:
+                        u = PluginMModal(title=activity.authors,
+                            content=(author.photo and IMG(_alt=author.last_name, 
+                                                          _src=URL(r=request,c='default',f='fast_download', args=author.photo),  
+                                                          _width="100px",_height="100px", 
+                                                          _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; "
+                                     ).xml() or '')+MARKMIN(author.resume or '').xml(),close=T('close'),width=50,height=50)                    
+                        hidden.append(u)
+                        authors = u.link(cram(activity.authors, 25))
+                    else:
+                        authors = ''
+                    a = PluginMModal(title=activity.title,content=MARKMIN(activity.abstract or '').xml(),close=T('close'),width=50,height=50)
+                    hidden.append(a)
+                    tr.append(TD(
+                        a.link(B(cram(activity.title, 50))), BR(),  
+                              authors and ACTIVITY_LEVEL_HINT[activity.level] or '',
+                              authors and I(" %s " % (', '.join(activity.categories or [])), 
+                                                     BR(), "", 
+                                                     authors, "") or "",
+                              _style="text-align: center;"),
+                        )
+                else:
+                    tr.append(TD())                    
+
             table.append(TR(*tr))
-        
+            
+        day = datetime.datetime.strptime(day, "%Y-%m-%d")
         schedule_tables[day] = TABLE(*table, _class="schedule")
                 
     d = dict(activities_per_date=activities_per_date,
-             levels=levels,
+             levels=levels, hidden=hidden,
              schedule_tables=schedule_tables)
     return response.render(d)
     
@@ -163,6 +200,7 @@ def index_alan():
                 trs.append(a_tr)
 
         tbody = TBODY(*trs)
+
         schedule_tables[day] = TABLE(thead, tbody, _class="schedule")
 
     d = dict(activities_per_date=activities_per_date,
