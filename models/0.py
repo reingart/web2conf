@@ -138,14 +138,14 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'testing'))
 
 # override other activities
-ACTIVITY_COMMON = ["keynote", "lightning talk", "conference break", "conference wide"]
+ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break", ]
 ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
 ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
  
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
-ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Aula D", 6: "Sala Internet"}
+ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C"}
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
