@@ -2,8 +2,65 @@
 # try something like
 
 #@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
-#@auth.requires_membership(role="manager")
 def index():
+    q = db.activity.type!='poster'
+    q &= db.activity.type!='project'
+    q &= db.activity.status=='accepted'
+    rows = db(q).select(db.activity.id,
+                        db.activity.title,
+                        db.activity.status,
+                        db.activity.scheduled_datetime,
+                        db.activity.scheduled_room,
+                        )
+    levels = {}
+    for i, level in enumerate(ACTIVITY_LEVELS):
+        levels[level] = XML("&loz;"* (i+1),)
+        
+    activities_per_date = {}
+    for row in rows:
+        activities_per_date.setdefault(\
+            row.scheduled_datetime.date(), \
+            []).append(row)
+            
+    rooms = ACTIVITY_ROOMS.copy()
+    slots = ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:30', '18:30', '19:30']
+    days = ['2012-11-16', '2012-11-17']
+
+    schedule_tables = {}
+    activities = {None: ""}
+    activities.update(dict([(row.id, row.title) for row in rows]))
+    schedule = dict([((row.scheduled_datetime, row.scheduled_room), row.id) for row in rows])
+    
+    ##fields.append(BEAUTIFY(schedule))
+
+    for day in days:
+        table = []
+        th = [TH("")] + [TH(room) for room in rooms.values()]
+        table.append(THEAD(TR(*th)))
+        for slot in slots:
+            tr = [TD(slot)]
+            for room in rooms:
+                dt = datetime.datetime.strptime("%s %s" % (day, slot), "%Y-%m-%d %H:%M")
+                selected = schedule.get((dt, str(room)))
+                selected = selected and int(selected)
+                
+                tr.append(
+                    TD( 
+                        activities[selected],
+                                   _style='width: 150px')
+                    )
+            table.append(TR(*tr))
+        
+        schedule_tables[day] = TABLE(*table, _class="schedule")
+                
+    d = dict(activities_per_date=activities_per_date,
+             levels=levels,
+             schedule_tables=schedule_tables)
+    return response.render(d)
+    
+#@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+#@auth.requires_membership(role="manager")
+def index_alan():
     query = (db.activity.status=='accepted') & \
             (db.auth_user.id==db.activity.created_by)
     query &= db.activity.scheduled_datetime != None
@@ -34,10 +91,10 @@ def index():
         headers = [TH(),]
         position_track = {0: None}
         position_spans = {0: None}
-        for i, track in enumerate(sorted(SCHEDULE_FRAME[day]["tracks"].keys())):
-            headers.append(TH("%s (%s) %s" % (SCHEDULE_FRAME[day]["tracks"][track],
-                                              track, int_to_roman(i+1))))
-            position_track[i+1] = SCHEDULE_FRAME[day]["tracks"][track]
+        for i, room in enumerate(sorted(ACTIVITY_ROOMS.keys())):
+            headers.append(TH("%s" % (ACTIVITY_ROOMS[room],)))
+            SCHEDULE_FRAME[day]["rooms"][room] = ro
+            position_track[i+1] = SCHEDULE_FRAME[day]["rooms"][room]
             position_spans[i+1] = 0
             
         table_width = len(headers)
@@ -286,12 +343,6 @@ def grid():
                     db(q).update(scheduled_datetime=dt, 
                                  scheduled_room=slot_room)
                 out.append("setting %s = d%s %s %s" % (activity_id, slot_day, slot_time, slot_room))
-            #if var.startswith("status") and val and activity_id :
-            #    db(db.activity.id==activity_id).update(status=val)
-            #    out.append("setting %s=%s" % (var, val))
-            #if var.startswith("room") and val and activity_id :
-            #    db(db.activity.id==activity_id).update(scheduled_room=val)
-            #    out.append("setting %s=%s" % (var, val))
             pass
 
     elif form.errors:
