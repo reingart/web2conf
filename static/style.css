@@ -1527,15 +1527,21 @@ table.schedule thead tr .header {
   background-position: center right;
   cursor: pointer;
 }
+
+
  table.schedule tbody td {
-   color: #3D3D3D;
+  color: #3D3D3D;
   padding: 4px;
   background-color: #FFF;
   vertical-align: top;
  }
+
+
  table.schedule tbody tr.odd td {
   background-color:#F0F0F6;
 }
+
+
 table.schedule thead tr .headerSortUp {
   background-image: url(img/asc.gif);
 }
@@ -1554,6 +1560,30 @@ table.schedule thead {
   color: #333333;
 }
 
+
 table.schedule td {
   color: #333333;
 }
+
+
+/* Schedule activity cells */
+
+/*
+Paleta PyConAr 2012 (incompleto)
+tipografía amarillo claro: #aeab35
+tipografía amarillo verdoso: #9c992f
+fondo rojo: #7e0e10
+encabezado  bandera celeste claro: #1d9ccb
+encabezado azul decoración: #2b5593
+*/
+
+table.schedule tbody td.General.keynote{
+background-color: #1d9ccb;
+color: #aeab35;
+}
+
+table.schedule tbody td.Science.talk{
+background-color: #9c992f;
+color: #2b5593;
+}
+

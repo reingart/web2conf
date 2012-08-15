@@ -138,7 +138,7 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'testing'))
 
 # override other activities
-ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break", ]
+ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break", "keynote", "break"]
 ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
 ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
  

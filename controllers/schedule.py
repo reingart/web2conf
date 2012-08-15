@@ -4,7 +4,8 @@
 @cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def index():
     def cram(text, maxlen):
-        """Omit part of a string if needed to make it fit in a maximum length."""
+        """Omit part of a string if needed to make it fit in a
+           maximum length."""
         text = text.decode('utf-8')
         if len(text) > maxlen:
             pre = max(0, (maxlen-3))
@@ -14,8 +15,10 @@ def index():
     q = db.activity.type!='poster'
     q &= db.activity.type!='project'
     q &= db.activity.status=='accepted'
+    q &= db.activity.scheduled_datetime!=None
     rows = db(q).select(db.activity.id,
                         db.activity.title,
+                        db.activity.track,
                         db.activity.status,
                         db.activity.abstract,
                         db.activity.level,
@@ -37,51 +40,88 @@ def index():
             []).append(row)
             
     rooms = ACTIVITY_ROOMS.copy()
-    slots = ['8:30', '9:00', '10:00', '11:00', '12:00', '12:45', '14:00', '15:00', '16:00', '16:45', '17:30', '18:30', '19:30', '20:00']
-    days = ['2012-11-16', '2012-11-17']
 
     schedule_tables = {}
     activities = {None: ""}
     activities.update(dict([(row.id, row) for row in rows]))
-    schedule = dict([((row.scheduled_datetime, row.scheduled_room), row.id) for row in rows])
+    schedule = dict([((row.scheduled_datetime,
+                       row.scheduled_room),
+                      row.id) for row in rows])
     
     ##fields.append(BEAUTIFY(schedule))
     hidden = []
 
-    for day in days:
+    for day in DAYS:
         table = []
         th = [TH("")] + [TH(room) for room in rooms.values()]
         table.append(THEAD(TR(*th)))
-        for slot in slots:
+        for slot in SLOTS:
             tr = [TD(slot)]
+            common = None
             for room in rooms:
-                dt = datetime.datetime.strptime("%s %s" % (day, slot), "%Y-%m-%d %H:%M")
+                dt = datetime.datetime.strptime("%s %s" % (day,
+                                                           slot),
+                                                "%Y-%m-%d %H:%M")
                 selected = schedule.get((dt, str(room)))
-                activity = selected and activities[int(selected)] or None
-                
+                activity = selected and activities[int(selected)] \
+                           or None
+
                 if activity:
                     author = db.auth_user[activity.created_by]
-                    if activity.authors and len(activity.authors.strip()) > 1:
+                    if activity.authors and \
+                       len(activity.authors.strip()) > 1:
                         u = PluginMModal(title=activity.authors,
-                            content=(author.photo and IMG(_alt=author.last_name, 
-                                                          _src=URL(r=request,c='default',f='fast_download', args=author.photo),  
-                                                          _width="100px",_height="100px", 
-                                                          _style="margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; float: left; "
-                                     ).xml() or '')+MARKMIN(author.resume or '').xml(),close=T('close'),width=50,height=50)                    
+                            content=(author.photo and \
+                                     IMG(_alt=author.last_name,
+                                         _src=URL(r=request,
+                                                  c='default',
+                                                  f='fast_download',
+                                                  args=author.photo),
+                                         _width="100px",
+                                         _height="100px", \
+                                         _style="margin-left: 5px; \
+                                         margin-right: 5px; \
+                                         margin-top: 3px; \
+                                         margin-bottom: 3px; \
+                                         float: left;").xml() or \
+                                         '') + \
+                                     MARKMIN(author.resume or \
+                                             '').xml(),
+                                     close=T('close'), width=50,
+                                     height=50)
                         hidden.append(u)
                         authors = u.link(cram(activity.authors, 25))
                     else:
                         authors = ''
-                    a = PluginMModal(title=activity.title,content=MARKMIN(activity.abstract or '').xml(),close=T('close'),width=50,height=50)
+                        
+                    a = PluginMModal(title=activity.title, \
+                            content=MARKMIN(activity.abstract or \
+                                            '').xml(),
+                                     close=T('close'),
+                                     width=50, height=50)
                     hidden.append(a)
-                    tr.append(TD(
-                        a.link(B(cram(activity.title, 50))), BR(),  
-                              authors and ACTIVITY_LEVEL_HINT[activity.level] or '',
-                              authors and I(" %s " % (', '.join(activity.categories or [])), 
-                                                     BR(), "", 
-                                                     authors, "") or "",
-                              _style="text-align: center;"),
-                        )
+                    
+                    td = TD(
+                        a.link(B(cram(activity.title, 50))),
+                               BR(),
+                               authors and \
+                               ACTIVITY_LEVEL_HINT[activity.level] \
+                               or '',
+                               authors and \
+                               I(" %s " % \
+                               (', '.join(activity.categories or \
+                                [])),
+                               BR(), "", authors, "") or "",
+                               _style="text-align: center;",
+                               _class="%s %s" % (activity.track,
+                                                 activity.type))
+                    if activity.type in ACTIVITY_COMMON:
+                        tr = [tr[0],]
+                        td.attributes["_colspan"] = len(rooms)
+                        tr.append(td)
+                        break
+                    else:
+                        tr.append(td)
                 else:
                     tr.append(TD())                    
 
@@ -322,8 +362,8 @@ def grid():
                         )
 
     rooms = ACTIVITY_ROOMS.copy()
-    slots = ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:30', '18:30', '19:30']
-    days = ['2012-11-16', '2012-11-17']
+    slots = SLOTS
+    days = DAYS
 
     fields = []
     activities = {None: ""}
