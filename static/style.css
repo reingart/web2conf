@@ -1578,12 +1578,21 @@ encabezado azul decoración: #2b5593
 */
 
 table.schedule tbody td.General.keynote{
-background-color: #1d9ccb;
-color: #aeab35;
-}
-
-table.schedule tbody td.Science.talk{
-background-color: #9c992f;
+background-color: #DCDCFF; /*#1d9ccb;*/
 color: #2b5593;
 }
 
+table.schedule tbody td.Science.talk{
+background-color: #ECFFFF; /*#9c992f;*/
+color: #2b5593;
+}
+
+table.schedule tbody td.Extreme.extreme_talk{
+background-color: #FDA; /*#E77471;*/
+color: #2b5593;
+}
+
+table.schedule tbody td.General.talk{
+background-color: #FFFCC9;
+color: #2b5593;
+}

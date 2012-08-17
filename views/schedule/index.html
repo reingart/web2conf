@@ -2,7 +2,7 @@
 {{tr_classes = ['odd', 'even']}}
 <div class="frame">
 
-<h1>{{=T('Timetable')}}</h1>
+<h1>{{=T('Schedule')}}</h1>
 
 <p>Para mayor información y detalle de las actividades y oradores, ver:
 <ul>
@@ -10,6 +10,9 @@
 <li>{{=A(T('Speakers'),_href=URL(r=request,c='activity',f='speakers'))}}</li>
 </ul>
 </p>
+
+<p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.</p>
+<p><i><b>¡Quedate conectado con PyConAr para más info y novedades!.</b></i></p>
 
 {{for day, schedule_table in schedule_tables.iteritems():}}
   <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}}</h3>

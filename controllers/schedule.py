@@ -114,7 +114,7 @@ def index():
                                BR(), "", authors, "") or "",
                                _style="text-align: center;",
                                _class="%s %s" % (activity.track,
-                                                 activity.type))
+                                                 activity.type.replace(" ", "_")))
                     if activity.type in ACTIVITY_COMMON:
                         tr = [tr[0],]
                         td.attributes["_colspan"] = len(rooms)
