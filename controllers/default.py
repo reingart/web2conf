@@ -112,6 +112,10 @@ def fast_download():
         response.headers["Content-Disposition"] \
         = "attachment; filename=%s" % request.vars['filename']
 
+    import os.path, gluon.contenttype
+    ext = os.path.splitext(request.args(0))[1]
+    response.headers['Content-Type'] = gluon.contenttype.contenttype(ext)
+    
     # remove/add headers that prevent/favors caching
     del response.headers['Cache-Control']
     del response.headers['Pragma']
