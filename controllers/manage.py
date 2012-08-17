@@ -69,7 +69,11 @@ def maillist():
     Create a comma-separated mail list of attendees;
     could expand to create many different lists.
     '''
-    rec=db((db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')).select(db.auth_user.email,orderby=db.auth_user.email)
+    #q = (db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')
+    q = db.auth_user.id>0
+    if 'speakers' in request.args:
+        q &= db.auth_user.speaker == True
+    rec=db(q).select(db.auth_user.email,orderby=db.auth_user.email)
     response.headers['Content-Type']='text/csv'
     ## BUG: (yarko:) str calls csv-writer,
     ##   which on both Ubuntu & Win returns \r\n for newline; need to find & fix
@@ -353,4 +357,3 @@ def events():
                                       event]))
     events = db(db.event).select()
     return dict(events=events)
-
