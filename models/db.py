@@ -2,11 +2,11 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
 fake_migrate = False
 
 if SUSPEND_SERVICE:
-    raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")
+    raise HTTP(503, "<html><body><h3>Service is momentarily unavailable</h3></body></html>")
 
 if is_gae:
     db=GQLDB()
