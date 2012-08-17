@@ -1,5 +1,7 @@
 # coding: utf8
 
+MAIL_QUEUE = True
+
 TEST_ADDRESS = "reingart@gmail.com"
 BCC_ADDRESS = ['reingart@gmail.com', 'jbc.develop@gmail.com', 'alecura@gmail.com']
 AUTHOR_BODY="""
@@ -74,6 +76,7 @@ def authors():
     
     form = SQLFORM.factory(
         db.activity.status,
+        db.activity.type,
         Field("subject", "string", default="[PyConAr2011]: Confirmar fecha/hora y completar datos personales"),
         Field("body", "text", default=AUTHOR_BODY),
         Field("test", "boolean", default=True, 
@@ -84,6 +87,7 @@ def authors():
         
         query = db.activity.created_by==db.auth_user.id
         query &= db.activity.status==form.vars.status
+        query &= db.activity.type==form.vars.type
 
         testing = form.vars.test
         
@@ -91,6 +95,7 @@ def authors():
             try:
                 d = dict(row.activity)
                 d['status'] = T(row.activity.status)
+                d['type'] = T(row.activity.type)
                 subject = form.vars.subject % d
                 if row.activity.scheduled_room:
                     d['scheduled_room'] = ACTIVITY_ROOMS[int(row.activity.scheduled_room)] #TODO: represents
@@ -98,14 +103,24 @@ def authors():
     
                 attachments = []#[Mail.Attachment(payload=open(cred), filename=filename),]
                 
-                if True:
-                    mail.send(testing and TEST_ADDRESS or row.auth_user.email,
+                email = testing and TEST_ADDRESS or row.auth_user.email
+                if not MAIL_QUEUE:
+                    mail.send(email,
                           subject,
                           body, # (body.encode("utf8"), None),
                           attachments,
                           cc=not testing and BCC_ADDRESS,
                           #bcc=not testing and BCC_ADDRESS or [],
                           )
+                else:
+                    db.mail_queue.insert(
+                        status='pending',
+                        email=email,
+                        cc=not testing and BCC_ADDRESS or '',
+                        subject=subject,
+                        message=body,
+                        )
+                
             
                 #db.commit()
                 ret.append("Ok %s %s" % (row.activity.title, row.auth_user.email))
