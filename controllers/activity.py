@@ -332,7 +332,7 @@ def add_author():
         request.flash = "Form has errors"
     return dict(form=form)
     
-#@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
 def speakers():
     if request.args:
         q = db.auth_user.id == request.args[0]
