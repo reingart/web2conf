@@ -4,11 +4,14 @@
 <div class="frame">
 <h1>{{=T('Conference Participants')}}</h1>
 <table>
+{{if pd>30:}}
 <tr><td width="10px"/><td>
 {{=T('%5d Pending Registrations',tot-pd)}}
 </td></tr><tr><td width="10px"/><td>
 {{=T('%5d Completed Registrations',pd)}}
-</td></tr><tr><td width="10px"/><td>
+</td></tr>
+{{pass}}
+<tr><td width="10px"/><td>
 {{=T('%5d Total Paid and Pending Registrations',tot)}}
 </td></tr>
 </table>
