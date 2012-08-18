@@ -1,7 +1,5 @@
 # coding: utf8
 
-MAIL_QUEUE = True
-
 TEST_ADDRESS = "reingart@gmail.com"
 BCC_ADDRESS = ['reingart@gmail.com', 'jbc.develop@gmail.com', 'alecura@gmail.com']
 AUTHOR_BODY="""
@@ -104,22 +102,13 @@ def authors():
                 attachments = []#[Mail.Attachment(payload=open(cred), filename=filename),]
                 
                 email = testing and TEST_ADDRESS or row.auth_user.email
-                if not MAIL_QUEUE:
-                    mail.send(email,
-                          subject,
-                          body, # (body.encode("utf8"), None),
-                          attachments,
-                          cc=not testing and BCC_ADDRESS,
-                          #bcc=not testing and BCC_ADDRESS or [],
-                          )
-                else:
-                    db.mail_queue.insert(
-                        status='pending',
-                        email=email,
-                        cc=not testing and BCC_ADDRESS or '',
-                        subject=subject,
-                        message=body,
-                        )
+                mail.send(email,
+                      subject,
+                      body, # (body.encode("utf8"), None),
+                      attachments,
+                      cc=not testing and BCC_ADDRESS,
+                      #bcc=not testing and BCC_ADDRESS or [],
+                      )
                 
             
                 #db.commit()
