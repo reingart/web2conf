@@ -14,17 +14,23 @@
 <p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.</p>
 <p><i><b>¡Quedate conectado con PyConAr para más info y novedades!.</b></i></p>
 
-{{for day, schedule_table in schedule_tables.iteritems():}}
-  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}}</h3>
-  {{=schedule_table}}
-{{pass}}
-
 <p style="text-align: center">
 {{=T('Level')}} (Orientativo): 
 {{for level in ACTIVITY_LEVELS:}}
   <span>{{=levels[level]}} {{=T(level)}}&nbsp;&nbsp;</span>
 {{pass}}
+<br/>
+{{=T('Legend:')}}
+<span class="keynote">{{=T('Keynote')}}</span> 
+<span class="extreme"><A href="/2012/conference/extreme">{{=T('Extreme')}}</a></span >
+<span class="science"><A href="/2012/conference/science">{{=T('Science')}}</a></span >
 </p>
+
+{{for day, schedule_table in schedule_tables.iteritems():}}
+  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}}</h3>
+  {{=schedule_table}}
+{{pass}}
+
 <p><b>Importante:</b> eventualmente las fechas y horarios pueden cambiar sin previo aviso por cuestiones agenas a la organización del evento. Por favor, revise esta página frecuentemente.</p>
 </div>
 {{=DIV(hidden)}}

@@ -1596,3 +1596,39 @@ table.schedule tbody td.General.talk{
 background-color: #FFFCC9;
 color: #2b5593;
 }
+
+
+.keynote {
+background-color: #DCDCFF;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.extreme {
+background-color: #FDA;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.extreme a {
+color: #2b5593;
+}
+
+.science {
+background-color: #ECFFFF;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.science a  {
+color: #2b5593;
+}
