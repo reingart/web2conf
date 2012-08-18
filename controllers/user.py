@@ -42,6 +42,7 @@ def login():
     from gluon.contrib.login_methods.extended_login_form import ExtendedLoginForm
 
     alt_login_form, signals = create_rpx_login_form()
+            
     if alt_login_form:
         extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
         auth.settings.login_form = extended_login_form
@@ -61,9 +62,15 @@ def register():
     # request captcha only in the registration form:
     if RECAPTCHA_PUBLIC_KEY:
         auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
-
-    alt_login_form, signals = create_rpx_login_form(f="janrain")
-
+        # disable email verification (if using captcha)
+        auth.settings.registration_requires_verification = False
+    
+    # don't show janrain if user is filling the form manually:
+    if not request.vars:
+        alt_login_form, signals = create_rpx_login_form(f="janrain")
+    else:
+        alt_login_form = signals = None
+        
     if (signals and
         any([True for signal in signals if request.vars.has_key(signal)])
        ):
