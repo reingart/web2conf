@@ -15,9 +15,15 @@ def data():
         result = db.export_to_csv_file(open(datafile, "wb"))
     elif request.args[0] == "import":
         result = db.import_from_csv_file(open(datafile, "rb"))
+    elif request.args[0] == "download":
+        response.headers['Content-Type'] = "text/csv"
+        response.headers['Content-Disposition'] = \
+            "attachment; filename=%s" % "db.csv"
+        return response.stream(open(datafile, "rb"), request=request)
     else:
         raise HTTP(500, "action not supported")
     return dict(action=request.args[0], result=result)
+
 
 @auth.requires_membership("manager")
 def movefieldvalues():
