@@ -11,6 +11,59 @@ try:
 except ImportError:
     Template = local_import('pyfpdf.template').Template
 
+import os
+
+@auth.requires_login()
+def index():
+    response.view = 'generic.html'
+    db.auth_user.badge_line1.readable = True
+    db.auth_user.badge_line2.readable = True
+    db.auth_user.badge_line1.writable = True
+    db.auth_user.badge_line2.writable = True
+    db.auth_user.sponsor_id.readable = True
+    db.auth_user.sponsor_id.writable = True
+    
+    form = SQLFORM.factory(
+        db.auth_user.badge_line1,
+        db.auth_user.badge_line2,
+        db.auth_user.sponsor_id,
+        )
+    return {'form': form}
+
+
+@auth.requires_login()
+def sample():
+    # show the current user badge (or from another user if manager)
+    if request.args and auth.has_membership(role='manager'):
+        user_id = request.args[0]
+    else:
+        user_id = auth.user_id
+    user = db(db.auth_user.id==user_id).select().first()
+    # read elements from db 
+    elements = db(db.pdf_element.pdf_template_id==1).select(orderby=db.pdf_element.priority)
+
+    f = Template(format=(75,105),
+             elements = elements,
+             title="Sample Badges", author="web2conf",
+             subject="", keywords="")
+    f.add_page()
+
+    f['name'] = unicode("%s %s" % (user.first_name, user.last_name), "utf8")
+    f['company_name'] = unicode("%s %s" % (user.company_name, ""), "utf8")
+    f['city'] = unicode("%s %s" % (user.city, ""), "utf8")
+    if user.country:
+        f['flag'] = os.path.join(request.folder, 'static', 'img', FLAGS.get(user.country))
+    if user.attendee_type != 'gratis':
+        f['attendee_type'] = user.attendee_type
+    if user.speaker:
+        f['speaker'] = os.path.join(request.folder, 'static', 'badges', "speaker.png")
+        f['attendee_type'] = 'DISERTANTE:'
+        
+    # TODO: qr-code
+
+    response.headers['Content-Type']='application/pdf'
+    return f.render('badge.pdf', dest='S')
+    
 @auth.requires_membership(role="manager")
 def speakers():
 
