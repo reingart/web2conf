@@ -24,9 +24,14 @@
 <span class="keynote">{{=T('Keynote')}}</span> 
 <span class="extreme"><A href="/2012/conference/extreme">{{=T('Extreme')}}</a></span >
 <span class="science"><A href="/2012/conference/science">{{=T('Science')}}</a></span >
+<span class="tutorial"><A href="/2012/conference/tutorials">{{=T('Tutorial')}}</a></span >
+<span class="workshop"><A href="/2012/conference/workshops">{{=T('Workshop')}}</a></span >
+<span class="sprint"><A href="/2012/conference/sprints">{{=T('Sprint')}}</a></span >
+<br/>
+{{=T("Unconfirmed activities are shown shaded until author confirms scheduled date, time and room.")}}
 </p>
 
-{{for day, schedule_table in schedule_tables.iteritems():}}
+{{for day, schedule_table in sorted(schedule_tables.iteritems()):}}
   <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}}</h3>
   {{=schedule_table}}
 {{pass}}
