@@ -161,7 +161,7 @@ A:hover
 /*Logo
 #logo
 {
-    /* float: left; 
+    /* float: left;
     /*width: 650px;
     /*width: 950px;
     margin: 0 auto;
@@ -188,7 +188,7 @@ A:hover
     background: transparent;
 }
 
-/* 
+/*
 #logo A
 {
     background: none;
@@ -210,7 +210,7 @@ A:hover
 #search FORM
 {
     clear: none;
-    margin: 0; 
+    margin: 0;
     padding: 0 10px 0;
     /*width: 160px;
     height: 41px;
@@ -256,7 +256,7 @@ A:hover
     color: #FFF;
     -moz-border-radius-bottomleft: 5px;
     -webkit-border-bottom-left-radius: 5px;
-    
+
 }
 #account-bar a, #account-bar a:visited {
     text-decoration: none;
@@ -415,7 +415,7 @@ A:hover
     margin: 30px 0;
 }
 .w2p_fw textarea {
-    width: 370px;   
+    width: 370px;
 }
 .w2p_fw {
     width: 100%;
@@ -435,7 +435,7 @@ hr {
 #c741007844535 ul {
     background: url(img/UL_blog_posts.png) no-repeat;
     width: 580px;
-    height: 139px;  
+    height: 139px;
 }*/
 
 /*Sidebar*/
@@ -729,7 +729,7 @@ UL.sf-menu LI LI LI:hover UL, UL.sf-menu LI LI LI.sfHover UL
 .sf-menu
 {
     float: left;
-    
+
 }
 .sf-menu A
 {
@@ -766,7 +766,7 @@ UL.sf-menu LI LI LI:hover UL, UL.sf-menu LI LI LI.sfHover UL
 {
     #padding-right: 2.25em;
     #min-width: 1px;
-    
+
 /*trigger IE7 hasLayout so spans position accurately*/
 }
 .sf-sub-indicator
@@ -1501,12 +1501,12 @@ a.btn-sponsor:hover {
   background-position: 0 -51px;
 }
 
- 
+
 /* <Pedro Guridi> fixes */
- 
- 
+
+
 /* Table Sorter Style */
- 
+
 table.schedule {
   font-family:arial;
   background-color: #CDCDCD;
@@ -1577,6 +1577,7 @@ encabezado  bandera celeste claro: #1d9ccb
 encabezado azul decoración: #2b5593
 */
 
+
 table.schedule tbody td.General.keynote{
 background-color: #DCDCFF; /*#1d9ccb;*/
 color: #2b5593;
@@ -1597,6 +1598,25 @@ background-color: #FFFCC9;
 color: #2b5593;
 }
 
+table.schedule tbody td.General.tutorial{
+background-color: #F2DDBF;
+color: #2b5593;
+}
+
+table.schedule tbody td.General.workshop{
+background-color: #FFF0EF;
+color: #2b5593;
+}
+
+table.schedule tbody td.General.sprint{
+background-color: #D3DB9C;
+color: #2b5593;
+}
+
+table.schedule tbody td.General.project{
+background-color: #D3DB9C;
+color: #2b5593;
+}
 
 .keynote {
 background-color: #DCDCFF;
@@ -1631,4 +1651,52 @@ font-size: 8pt;
 
 .science a  {
 color: #2b5593;
+}
+
+.tutorial {
+background-color: #F2DDBF;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.tutorial a  {
+color: #2b5593;
+}
+
+.workshop {
+background-color: #FFF0EF;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.workshop a  {
+color: #2b5593;
+}
+
+.sprint {
+background-color: #D3DB9C;
+color: #2b5593;
+padding: 3px;
+margin: 0px;
+font-family: arial;
+font-size: 8pt;
+}
+
+.sprint a  {
+color: #2b5593;
+}
+
+
+#unconfirmed {
+color: #c0c0c0;
+}
+
+#unconfirmed a {
+color: #c0c0c0;
 }
