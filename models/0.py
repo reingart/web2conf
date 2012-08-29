@@ -123,8 +123,8 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= ('keynote', 'panel', 'plenary', 
-                 'talk', 'extreme talk', 'poster', 
+ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
+                 'talk', 'extreme talk', 'poster',
                  'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
@@ -141,11 +141,14 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
 ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break",  "break", "social"]
 ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
 ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
- 
+
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
+# TODO: create a room table (id, name, venue)!
 ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 0: "-"}
+ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), "- Ciudad de Bs. As.")]*4 + \
+               [SPAN(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""]
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
@@ -205,7 +208,7 @@ TRUETYPE_PATH='/usr/share/fonts/truetype/freefont'
 GSFONTS_PATH='/usr/share/fonts/type1/gsfonts/'
 
 EMAIL_VERIFY_SUBJECT=T("%s Registration Confirmation") % response.title
-EMAIL_VERIFY_BODY=T("""                                              
+EMAIL_VERIFY_BODY=T("""
 Dear Attendee,
 
 To proceed with your registration and verify your email, click on the following link:
