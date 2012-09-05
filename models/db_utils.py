@@ -30,6 +30,7 @@ def update_zip(person):
     return lo,la
 
 def update_billed_amount(person):
+    return 0
     ### person here can be a form instead of a record but should be record
     if not person.update_record:
        person=db(db.auth_user.id==person.id).select()[0]
@@ -58,21 +59,15 @@ def update_person(form):
     return update_billed_amount(form.vars)
 
 def update_pay(person):
+    return
     if not ENABLE_PAYMENTS:
         return
     if not person.update_record:
        person=db(db.auth_user.id==person.id).select()[0]
     update_billed_amount(person)
-    transfers_in=db(db.money_transfer.to_person==person.id)\
-                   (db.money_transfer.from_person==db.auth_user.id).select()
-    transfers_out=db(db.money_transfer.from_person==person.id).select()
     payments=db(db.payment.from_person==person.id).select()
     amount_added=0.0    
-    for row in transfers_in:
-        amount_added+=row.money_transfer.amount
     amount_subtracted=0.0
-    for row in transfers_out:
-        if row.approved: amount_subtracted+=row.amount
     amount_paid=0.0
     for row in payments:
         if row.status.lower()=='charged': amount_paid+=row.amount   

@@ -1,25 +1,9 @@
 {{extend 'layout.html'}}
 
 <div class="frame">
-<h2>{{=T('Time to Pay!')}}</h2>
-<p>
-<table width="70%">
-<tr><td>{{=T('Your current balance')}}</td><td style="text-align:right">${{='%.2f'%balance}}</td><td>=</td></tr>
-</table>
-<center>
-{{=pay}}
-</center>
+<h2>{{=T('Pay')}}</h2>
 
-{{if payments:}}
-<h2>{{=T("List of submitted payments")}}</h2>
-<i>{{=T('If you have pending payments (SUBMITTED status), reload this page to check for status updates. The amount due will be updated when the payment is CHARGED.')}}</i>
-<table>
-{{for payment in payments:}}
-{{if payment.status=='PRE-PROCESSING': continue}}
-<tr><td>{{=payment.method}} {{=payment.created_on}}</td><td style="text-align:right">${{='%.2f'% payment.amount}}</td><td>{{=payment.status}}</td><td>{{=A("dineromail", _href=URL('dineromail', args=payment.id))}}</tr>
-{{pass}}
-</table>
-{{pass}}
+{{=form}}
 
 
 </div>
