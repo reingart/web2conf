@@ -104,9 +104,9 @@ if session.manager:
      ('gratis',T('Gratuito, $0')),
    )
 ATTENDEE_TYPE_COST=dict(
-     professional=300,
+     professional=250,
      enthusiast=150,
-     student=50,
+     novice=75,
      test=2.00,
      gratis=0.00,
    )
