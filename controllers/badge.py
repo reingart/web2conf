@@ -13,9 +13,14 @@ except ImportError:
 
 import os
 
-@auth.requires_login()
 def index():
-    response.view = 'generic.html'
+    q = db.auth_user.email==request.vars.email
+    q &= db.auth_user.include_in_delegate_listing==True
+    person = db(q).select().first()
+    return dict(person=person)
+    
+@auth.requires_login()
+def edit():
     db.auth_user.badge_line1.readable = True
     db.auth_user.badge_line2.readable = True
     db.auth_user.badge_line1.writable = True
@@ -30,9 +35,39 @@ def index():
         )
     return {'form': form}
 
+def build_qr_image(data, filename):
+    import qrcode
+    qr = qrcode.QRCode(
+        #version=1,
+        #error_correction=qrcode.constants.ERROR_CORRECT_L,
+        #box_size=10,
+        border=0,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    img = qr.make_image()
+    ##img = qr.make_image(image_factory=image_factory)
+    img.save(filename)
+
+def center_image(source, dest, max_width=165, max_height=61):
+    "center the logo to preserve aspect ratio"
+    from PIL import Image, ImageDraw
+   
+    # open the original image, create a new one:
+    logo = Image.open(source)
+    im = Image.new("RGBA",(max_width, max_height), 'white')
+    # calculate padding
+    w, h = logo.size
+    box = ((max_width - w) / 2, (max_height - h) / 2)
+    # copy logo, using mask to use transparency
+    im.paste(logo, box, logo)
+    im.save(dest)
+
 
 @auth.requires_login()
 def sample():
+    
     # show the current user badge (or from another user if manager)
     if request.args and auth.has_membership(role='manager'):
         user_id = request.args[0]
@@ -43,7 +78,7 @@ def sample():
     elements = db(db.pdf_element.pdf_template_id==1).select(orderby=db.pdf_element.priority)
 
     f = Template(format=(75,105),
-             elements = elements,
+             elements = list(elements),
              title="Sample Badges", author="web2conf",
              subject="", keywords="")
     f.add_page()
@@ -55,19 +90,48 @@ def sample():
         f['flag'] = os.path.join(request.folder, 'static', 'img', FLAGS.get(user.country))
     if user.attendee_type != 'gratis':
         f['attendee_type'] = user.attendee_type
+
     if user.speaker:
         f['speaker'] = os.path.join(request.folder, 'static', 'badges', "speaker.png")
         f['attendee_type'] = 'DISERTANTE:'
         
-    # TODO: qr-code
+    # qr-code
 
+    filename = os.path.join(request.folder, 'private', 'qr', "%s.png" % user.id) 
+    build_qr_image('http://ar.pycon.org/2012/badge?email=%s' % user.email, filename)
+    f['qr'] = filename
+
+    # sponsor logo image:
+    
+    fn = 'sponsor.logo.995590468c2f1175.6d732e706e67.png' 
+    #fn = "sponsor.logo.b337c3730209cdbf.6d73615f6c6f676f2e706e67.png"
+    #fn = "sponsor.logo.a1b1b67475967603.66696572726f5f6c6f676f2e706e67.png"
+    fn = "sponsor.logo.b9d3847ca9270ce7.6d616368696e616c69732e706e67.png"
+    fn = "sponsor.logo.a3ad3ddd40f597c3.73697374656d61735f6167696c65735f6c6f676f2e706e67.png"
+    source = os.path.join(request.folder, 'uploads', fn)
+    temp = os.path.join(request.folder, 'private', 'qr', fn) 
+    center_image(source, temp)
+
+    f['sponsor_logo'] = temp
+
+    # watermark:
+    field = {
+            'name': 'homo', 
+            'type': 'T', 
+            'x1': 45, 'y1': 60, 'x2': 0, 'y2': 0, 
+            'font': "Arial", 'size': 30, 'rotate': 45,
+            'bold': True, 'italic': False, 'underline': False, 
+            'foreground': 0xC0C0C0, 'background': 0xFFFFFF,
+            'align': "L", 'text': "SAMPLE", 'priority': 10000}
+    f.elements.append(field)
+        
     response.headers['Content-Type']='application/pdf'
     return f.render('badge.pdf', dest='S')
     
 @auth.requires_membership(role="manager")
 def speakers():
 
-    import os.path
+    import os.pathza
     
     # generate sample invoice (according Argentina's regulations)
 
