@@ -1,37 +1,117 @@
 # -*- coding: utf-8 -*-
 
-#############################################
-# Submit payment
-#############################################
+class IS_VALID_COUPON(object):
+    def __call__(self, value):
+        # In development (DEV_TEST), there is no need (and no way) to lock the coupon update
+        coupon = db(db.coupon.code==value).select(for_update=not DEV_TEST, limitby=(0, 1)).first()
+        if not coupon:
+            error_message = T("Coupon does not exist!")
+        elif coupon.used_by:
+            error_message = T("Coupon is already used!")
+        else:
+            error_message = None
+        return (value, error_message)
+    def formatter(self, value):
+        return value
+
 
 @auth.requires_login()
+def index():
+    "List payment and pay methods"
+    q = (db.payment.from_person==auth.user_id) 
+    q &= (db.payment.status != "cancelled")
+
+    payments = db(q).select()
+    previous_payments = db((db.payment.from_person==auth.user_id) & \
+    (db.payment.status != "new")).select()
+    return dict(payments=payments,)
+
+        
+@auth.requires_login()
 def pay():
+    "Submit payment"
+
+    rates = [(rate, "%s: $ %s" % (T(rate), cost))
+             for rate, cost
+             in sorted(ATTENDEE_TYPE_COST.items(), key=lambda x: x[1])
+             if rate is not None
+             ]
+    form = SQLFORM.factory(
+         Field("attendee_type", label=T("Type"), 
+                 requires=IS_IN_SET(rates), default=request.vars.rate or "gratis"),
+         Field("donation", type="double", 
+                 label=T("Additional Donation"), comment=T("(optional)")),
+         Field("coupon_code", type="string", length=8,
+                 label=T("Coupon code"), comment=T("(discounts)"), 
+                 requires=IS_EMPTY_OR(IS_VALID_COUPON())),
+         submit_button=T("Confirm"),
+         )
+    if form.accepts(request.vars, session):
+        # book coupon
+        if form.vars.coupon_code:
+            db(db.coupon.code==form.vars.coupon_code).update(used_by=auth.user_id)
+            coupon = db(db.coupon.code==form.vars.coupon_code).select().first()
+        else:
+            coupon = None
+        # calculate payment amount
+        rate = form.vars.attendee_type
+        amount = ATTENDEE_TYPE_COST[rate]
+        if coupon:
+            amount -= coupon.discount * amount / 100.00
+            amount -= coupon.amount
+        if amount <= 0:
+            amount = 0
+        if form.vars.donation:
+            amount += form.vars.donation
+        # update user data:
+        db(db.auth_user.id==auth.user_id).update(
+            attendee_type=rate,           
+            donation=form.vars.donation,
+            )
+        # cancel any pending payment
+        q = db.payment.from_person==auth.user_id
+        q &= db.payment.status=="new"
+        db(q).update(status="cancelled")
+        # create the payment record
+        # Not really a payment, it just records the data for further update
+        payment_id = db.payment.insert(from_person=auth.user_id,
+                                       rate=rate,
+                                       status="new",
+                                       invoice="Bono Contribucion PyCon %s" % rate,
+                                       amount=amount)
+    
+        # for payment lookup on dineromail notification
+        db.payment[payment_id].update_record(order_id=payment_id)
+        
+        session.flash = T("Your payment has been generated!")
+        redirect(URL("index"))
+    return dict(form=form)
+
+
+
+
+
+@auth.requires_login()
+def pay_old():
     rate = request.vars.rate
-    if rate:
+    if not rate:
+        redirect(URL("index"))
+    else:
         cost = ATTENDEE_TYPE_COST[rate]
 
         # Does this user have pending payments with the same rate?
         same_cost = db((db.payment.from_person == auth.user.id) & \
         (db.payment.amount == cost)).count()
-        db(db.auth_user.id==auth.user.id).update(attendee_type=rate)
         person=db(db.auth_user.id==auth.user.id).select()[0]
         balance=cost
         new_payments_query = (db.payment.from_person==auth.user_id) & \
         (db.payment.status == "new")
         new_payments = db(new_payments_query).count()
-        
+
         # Only create new payments if there are no
         # new operations waiting for checkout
         if (new_payments < 1) or (same_cost < 1):
-            # Not really a payment, it just records the data for further update
-            payment_id = db.payment.insert(from_person=auth.user_id,
-                                           method="dineromail",
-                                           status="new",
-                                           invoice=rate,
-                                           amount=cost)
-                                           
-            # for payment lookup on dineromail notification
-            db.payment[payment_id].update_record(order_id=payment_id)
+            pass
 
     payments = db(new_payments_query).select()
     pay=H2(T('No payment due at this time'))
@@ -54,7 +134,7 @@ def dineromail():
 
     payment_id = request.args[0]
     payment = db(db.payment.id==payment_id).select().first()
-    
+
     import uuid
     import urllib
 
@@ -65,10 +145,10 @@ def dineromail():
 ##NroItem=PyConAr2012&image_url=http%3A%2F%2Far%2Epycon%2Eorg%2F2012%2Fstatic%2Fimg%2Flogo%5Fdineromail%2Ejpg&
 ##DireccionExito=http%3A%2F%2F&DireccionFracaso=http%3A%2F%2F&DireccionEnvio=0&Mensaje=1
 
-    arguments= {"NombreItem": payment.invoice,
+    arguments= {"NombreItem": payment.invoice or '',
                "TipoMoneda": "1",
                "PrecioItem": str(payment.amount),
-               "E_Comercio": "1415311",
+               "E_Comercio": PLUGIN_DINEROMAIL_ACCOUNT, #"1415311",
                "NroItem": "PyConAr2012",
                "image_url": "http://ar.pycon.org/2012/static/img/logo_dineromail.jpg",
                "DireccionExito": "http://ar.pycon.org/2012/payment/success",
@@ -108,10 +188,9 @@ def checkpayment():
     return dict(result=result)
 
 def success():
-    response.generic_patterns = ["*",]
-    return dict(message=T("You have successfully finished the payment process. Thanks you."))
+    session.flash = T("You have successfully finished the payment process. Thanks you.")
+    redirect(URL("index"))
 
 def failure():
-    response.generic_patterns = ["*",]
-    return dict(message=T("The payment process has failed."))
-
+    session.flash = T("The payment process has failed.")
+    redirect(URL("index"))
