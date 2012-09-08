@@ -9,11 +9,12 @@
 try:
     from gluon.contrib.pyfpdf import Template
 except ImportError:
-    Template = local_import('pyfpdf.template').Template
+    raise #Template = local_import('pyfpdf.template').Template
 
 import os
 
 def index():
+    "Contact card info page for each attendee"
     q = db.auth_user.email==request.vars.email
     q &= db.auth_user.include_in_delegate_listing==True
     person = db(q).select().first()
@@ -21,18 +22,51 @@ def index():
     
 @auth.requires_login()
 def edit():
+    "Form to update badge data"
+    
+    # edit the current user info (or from another user if manager)
+    if request.args and auth.has_membership(role='manager'):
+        user_id = request.args[0]
+    else:
+        user_id = auth.user_id
+    user = db(db.auth_user.id==user_id).select().first()
+    
     db.auth_user.badge_line1.readable = True
     db.auth_user.badge_line2.readable = True
     db.auth_user.badge_line1.writable = True
     db.auth_user.badge_line2.writable = True
     db.auth_user.sponsor_id.readable = True
     db.auth_user.sponsor_id.writable = True
-    
+
+    db.auth_user.badge_line1.comment=T("(i.e. position)")
+    db.auth_user.badge_line2.comment=T("(ie. interests)")
+    db.auth_user.sponsor_id.comment=XML(A(T('sign up!'),_href=URL('sponsors','sign_up')))
+
+    db.auth_user.first_name.default = user.first_name
+    db.auth_user.last_name.default = user.last_name
+    db.auth_user.badge_line1.default = user.badge_line1
+    db.auth_user.badge_line2.default = user.badge_line2
+    db.auth_user.sponsor_id.default = user.sponsor_id
+        
     form = SQLFORM.factory(
+        db.auth_user.first_name,
+        db.auth_user.last_name,
         db.auth_user.badge_line1,
         db.auth_user.badge_line2,
         db.auth_user.sponsor_id,
         )
+
+    if form.accepts(request.vars, session, keepvalues=True):
+        db(db.auth_user.id == user_id).update(
+                first_name=form.vars.first_name,
+                last_name=form.vars.last_name,
+                badge_line1=form.vars.badge_line1,
+                badge_line2=form.vars.badge_line2,
+                sponsor_id=form.vars.sponsor_id,
+                )
+        response.flash = "Datos actualizados"
+        # open a new window with the PDF badge sample:
+        response.new_window = URL("sample", args=request.args)
     return {'form': form}
 
 def build_qr_image(data, filename):
@@ -56,12 +90,18 @@ def center_image(source, dest, max_width=165, max_height=61):
    
     # open the original image, create a new one:
     logo = Image.open(source)
-    im = Image.new("RGBA",(max_width, max_height), 'white')
+    im = Image.new("RGB",(max_width, max_height), (255,255,255))
     # calculate padding
     w, h = logo.size
     box = ((max_width - w) / 2, (max_height - h) / 2)
-    # copy logo, using mask to use transparency
-    im.paste(logo, box, logo)
+    # copy logo, use mask as some images are broken
+    try:
+        im.paste(logo, box, logo)
+    except ValueError:
+        # alternate method to workaround "bad transparency mask" issue        
+        from PIL import Image, ImageOps
+        im = ImageOps.fit(logo, (max_width, max_height), Image.ANTIALIAS)
+
     im.save(dest)
 
 
@@ -86,6 +126,8 @@ def sample():
     f['name'] = unicode("%s %s" % (user.first_name, user.last_name), "utf8")
     f['company_name'] = unicode("%s %s" % (user.company_name, ""), "utf8")
     f['city'] = unicode("%s %s" % (user.city, ""), "utf8")
+    f['badge_line1'] = user.badge_line1
+    f['badge_line2'] = user.badge_line2
     if user.country:
         f['flag'] = os.path.join(request.folder, 'static', 'img', FLAGS.get(user.country))
     if user.attendee_type != 'gratis':
@@ -103,22 +145,26 @@ def sample():
 
     # sponsor logo image:
     
-    fn = 'sponsor.logo.995590468c2f1175.6d732e706e67.png' 
+    #fn = 'sponsor.logo.995590468c2f1175.6d732e706e67.png' 
     #fn = "sponsor.logo.b337c3730209cdbf.6d73615f6c6f676f2e706e67.png"
     #fn = "sponsor.logo.a1b1b67475967603.66696572726f5f6c6f676f2e706e67.png"
-    fn = "sponsor.logo.b9d3847ca9270ce7.6d616368696e616c69732e706e67.png"
-    fn = "sponsor.logo.a3ad3ddd40f597c3.73697374656d61735f6167696c65735f6c6f676f2e706e67.png"
-    source = os.path.join(request.folder, 'uploads', fn)
-    temp = os.path.join(request.folder, 'private', 'qr', fn) 
-    center_image(source, temp)
+    #fn = "sponsor.logo.b9d3847ca9270ce7.6d616368696e616c69732e706e67.png"
+    if user.sponsor_id:
+        fn = db.sponsor[user.sponsor_id].logo
+        
+        source = os.path.join(request.folder, 'uploads', fn)
+        temp = os.path.join(request.folder, 'private', 'qr', fn) + ".png"
+        center_image(source, temp)
+    else:
+        temp = None
 
     f['sponsor_logo'] = temp
-
+    
     # watermark:
     field = {
             'name': 'homo', 
             'type': 'T', 
-            'x1': 45, 'y1': 60, 'x2': 0, 'y2': 0, 
+            'x1': 65, 'y1': 120, 'x2': 0, 'y2': 0, 
             'font': "Arial", 'size': 30, 'rotate': 45,
             'bold': True, 'italic': False, 'underline': False, 
             'foreground': 0xC0C0C0, 'background': 0xFFFFFF,
@@ -131,7 +177,7 @@ def sample():
 @auth.requires_membership(role="manager")
 def speakers():
 
-    import os.pathza
+    import os.path
     
     # generate sample invoice (according Argentina's regulations)
 
