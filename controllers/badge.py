@@ -37,6 +37,8 @@ def edit():
     db.auth_user.badge_line2.writable = True
     db.auth_user.sponsor_id.readable = True
     db.auth_user.sponsor_id.writable = True
+    
+    db.auth_user.sponsor_id.requires = IS_EMPTY_OR(IS_IN_DB(db, db.sponsor, '%(name)s'))
 
     db.auth_user.badge_line1.comment=T("(i.e. position)")
     db.auth_user.badge_line2.comment=T("(ie. interests)")
