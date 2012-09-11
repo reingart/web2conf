@@ -125,11 +125,11 @@ def sample():
              subject="", keywords="")
     f.add_page()
 
-    f['name'] = unicode("%s %s" % (user.first_name, user.last_name), "utf8")
-    f['company_name'] = unicode("%s %s" % (user.company_name, ""), "utf8")
-    f['city'] = unicode("%s %s" % (user.city, ""), "utf8")
-    f['badge_line1'] = unicode(user.badge_line1, "utf8")
-    f['badge_line2'] = unicode(user.badge_line2, "utf8")
+    f['name'] = unicode("%s %s" % (user.first_name or '', user.last_name or ''), "utf8")
+    f['company_name'] = unicode("%s %s" % (user.company_name or '', ""), "utf8")
+    f['city'] = unicode("%s %s" % (user.city or '', ""), "utf8")
+    f['badge_line1'] = unicode(user.badge_line1 or '', "utf8")
+    f['badge_line2'] = unicode(user.badge_line2 or '', "utf8")
     if user.country:
         f['flag'] = os.path.join(request.folder, 'static', 'img', FLAGS.get(user.country))
     if user.attendee_type != 'gratis':
@@ -157,6 +157,10 @@ def sample():
         source = os.path.join(request.folder, 'uploads', fn)
         temp = os.path.join(request.folder, 'private', 'qr', fn) + ".png"
         center_image(source, temp)
+        
+        # clean company name
+        f['company_name'] = ""
+
     else:
         temp = None
 
