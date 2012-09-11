@@ -128,8 +128,8 @@ def sample():
     f['name'] = unicode("%s %s" % (user.first_name, user.last_name), "utf8")
     f['company_name'] = unicode("%s %s" % (user.company_name, ""), "utf8")
     f['city'] = unicode("%s %s" % (user.city, ""), "utf8")
-    f['badge_line1'] = user.badge_line1
-    f['badge_line2'] = user.badge_line2
+    f['badge_line1'] = unicode(user.badge_line1, "utf8")
+    f['badge_line2'] = unicode(user.badge_line2, "utf8")
     if user.country:
         f['flag'] = os.path.join(request.folder, 'static', 'img', FLAGS.get(user.country))
     if user.attendee_type != 'gratis':
@@ -137,7 +137,7 @@ def sample():
 
     if user.speaker:
         f['speaker'] = os.path.join(request.folder, 'static', 'badges', "speaker.png")
-        f['attendee_type'] = 'DISERTANTE:'
+        f['attendee_type'] = 'DISERTANTE'
         
     # qr-code
 
