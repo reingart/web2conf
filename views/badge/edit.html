@@ -1,6 +1,10 @@
 {{extend 'layout.html'}}
 
 <h1>{{=T("Edit your Badge")}}</h1>
+{{for el in form.elements("[type=text]"):}}
+  {{el.attributes["_style"] = "width: 20em;"}}
+{{pass}}
+
 {{=form}}
 
 {{if response.new_window:}}
