@@ -28,7 +28,7 @@ T.current_languages=['es','es-ar','es-es']
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
 # DEV_TEST=True   # settings suitable for development work
-DEV_TEST=True# Deployed settings
+DEV_TEST=False # Deployed settings
 
 if DEV_TEST:
     DBURI='sqlite://development.db'
@@ -38,7 +38,7 @@ if DEV_TEST:
     if session.language: T.force(session.language)
 else:
     # DBURI set in 0_private.py
-    DBURI='postgres://web2py:password@localhost/pycon2011'
+    DBURI=None
     DBPOOLS=0
 
 TWITTER_HASH = "pyconar"
@@ -81,7 +81,7 @@ PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
-FACUTOFF_DATE=datetime.datetime(2012,8,31,23,59,0)
+FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
@@ -166,7 +166,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     }
 
 
-SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "")
+SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "Adherente")
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
