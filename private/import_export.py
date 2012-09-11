@@ -10,7 +10,7 @@ for table in db.tables:
     print colnames
     rows = db0.executesql(db._lastsql)
     # clean up table
-    db.executesql("TRUNCATE %s" % table)
+    ##db.executesql("TRUNCATE %s" % table)
     for i, row in enumerate(rows):
       print "inserting", i, len(rows)
       sql = "INSERT INTO %s (%s) VALUES (%s)" % (
