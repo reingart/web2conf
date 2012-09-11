@@ -31,17 +31,6 @@ def edit():
         user_id = auth.user_id
     user = db(db.auth_user.id==user_id).select().first()
     
-    db.auth_user.badge_line1.readable = True
-    db.auth_user.badge_line2.readable = True
-    db.auth_user.badge_line1.writable = True
-    db.auth_user.badge_line2.writable = True
-    db.auth_user.sponsor_id.readable = True
-    db.auth_user.sponsor_id.writable = True
-    
-    db.auth_user.sponsor_id.requires = IS_EMPTY_OR(IS_IN_DB(db, db.sponsor, '%(name)s'))
-
-    db.auth_user.badge_line1.comment=T("(i.e. position)")
-    db.auth_user.badge_line2.comment=T("(ie. interests)")
     db.auth_user.sponsor_id.comment=XML(A(T('sign up!'),_href=URL('sponsors','sign_up')))
 
     db.auth_user.first_name.default = user.first_name

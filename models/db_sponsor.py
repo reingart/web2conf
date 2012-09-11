@@ -25,4 +25,5 @@ db.define_table( 'sponsor',
    db.Field('modified_on','datetime',label=T("Modified On"),readable=False,writable=False,default=request.now,update=request.now),
    migrate=migrate, fake_migrate=fake_migrate)
 
-db.auth_user.sponsor_id.requires = IS_IN_DB(db, db.sponsor.id, '%(name)s')
+# sponsor logo in badge:
+db.auth_user.sponsor_id.requires = IS_EMPTY_OR(IS_IN_DB(db, db.sponsor, '%(name)s'))

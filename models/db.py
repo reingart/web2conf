@@ -211,6 +211,20 @@ else:
 
 db.auth_user.confirmed.label = T("Confirm attendance")
 
+# badge:
+if True:
+    db.auth_user.badge_line1.readable = True
+    db.auth_user.badge_line2.readable = True
+    db.auth_user.badge_line1.writable = True
+    db.auth_user.badge_line2.writable = True
+    db.auth_user.sponsor_id.readable = True
+    db.auth_user.sponsor_id.writable = True
+
+    db.auth_user.badge_line1.comment = T("(i.e. position)")
+    db.auth_user.badge_line2.comment = T("(ie. interests)")
+    db.auth_user.sponsor_id.comment = T("(logo for badge)")
+
+
 # conference options
 db.define_table("option",
     Field("name", "string", unique=True),
