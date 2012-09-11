@@ -417,9 +417,9 @@ A:hover
 .w2p_fw textarea {
     width: 370px;
 }
-.w2p_fw {
-    width: 100%;
-}
+/*.w2p_fw {
+    width: 75%;
+}*/
 /*blog post*/
 hr {
     color: #cabe57;
@@ -1699,4 +1699,11 @@ color: #c0c0c0;
 
 #unconfirmed a {
 color: #c0c0c0;
+}
+
+.w2p_fc { 
+-moz-column-width:25%; /* Firefox */
+-webkit-column-width:25%; /* Safari and Chrome */
+column-width:25%;
+width:25%;
 }
