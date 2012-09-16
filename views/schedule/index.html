@@ -4,15 +4,10 @@
 
 <h1>{{=T('Schedule')}}</h1>
 
-<p>Para mayor información y detalle de las actividades y oradores, ver:
-<ul>
-<li>{{=A(T('Accepted Activities'),_href=URL(r=request,c='activity',f='accepted'))}}</li>
-<li>{{=A(T('Speakers'),_href=URL(r=request,c='activity',f='speakers'))}}</li>
-</ul>
-</p>
-
-<p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.</p>
-<p><i><b>¡Quedate conectado con PyConAr para más info y novedades!.</b></i></p>
+{{if not auth.is_logged_in():}}
+<p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.
+<i><b>¡{{=A("Inscribite", _href=URL(c='user',f='register'))}} para más info y recibir novedades!.</b></i></p>
+{{pass}}
 
 <p style="text-align: center">
 {{=T('Level')}} (Orientativo): 
@@ -27,14 +22,21 @@
 <span class="tutorial"><A href="/2012/conference/tutorials">{{=T('Tutorial')}}</a></span >
 <span class="workshop"><A href="/2012/conference/workshops">{{=T('Workshop')}}</a></span >
 <span class="sprint"><A href="/2012/conference/sprints">{{=T('Sprint')}}</a></span >
-<br/>
-{{=T("Unconfirmed activities are shown shaded until author confirms scheduled date, time and room.")}}
 </p>
 
 {{for i, (day, schedule_table) in enumerate(sorted(schedule_tables.iteritems())):}}
   <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}} - {{=ACTIVITY_VENUE[i]}}</h3>
   {{=schedule_table}}
 {{pass}}
+
+<p>Para mayor información y detalle de las actividades y oradores, ver:
+<ul>
+<li>{{=A(T('Accepted Activities'),_href=URL(r=request,c='activity',f='accepted'))}}</li>
+<li>{{=A(T('Speakers'),_href=URL(r=request,c='activity',f='speakers'))}}</li>
+</ul>
+<br/>
+{{=T("Unconfirmed activities are shown shaded until author confirms scheduled date, time and room.")}}
+</p>
 
 <p><b>Importante:</b> eventualmente las fechas y horarios pueden cambiar sin previo aviso por cuestiones agenas a la organización del evento. Por favor, revise esta página frecuentemente.</p>
 </div>

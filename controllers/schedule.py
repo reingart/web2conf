@@ -49,7 +49,7 @@ def index():
         if time not in slots_per_date.get(date, []):
             slots_per_date.setdefault(date, {}).setdefault(time, {})
             # find overlapped slots
-            if activity.duration and activity.type not in ('open space', 'project', 'sprint', 'social'):
+            if activity.duration and activity.type not in ('open space', 'project', 'sprint', 'social', 'special'):
                 for i in range(activity.duration/60):
                     hidden_slot = activity.scheduled_datetime + datetime.timedelta(minutes=60*i)
                     hidden_slot_time = hidden_slot.time()
@@ -74,8 +74,11 @@ def index():
 
     for day in sorted(activities_per_date.keys()):
         table = []
-        th = [TH("")] + [TH(name) for room, name in rooms.items()
-                         if room in rooms_per_date[day]]
+        th = [TH("")] 
+        rooms_names = [name for room, name in sorted(rooms.items()) if room in rooms_per_date[day]]
+        rooms_ids = dict([(name, room) for room, name in rooms.items()])
+        for name in sorted(set(rooms_names), key=lambda x: rooms_ids[x]): 
+            th.append(TH(name, _colspan=rooms_names.count(name)))
         table.append(THEAD(TR(*th)))
         slots = sorted(slots_per_date[day])
         for slot in slots:
