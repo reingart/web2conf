@@ -9,6 +9,16 @@ $(function()
   });
 </script>
 {{pass}}
+{{#=A(SPAN(XML(T("Register "))), _href=URL(c='user', f='register'), _class="btn-sponsor")}}
+
+{{=DIV(A(IMG(_src=URL(c="static", f="img/tickets_small.png")), _title=T("Registration"), _href=URL(c="conference", f="registration")), _style='float: right')}}
+{{=DIV(A(IMG(_src=URL(c="static", f="img/calendar.png")), _title=T("Schedule"),  _href=URL(c="schedule", f="index")), _style='float: right')}}
+{{=DIV(A(IMG(_src=URL(c="static", f="img/news.png")), _title=T("Planet News"), _href=URL(c="default", f="planet")), _style='float: right')}}
+
+<h3>{{=T("%s days left") % (response.days_left,)}} 
+{{=A(T("%s registrations so far") % (response.reg_count,), _href=URL(c='stats', f='attendees'))}}</h3>
+
+<div style="padding: 5px"></div>
 
 <div class="frame">
 {{=body}}
@@ -19,15 +29,10 @@ $(function()
 {{pass}}
 
 {{ =HR() }}
-
-{{=H3(T("Nearest events"))}}
-{{=LOAD(c="timeline", f="events.load")}}
-{{=A(T("more"), _href=URL(c="timeline", f="index"))}}
-
-{{ =HR() }}
-<div>
+<div id="news">
   {{ =LOAD(c="default", f="planet.load") }}
 </div>
+
 {{ =HR() }}
 {{if True or TWITTER_HASH:}}
   <div>
