@@ -83,6 +83,7 @@ EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
+CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
@@ -128,8 +129,8 @@ ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
                  'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
-                 'sprint', 'paper', 'conference break',
-                 'conference wide')
+                 'sprint', 'paper', 
+                 'special')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',
@@ -146,8 +147,10 @@ ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
 # TODO: create a room table (id, name, venue)!
-ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 0: "-"}
-ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), "- Ciudad de Bs. As.")]*4 + \
+ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 0: "-"}
+ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")]*3 + \
+               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
+                     A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
                [SPAN(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""]
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
@@ -158,7 +161,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'tutorial': datetime.datetime(2012,6,30,23,59,59),
     'keynote': datetime.datetime(2012,9,12,0,0,0),
     'plenary': datetime.datetime(2012,9,12,0,0,0),
-    'poster': datetime.datetime(2012,9,12,0,0,0),
+    'poster': datetime.datetime(2012,10,12,0,0,0),
     'paper': datetime.datetime(2012,9,12,0,0,0),
     'project': datetime.datetime(2012,10,12,0,0,0),
     'stand': datetime.datetime(2012,10,12,0,0,0),
