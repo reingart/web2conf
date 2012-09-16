@@ -1,9 +1,16 @@
 {{extend 'layout.html'}}
 <div class="frame">
 <h1>{{=T('Speakers')}}</h1>
+{{for keynotes in (True, False):}}
+{{if keynotes:}}
+<h2>{{=T("Distinguished speakers")}}</h2>
+{{else:}}
+<h2>{{=T("Speakers")}}</h2>
+{{pass}}
 {{for author in sorted(authors, key=lambda x: x.last_name.upper() ):}}
-{{if author.id in activities_by_author or True:}}
-<h2 id="{{=author.id}}">{{="%s %s" % (author.first_name, author.last_name)}}<a class="headerlink" href="#{{=author.id}}" title="Permanent link">¶</a></h2>
+{{is_keynote = any([True for activity in activities_by_author.get(author.id, []) if activity.type=='keynote'])}}
+{{if author.id in activities_by_author and ((keynotes and is_keynote) or (not keynotes and not is_keynote)):}}
+<h3 id="{{=author.id}}">{{="%s %s" % (author.first_name, author.last_name)}}<a class="headerlink" href="#{{=author.id}}" title="Permanent link">¶</a></h3>
 <div class="wiki">
 {{if author.photo:}}
 <div style="position: relative">
@@ -37,6 +44,7 @@
 </div> 
 <br/>
 </div>
+{{pass}}
 {{pass}}
 {{pass}}
 {{#=BEAUTIFY(activities_by_author)}}
