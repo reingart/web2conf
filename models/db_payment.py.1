@@ -10,7 +10,7 @@ if ENABLE_PAYMENTS:
     ######################################
 
     db.define_table('payment',
-       db.Field('from_person', db.auth_user, default=auth.user_id),
+       db.Field('person', db.auth_user, default=auth.user_id),
        db.Field('rate', length=64),
        db.Field('method',default='dineromail'),
        db.Field('amount','double',default=0.0),
@@ -61,10 +61,9 @@ if ENABLE_PAYMENTS:
 
     # Callback: Called when any DineroMail record is updated
     def update_dineromail_payment(data):
+
         payment_data = dict()
-        payer = db(db.auth_user.email == data["customer_email"]).select().first()
-        if payer is not None:
-            payment_data["from_person"] = payer.id
+        payment_data["from_person"] = db(db.auth_user.email == data["customer_email"]).select().first().id
         payment_data["order_id"] = data["code"]
         payment_data["status"] = PLUGIN_DINEROMAIL_STATUSES[int(data["status"])]
         payment_data["method"] = "dineromail"

@@ -28,7 +28,7 @@ T.current_languages=['es','es-ar','es-es']
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
 # DEV_TEST=True   # settings suitable for development work
-DEV_TEST=False # Deployed settings
+DEV_TEST=True# Deployed settings
 
 if DEV_TEST:
     DBURI='sqlite://development.db'
@@ -38,7 +38,7 @@ if DEV_TEST:
     if session.language: T.force(session.language)
 else:
     # DBURI set in 0_private.py
-    DBURI=None
+    DBURI='postgres://web2py:password@localhost/pycon2011'
     DBPOOLS=0
 
 TWITTER_HASH = "pyconar"
@@ -79,11 +79,10 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 TODAY_DATE=datetime.datetime.today()
 PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
-EARLYBIRD_DATE=datetime.datetime(2012,9,30,23,59,59)
+EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
-FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
+FACUTOFF_DATE=datetime.datetime(2012,8,31,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
-CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
@@ -92,32 +91,25 @@ if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
-   ATTENDEE_TYPE_COST=dict(
-         professional=175,
-         enthusiast=105,
-         novice=52.50,
-         gratis=0.00,
-       )
 elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
-   ATTENDEE_TYPE_COST=dict(
-         professional=250,
-         enthusiast=150,
-         novice=75,
-         gratis=0.00,
-       )
 else:
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
-   ATTENDEE_TYPE_COST=dict(
-         professional=250,
-         enthusiast=150,
-         novice=75,
-         gratis=0.00,
-       )
+if session.manager:
+   ATTENDEE_TYPES=(
+     ('gratis',T('Gratuito, $0')),
+   )
+ATTENDEE_TYPE_COST=dict(
+     professional=300,
+     enthusiast=150,
+     student=50,
+     test=2.00,
+     gratis=0.00,
+   )
 ATTENDEE_TYPE_COST[None]=0.0
 
 TUTORIALS_LIST=(
@@ -131,13 +123,13 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
-                 'talk', 'extreme talk', 'poster',
+ACTIVITY_TYPES= ('keynote', 'panel', 'plenary', 
+                 'talk', 'extreme talk', 'poster', 
                  'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
-                 'sprint', 'paper', 
-                 'special')
+                 'sprint', 'paper', 'conference break',
+                 'conference wide')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',
@@ -149,16 +141,14 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
 ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break",  "break", "social"]
 ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
 ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
-
+ 
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
 # TODO: create a room table (id, name, venue)!
-ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 0: "-"}
-ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")]*3 + \
-               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
-                     A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
-               [SPAN(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""]
+ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 0: "-"}
+ACTIVITY_VENUE=[DIV(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), "- Ciudad de Bs. As.")]*4 + \
+               [DIV(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""] 
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
@@ -168,7 +158,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'tutorial': datetime.datetime(2012,6,30,23,59,59),
     'keynote': datetime.datetime(2012,9,12,0,0,0),
     'plenary': datetime.datetime(2012,9,12,0,0,0),
-    'poster': datetime.datetime(2012,10,12,0,0,0),
+    'poster': datetime.datetime(2012,9,12,0,0,0),
     'paper': datetime.datetime(2012,9,12,0,0,0),
     'project': datetime.datetime(2012,10,12,0,0,0),
     'stand': datetime.datetime(2012,10,12,0,0,0),
@@ -176,7 +166,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     }
 
 
-SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "Adherente")
+SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "")
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
@@ -218,7 +208,7 @@ TRUETYPE_PATH='/usr/share/fonts/truetype/freefont'
 GSFONTS_PATH='/usr/share/fonts/type1/gsfonts/'
 
 EMAIL_VERIFY_SUBJECT=T("%s Registration Confirmation") % response.title
-EMAIL_VERIFY_BODY=T("""
+EMAIL_VERIFY_BODY=T("""                                              
 Dear Attendee,
 
 To proceed with your registration and verify your email, click on the following link:

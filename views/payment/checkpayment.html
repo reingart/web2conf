@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+<h1>Update DineroMail payment status</h1>
+{{if result is not None:}}
+  {{=H5(T("Update result"))}}
+  {{=BEAUTIFY(result)}}
+  {{=HR()}}
+{{pass}}
+{{=H5(T("Request payment update"))}}
+{{=form}}
+{{=HR()}}
+{{=H3(T("Credited payments"))}}
+{{=SQLTABLE(payments)}}

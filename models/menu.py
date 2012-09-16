@@ -99,6 +99,7 @@ if auth.has_membership(role='manager'):
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],
         [T('Expenses'),True,URL(r=request,c='expenses',f='index')],
         [T('Payments'),False,URL(r=request,c='manage',f='payments')],
+        [T('DineroMail'),False,URL(r=request,c='payment',f='checkpayment')],
         # [T('CSV for Badges'),False,URL(r=request,c='manage',f='badges')],
         [T('Badges'),False,URL(r=request,c='manage',f='badge',args='auth_user')],
         [T('Tutorials'),False,URL(r=request,c='manage',f='list_by_tutorial')],
