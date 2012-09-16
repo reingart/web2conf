@@ -79,7 +79,7 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 TODAY_DATE=datetime.datetime.today()
 PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
-EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
+EARLYBIRD_DATE=datetime.datetime(2012,9,30,23,59,59)
 PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
@@ -92,25 +92,32 @@ if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
+   ATTENDEE_TYPE_COST=dict(
+         professional=175,
+         enthusiast=105,
+         novice=52.50,
+         gratis=0.00,
+       )
 elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
+   ATTENDEE_TYPE_COST=dict(
+         professional=250,
+         enthusiast=150,
+         novice=75,
+         gratis=0.00,
+       )
 else:
    ATTENDEE_TYPES=(
      ('gratis',T('Gratuito, $0')),
    )
-if session.manager:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-ATTENDEE_TYPE_COST=dict(
-     professional=250,
-     enthusiast=150,
-     novice=75,
-     test=2.00,
-     gratis=0.00,
-   )
+   ATTENDEE_TYPE_COST=dict(
+         professional=250,
+         enthusiast=150,
+         novice=75,
+         gratis=0.00,
+       )
 ATTENDEE_TYPE_COST[None]=0.0
 
 TUTORIALS_LIST=(
