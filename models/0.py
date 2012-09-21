@@ -80,7 +80,7 @@ TODAY_DATE=datetime.datetime.today()
 PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2012,9,30,23,59,59)
-PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
+PRECONF_DATE=datetime.datetime(2012,10,12,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
 CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
@@ -88,37 +88,19 @@ CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
 ### fix this ...
-if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
+
+ATTENDEE_TYPES=(
+ ('gratis',T('Gratuito, $0')),
+)
+
+# 
+ATTENDEE_TYPE_COST=dict(
+     professional=dict(general=250, preconf=212, earlybird=175, speaker=125),
+     enthusiast=dict(general=150, preconf=127, earlybird=105,  speaker=85),
+     novice=dict(general=75, preconf=64, earlybird=55, speaker=45),
+     gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
-   ATTENDEE_TYPE_COST=dict(
-         professional=175,
-         enthusiast=105,
-         novice=52.50,
-         gratis=0.00,
-       )
-elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-   ATTENDEE_TYPE_COST=dict(
-         professional=250,
-         enthusiast=150,
-         novice=75,
-         gratis=0.00,
-       )
-else:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-   ATTENDEE_TYPE_COST=dict(
-         professional=250,
-         enthusiast=150,
-         novice=75,
-         gratis=0.00,
-       )
-ATTENDEE_TYPE_COST[None]=0.0
+ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)
 
 TUTORIALS_LIST=(
 )

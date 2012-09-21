@@ -31,9 +31,19 @@ def index():
 def pay():
     "Submit payment"
 
-    rates = [(rate, "%s: $ %s" % (T(rate), cost))
-             for rate, cost
-             in sorted(ATTENDEE_TYPE_COST.items(), key=lambda x: x[1])
+    if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
+       if auth.user.speaker:
+           cost = 'speaker'
+       else:
+           cost = 'earlybird'
+    elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
+        cost = 'preconf'
+    else:
+        cost = 'general'
+
+    rates = [(rate, "%s (%s): $ %s" % (T(rate), T(cost), prices[cost]))
+             for rate, prices
+             in sorted(ATTENDEE_TYPE_COST.items(), key=lambda x: x[1][cost])
              if rate is not None
              ]
     form = SQLFORM.factory(
@@ -55,7 +65,7 @@ def pay():
             coupon = None
         # calculate payment amount
         rate = form.vars.attendee_type
-        amount = ATTENDEE_TYPE_COST[rate]
+        amount = ATTENDEE_TYPE_COST[rate][cost]
         if coupon:
             amount -= coupon.discount * amount / 100.00
             amount -= coupon.amount
@@ -77,7 +87,7 @@ def pay():
         payment_id = db.payment.insert(from_person=auth.user_id,
                                        rate=rate,
                                        status="new",
-                                       invoice="Bono Contribucion PyCon %s" % rate,
+                                       invoice="Bono Contribucion PyCon %s (%s)" % (rate, cost),
                                        amount=amount)
     
         # for payment lookup on dineromail notification
