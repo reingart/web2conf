@@ -8,7 +8,7 @@ from gluon.sqlhtml import form_factory
 # The main public page
 #############################################
 
-#@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def index():
     ## for pycontech: redirect(URL(c='about', f='index'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
@@ -19,7 +19,7 @@ def index():
                                    time_expire=60*5)
     response.days_left = (CONFERENCE_DATE - TODAY_DATE).days
     # do not cache flatpage edits!:
-    if True or request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
+    if DEV_TEST or request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
         r = response.render(plugin_flatpage()) 
     else:
         r = cache.ram(request.env.path_info,lambda: response.render(plugin_flatpage()), time_expire=60*5)
