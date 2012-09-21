@@ -80,7 +80,8 @@ db.define_table("plugin_dineromail_notification",
                       comment=T("Date and time of submission")),
                 Field("category", comment=T("Type of notification")),
                 Field("operation_type", comment=T("Type of operation")),
-                Field("code", comment=T("Operation number")))
+                Field("code", comment=T("Operation number")),
+                Field("payload", "text"))
 
 # Stores webservice updated operation status
 db.define_table("plugin_dineromail_operation",
@@ -100,19 +101,19 @@ db.define_table("plugin_dineromail_operation",
                 Field("customer_phone"),
                 Field("customer_document_type"),
                 Field("customer_document_number"),
-                Field("amount", "double"),
-                Field("net_amount", "double"),
+                Field("amount"),
+                Field("net_amount"),
                 Field("method", "integer",
                       represent=lambda method, row: \
                       PLUGIN_DINEROMAIL_METHODS[method]),
                 Field("means"),
-                Field("installments", "integer"),
+                Field("installments"),
                 Field("sales_document_type"),
                 Field("sales_document_number"),
                 Field("item_descriptions", "list:string"),
-                Field("item_currencies", "list:integer"),
+                Field("item_currencies", "list:string"),
                 Field("item_prices", "list:string"),
-                Field("item_quantities", "list:integer"))
+                Field("item_quantities", "list:string"))
 
 def plugin_dineromail_update_reports(data):
     # retrieve webservice reports
@@ -124,48 +125,42 @@ def plugin_dineromail_update_reports(data):
     updated = 0
     
     query = plugin_dineromail_create_query(data)
-    query_data = urllib.urlencode({"DATA": query})
+    query_data = urllib.urlencode({"data": query})
     
     f = urllib2.urlopen(PLUGIN_DINEROMAIL_URLS[PLUGIN_DINEROMAIL_COUNTRY],
                         query_data)
     tag = TAG(f.read())
     
     # check if report is ok
-    status = int(tag.element("estadoreporte").flatten())
-    if status == 1:
+    if int(tag.element("estadoreporte").flatten()) == 1:
         for operation in tag.elements("operacion"):
             row_data = dict(item_descriptions=list(),
                             item_quantities=list(),
                             item_currencies=list(),
                             item_prices=list())
 
-            row_data["report_status"] = int(tag.element("estadoreporte").flatten())
+            row_data["report_status"] = tag.element("estadoreporte").flatten()
             row_data["code"] = operation.element("id").flatten()
             row_data["posted"] = operation.element("fecha").flatten()
-            row_data["status"] = int(operation.element("estado").flatten())
+            row_data["status"] = operation.element("estado").flatten()
             row_data["transaction_code"] = \
                 operation.element("numtransaccion").flatten()
             row_data["customer_email"] = \
                 operation.element("comprador").element("email").flatten()
             row_data["customer_name"] = \
-                operation.element("comprador").element("nombre").flatten()
+                peration.element("comprador").element("nombre").flatten()
             row_data["customer_document_number"] = \
                 operation.element("comprador").element("numerodoc").flatten()
-            row_data["amount"] = float(operation.element("monto").flatten())
-            row_data["net_amount"] = float(operation.element("montoneto").flatten())
-            row_data["method"] = int(operation.element("metodopago").flatten())
-            row_data["means"] = operation.element("mediopago").flatten()
-            try:
-                row_data["installments"] = int(operation.element("cuotas").flatten())
-            except ValueError:
-                # Invalid installment number
-                row_data["installments"] = 0
-
+            
             for item in operation.elements("item"):
-                row_data["item_descriptions"].append(item.element("descripcion").flatten())
-                row_data["item_currencies"].append(int(item.element("moneda").flatten()))
-                row_data["item_prices"].append(float(item.element("preciounitario").flatten()))
-                row_data["item_quantities"].append(int(item.element("cantidad").flatten()))
+                row_data["item_descriptions"].append(
+                    item.element("descripcion").flatten())
+                row_data["item_currencies"].append(
+                    PLUGIN_DINEROMAIL_CURRENCIES[
+                        int(item.element("moneda").flatten())]
+                        )
+                row_data["item_prices"].append(item.element("preciounitario").flatten())
+                row_data["item_quantities"].append(item.element("cantidad").flatten())
 
             # operation id lookup
             row = db(db.plugin_dineromail_operation.code == \
@@ -173,11 +168,9 @@ def plugin_dineromail_update_reports(data):
             
             if row is not None:
                 row.update_record(**row_data)
-                operation_id = row.id
             else:
-                operation_id = db.plugin_dineromail_operation.insert(**row_data)
+                db.plugin_dineromail_operation.insert(**row_data)
                 
-            row_data["id"] = operation_id
             updated += 1
 
             # Send data to the app's callback if defined
@@ -187,10 +180,8 @@ def plugin_dineromail_update_reports(data):
         message = T("Updated %s operations") % updated
         return (True, message)
     else:
-        error = PLUGIN_DINEROMAIL_REPORT_STATUSES[status]
-        message = T("Message: %(noops)s. Error: %(error)s") % \
-    dict(noops=T("No operations updated"),
-         error=T(error))
+        message = """message: %(noops)s. Raw query: %(raw_query)s Query: %(query)s Data: %(tag)s""" % \
+        dict(noops=T("No operations updated"), tag=tag, query=query_data, raw_query=query)
         return (False, message)
 
 # build a basic query for the remote payment database
@@ -204,17 +195,19 @@ def plugin_dineromail_create_query(data):
     password = PLUGIN_DINEROMAIL_PASSWORD
 
     report = 1
-    query = """<REPORTE>
-  <NROCTA>%(account)s</NROCTA>
-  <DETALLE>
-    <CONSULTA>
-      <CLAVE>%(password)s</CLAVE>
-      <TIPO>%(report)s</TIPO>
-      %(operations)s
-    </CONSULTA>
-  </DETALLE>
-</REPORTE>""" % {"account": account, "password": password,
-                 "report": report, "operations": operations}
+    query = """
+    <REPORTE>
+      <NROCTA>%(account)s</NROCTA>
+       <DETALLE>
+         <CONSULTA>
+           <CLAVE>%(password)s</CLAVE>
+           <TIPO>%(report)s</TIPO>
+           %(operations)s
+         </CONSULTA>
+      </DETALLE>
+    </REPORTE>
+    """ % {"account": account, "password": password,
+           "report": report, "operations": operations}
     return query
 
 def plugin_dineromail_check_status(code, update=False):
@@ -240,8 +233,11 @@ def plugin_dineromail_check_status(code, update=False):
         code).select().first()
         status = operation.status
         description = PLUGIN_DINEROMAIL_STATUSES[status]
-    except AttributeError:
+    except (AttributeError, KeyError, ValueError), e:
         status = None
-        description = T("No payment records found for code %s") % code
+        description = None
         
+    # debugging
+    db.plugin_dineromail_notification.insert(payload="check status for %(code)s result: %(result)s message: %(message)s" % dict(result=result, message=message, code=code))
+    
     return status, description

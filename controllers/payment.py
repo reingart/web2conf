@@ -182,10 +182,41 @@ def dineromail_update():
 
 @auth.requires_membership("manager")
 def checkpayment():
-    response.generic_patterns = ["*",]
-    payment = request.args[0]
-    result = plugin_dineromail_check_status(payment, update=True)
-    return dict(result=result)
+    result = None
+    def myformat(row):
+        try:
+            person = db.auth_user[row.from_person]
+            from_person = "%s %s" % \
+            (person.first_name, person.last_name)
+        except (AttributeError, KeyError, ValueError):
+            from_person = "?"
+        status = row.status
+        order = row.order_id
+        amount = row.amount
+        return "%s - %s (%s) - %s" % \
+        (from_person, amount, order, status)
+        
+    dbset = db((db.payment.status!="Credited")&\
+               (db.payment.method=="dineromail")&\
+               (db.payment.status!="cancelled")&\
+               (db.payment.status!="Cancelled"))
+               
+    form = SQLFORM.factory(Field("payment",
+                                 "reference payment",
+                                 requires=IS_IN_DB(dbset,
+                                                   db.payment.id,
+                                                   myformat)))
+    if form.process().accepted:
+        payment = form.vars.payment
+        result = plugin_dineromail_check_status(payment,
+                                                update=True)
+    fields = [db.payment.order_id,
+              db.payment.from_person,
+              db.payment.amount,
+              db.payment.invoice]
+              
+    payments = db(db.payment.status=="Credited").select(*fields)
+    return dict(result=result,form=form,payments=payments)
 
 def success():
     session.flash = T("You have successfully finished the payment process. Thanks you.")

@@ -13,6 +13,7 @@ databases/*
 sessions/*
 errors/*
 cache/*
+private/*
 uploads/*
 static/slideshow/*
 static/docs/*

@@ -53,15 +53,7 @@ def insert_authors():
 
 @auth.requires(auth.has_membership(role='manager'))
 def active_authors():
-    response.view="generic.html"
-    db(db.auth_user.id>0).update(speaker=False)
-    q = db.author.id>0
-    q &= db.activity.id == db.author.activity_id
-    q &= db.activity.type != 'project'
-    q &= db.activity.type != 'workshop'
-    q &= db.activity.type != 'stand'
-    q &= db.activity.status == 'accepted'
-    authors = db(q).select(db.author.user_id)
+    authors = db(db.author.id>0).select(db.author.user_id)
     ret = []
     for author in authors:
         q = db.auth_user.id==author.user_id
@@ -74,13 +66,11 @@ def active_authors():
 def rename_activity():
     response.view = 'generic.html'
     form = SQLFORM.factory(
-            Field("old", default="pydos y pytres, todo junto"),
+            Field("old", default="The Bad, The bad and Ugly."),
             Field("new", default="Código compatible con python 2 y 3, en el mismo fuente"),
             )
     ret = []       
-    if form.accepts(request.vars, session, keepvalues=True):
-        old = form.vars.old
-        new = form.vars.new
+    if form.accepts(request.vars, session):
         for user in  db(db.auth_user.tutorials.like('%%|%s|%%'%old)).select():
             tutorials = user.tutorials
             if tutorials and old in tutorials:
@@ -89,21 +79,18 @@ def rename_activity():
                 db(db.auth_user.id==user.id).update(tutorials=tutorials)
     
                 ret.append((user.id, tutorials))
-    return dict(ret=ret, q=len(ret), form=form)
+    return dict(ret=ret, form=form)
 
 @auth.requires(auth.has_membership(role='manager'))
 def missing_activity():
     response.view = 'generic.html'
-    ret = []    
-    q=0   
+    ret = []       
     tutorials = [a.title for a in db(db.activity).select(db.activity.title)]
     for user in  db(db.auth_user).select():
-        if user.tutorials:
-            q+=1
-            for tutorial in user.tutorials:
-                if tutorial not in tutorials and tutorial not in ret:
-                    ret.append(tutorial)
-    return dict(ret=ret, q=q)
+        for tutorial in user.tutorials:
+            if tutorial not in tutorials and tutorial not in ret:
+                ret.append(tutorial)
+    return dict(ret=ret)
 
 
 @auth.requires(auth.has_membership(role='manager'))
@@ -123,23 +110,16 @@ def activity_accept_bulk():
     return ids
 
 
-def activity_grid():
-    q = db.activity.id>0
-    form = SQLFORM.smartgrid(db(q).select())
-    response.view = 'generic.html'
-    return dict(form=form)
-
 # badges/labels/certs
 
 @auth.requires(auth.has_membership(role='manager'))
 def create_badge():
-    response.view = 'generic.html'
     pdf_template_id = db.pdf_template.insert(title="sample badge", format="A4")
 
     # configure optional background image and insert his element
-    path_to_image = '/home/www-data/web2py/applications/2012/static/badges/images/pyconar2012.png'
+    path_to_image = '' # i.e. '/home/web2py/applications/yourapp/static/image.png'
     if path_to_image:
-        db.pdf_element.insert(pdf_template_id=pdf_template_id, name='background', type='I', x1=0.0, y1=0.0, x2=74.312, y2=105.000, font='Arial', size=10.0, bold=False, italic=False, underline=False, foreground=0, background=16777215, align='L', text=path_to_image, priority=-1)
+        db.pdf_element.insert(pdf_template_id=pdf_template_id, name='background', type='I', x1=0.0, y1=0.0, x2=85.23, y2=54.75, font='Arial', size=10.0, bold=False, italic=False, underline=False, foreground=0, background=16777215, align='L', text=path_to_image, priority=-1)
     # insert name, company_name, number and attendee type elements:
     db.pdf_element.insert(pdf_template_id=pdf_template_id, name='name', type='T', x1=4.0, y1=35.0, x2=62.0, y2=40.0, font='Arial', size=12.0, bold=True,       italic=False, underline=False, foreground=0, background=16777215, align='L', text='', priority=0)
     db.pdf_element.insert(pdf_template_id=pdf_template_id, name='company_name', type='T', x1=4.0, y1=43.0, x2=50.0, y2=47.0, font='Arial', size=10.0, bold=False, italic=False, underline=False, foreground=0, background=16777215, align='L', text='', priority=0)
