@@ -357,3 +357,25 @@ def events():
                                       event]))
     events = db(db.event).select()
     return dict(events=events)
+
+
+@auth.requires_login()
+def generate_coupon():
+    response.view = "generic.html"
+    form = SQLFORM.factory(
+        Field("discount", "float"),
+        Field("description"),
+        Field("qty", "integer"),
+        )
+    ret = []
+    if form.accepts(request.vars, session):
+        for i in range(form.vars.qty):
+            code = str(uuid.uuid4())[:8]
+            ret.append("%s %s " % (form.vars.description,code))
+            db.coupon.insert(
+                code=code,
+                discount=form.vars.discount,
+                description=form.vars.description,
+                amount=0,
+            )
+    return dict(form=form, ret=ret)
