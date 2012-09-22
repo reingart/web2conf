@@ -100,39 +100,6 @@ def pay():
 
 
 
-
-@auth.requires_login()
-def pay_old():
-    rate = request.vars.rate
-    if not rate:
-        redirect(URL("index"))
-    else:
-        cost = ATTENDEE_TYPE_COST[rate]
-
-        # Does this user have pending payments with the same rate?
-        same_cost = db((db.payment.from_person == auth.user.id) & \
-        (db.payment.amount == cost)).count()
-        person=db(db.auth_user.id==auth.user.id).select()[0]
-        balance=cost
-        new_payments_query = (db.payment.from_person==auth.user_id) & \
-        (db.payment.status == "new")
-        new_payments = db(new_payments_query).count()
-
-        # Only create new payments if there are no
-        # new operations waiting for checkout
-        if (new_payments < 1) or (same_cost < 1):
-            pass
-
-    payments = db(new_payments_query).select()
-    pay=H2(T('No payment due at this time'))
-    previous_payments = db((db.payment.from_person==auth.user_id) & \
-    (db.payment.status != "new")).select()
-    return dict(person=person,transfers_in=[],
-                transfers_out=[],payments=payments,
-                pay=pay,balance=balance,
-                previous_payments=previous_payments)
-
-
 @auth.requires_login()
 def invoice():
     return dict(balance=session.balance)
