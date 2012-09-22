@@ -28,7 +28,7 @@ if ENABLE_PAYMENTS:
     ######################################
 
     db.define_table('coupon',
-                Field('code',default=str(uuid.uuid4())),
+                Field('code',default=str(uuid.uuid4()), unique=True),
                 Field('description','text'),
                 Field('amount','double'),
                 Field('discount','double',default=100.0),
