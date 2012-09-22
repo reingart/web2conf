@@ -44,7 +44,7 @@ if ENABLE_FINANCIAL_AID:
        db.Field( 'rationale', 'text', default='' ),
        db.Field('status',default='pending',label=T("Status"), writable=False,readable=False),
        db.Field( 'grant_amount', 'double', default='0.00', writable=False,readable=False),
-       migrate=True)
+       migrate=migrate, fake_migrate=fake_migrate)
     
     db.fa.person.requires=IS_IN_DB(db,'auth_user.id','%(last_name)s, %(first_name)s [%(id)s]')
     

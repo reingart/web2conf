@@ -16,7 +16,7 @@ if MAIL_QUEUE:
         Field('subject'),
         Field('message', 'text'),
         Field('ts', 'datetime'),
-        migrate=True,
+        migrate=migrate, fake_migrate=fake_migrate,
     )
     
     def send(to, subject, message, attachments=None,
