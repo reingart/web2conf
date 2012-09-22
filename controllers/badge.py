@@ -12,6 +12,7 @@ except ImportError:
     raise #Template = local_import('pyfpdf.template').Template
 
 import os
+import image_utils
 
 def index():
     "Contact card info page for each attendee"
@@ -60,40 +61,6 @@ def edit():
         response.new_window = URL("sample", args=request.args)
     return {'form': form}
 
-def build_qr_image(data, filename):
-    import qrcode
-    qr = qrcode.QRCode(
-        #version=1,
-        #error_correction=qrcode.constants.ERROR_CORRECT_L,
-        #box_size=10,
-        border=0,
-    )
-    qr.add_data(data)
-    qr.make(fit=True)
-    
-    img = qr.make_image()
-    ##img = qr.make_image(image_factory=image_factory)
-    img.save(filename)
-
-def center_image(source, dest, max_width=165, max_height=61):
-    "center the logo to preserve aspect ratio"
-    from PIL import Image, ImageDraw
-   
-    # open the original image, create a new one:
-    logo = Image.open(source)
-    im = Image.new("RGB",(max_width, max_height), (255,255,255))
-    # calculate padding
-    w, h = logo.size
-    box = ((max_width - w) / 2, (max_height - h) / 2)
-    # copy logo, use mask as some images are broken
-    try:
-        im.paste(logo, box, logo)
-    except ValueError:
-        # alternate method to workaround "bad transparency mask" issue        
-        from PIL import Image, ImageOps
-        im = ImageOps.fit(logo, (max_width, max_height), Image.ANTIALIAS)
-
-    im.save(dest)
 
 
 @auth.requires_login()
@@ -131,7 +98,7 @@ def sample():
     # qr-code
 
     filename = os.path.join(request.folder, 'private', 'qr', "%s.png" % user.id) 
-    build_qr_image('http://ar.pycon.org/2012/badge?email=%s' % user.email, filename)
+    image_utils.build_qr('http://ar.pycon.org/2012/badge?email=%s' % user.email, filename)
     f['qr'] = filename
 
     # sponsor logo image:
@@ -145,7 +112,7 @@ def sample():
         
         source = os.path.join(request.folder, 'uploads', fn)
         temp = os.path.join(request.folder, 'private', 'qr', fn) + ".png"
-        center_image(source, temp)
+        image_utils.center(source, temp)
         
         # clean company name
         f['company_name'] = ""

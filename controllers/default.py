@@ -19,7 +19,7 @@ def index():
                                    time_expire=60*5)
     response.days_left = (CONFERENCE_DATE - TODAY_DATE).days
     # do not cache flatpage edits!:
-    if DEV_TEST or request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
+    if request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
         r = response.render(plugin_flatpage()) 
     else:
         r = cache.ram(request.env.path_info,lambda: response.render(plugin_flatpage()), time_expire=60*5)
@@ -135,6 +135,27 @@ def fast_download():
     del response.headers['Pragma']
     del response.headers['Expires']
     filename = os.path.join(request.folder,'uploads',request.args(0))
+
+    # resize speaker pictures!
+    stream = open(filename,'rb')
+    ext = os.path.splitext(request.args[0])[1].lower()
+    if request.args(0).startswith("auth_user.photo") and not ext.endswith(".gif"):
+        from image_utils import rescale
+        temp = os.path.join(request.folder, 'private', 'photos', request.args[0])
+        if not os.path.exists(temp):
+            if ext in (".jpg", ".jpeg", ".face"):
+                format = "JPEG"
+            elif ext in (".png"):
+                format = "PNG"
+            else:
+                raise RuntimeError("Unknown image extension %s" % ext)
+            f = open(temp, "wb")
+            data = rescale(stream.read(), 100, 100, tmp=f, format=format, force=True)
+            f.close()
+        stream.close()
+        filename = temp
+        stream = open(temp, "rb")
+
     response.headers['Last-Modified'] = time.strftime( \
     "%a, %d %b %Y %H:%M:%S +0000", time.localtime( \
     os.path.getmtime(filename)))
