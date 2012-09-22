@@ -80,7 +80,8 @@ db.define_table("plugin_dineromail_notification",
                       comment=T("Date and time of submission")),
                 Field("category", comment=T("Type of notification")),
                 Field("operation_type", comment=T("Type of operation")),
-                Field("code", comment=T("Operation number")))
+                Field("code", comment=T("Operation number")),
+                migrate=migrate)
 
 # Stores webservice updated operation status
 db.define_table("plugin_dineromail_operation",
@@ -112,7 +113,8 @@ db.define_table("plugin_dineromail_operation",
                 Field("item_descriptions", "list:string"),
                 Field("item_currencies", "list:integer"),
                 Field("item_prices", "list:string"),
-                Field("item_quantities", "list:integer"))
+                Field("item_quantities", "list:integer"),
+                migrate=migrate)
 
 def plugin_dineromail_update_reports(data):
     # retrieve webservice reports
