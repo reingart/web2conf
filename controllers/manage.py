@@ -359,7 +359,7 @@ def events():
     return dict(events=events)
 
 
-@auth.requires_login()
+@auth.requires_membership(role='manager')
 def generate_coupon():
     response.view = "generic.html"
     form = SQLFORM.factory(
@@ -379,3 +379,17 @@ def generate_coupon():
                 amount=0,
             )
     return dict(form=form, ret=ret)
+
+@auth.requires_membership(role='manager')
+def freeze():
+    # move sponsor logos to static/upload
+    import shutil
+    for sponsors in response.sponsors.values():
+        for sponsor in sponsors:
+            fn = sponsor.logo      
+            source = os.path.join(request.folder, 'uploads', fn)
+            dest = os.path.join(request.folder, 'static', 'uploads', fn)
+            shutil.copy(source, dest)
+            
+    # TODO: freeze speaker images!
+    return "OK"
