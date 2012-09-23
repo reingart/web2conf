@@ -8,7 +8,7 @@ from gluon.sqlhtml import form_factory
 # The main public page
 #############################################
 
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+##@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
 def index():
     ## for pycontech: redirect(URL(c='about', f='index'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
