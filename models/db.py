@@ -12,7 +12,7 @@ if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
 else:
-    db=DAL(DBURI, pool_size=20)
+    db=DAL(DBURI, pool_size=100)
 
 PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 

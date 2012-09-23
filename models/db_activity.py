@@ -147,7 +147,11 @@ def activity_is_accepted():
     if db((db.activity.id==request.args[0])&(db.activity.status=='accepted')).count():
         return True
 
-TUTORIALS_LIST=[row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)]
+# TODO: enhance with proper tables...
+TUTORIALS_LIST= cache.ram(request.env.path_info + ".tutorials", 
+                                   lambda: [row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)], 
+                                   time_expire=60*5)
+
 class IS_IN_SET_NOT_EMPTY(IS_IN_SET):
     def __call__(self, value):
         (values, error) = IS_IN_SET.__call__(self,value)

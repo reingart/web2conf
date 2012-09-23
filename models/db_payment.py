@@ -35,7 +35,7 @@ if ENABLE_PAYMENTS:
                 Field('created_by',db.auth_user,default=auth.user_id, writable=False,),
                 Field('created_on','datetime',default=request.now, writable=False,),
                 Field('used','boolean',default=False,writable=False,),
-                Field('used_by',db.auth_user,default=auth.user_id, writable=False,),
+                Field('used_by',db.auth_user,default=None, writable=False,),
                 Field('used_on','datetime',default=request.now,writable=False,),
                 )
 
@@ -45,18 +45,6 @@ if ENABLE_PAYMENTS:
 
     ## cleanup:
     ##db(db.payment.created_on<t2.now-datetime.timedelta(1))(db.payment.status.lower()=='pre-processing').delete()
-
-
-    def build_invoice(person,donations,fees):
-        message=''
-        a=' + '.join(['(donation by %s #%s) $%.2f' % item for item in donations if item[2]>0.0])
-        b=' + '.join(['(fees&tutorials for %s #%s) $%.2f' % item for item in fees if item[2]>0.0])
-        if a and b: message=a+' + '+b
-        elif a: message=a
-        else: message=b
-        try: message=message.decode('latin1').encode('utf8', 'xmlcharrefreplace')
-        except: pass
-        return message
 
 
     # Callback: Called when any DineroMail record is updated
