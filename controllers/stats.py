@@ -5,7 +5,7 @@
 def index():
     redirect(URL("attendees"))
     
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def companies():
     if auth.has_membership(role='manager'): s=db()
     else: s=db(db.auth_user.include_in_delegate_listing==True)
@@ -15,11 +15,10 @@ def companies():
     d = dict(rows=rows)
     return response.render(d)
     
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def attendees():
     import unicodedata
-    if auth.has_membership(role='manager'): s=db(db.auth_user.attendee_type!='non_attending')
-    else: s=db((db.auth_user.include_in_delegate_listing==True)&(db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0))
+    s=db((db.auth_user.include_in_delegate_listing==True)&(db.auth_user.attendee_type!='non_attending')&(db.auth_user.amount_due==0.0))
     rows=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.first_name|db.auth_user.last_name)
     ret = {}
@@ -33,16 +32,7 @@ def attendees():
     return response.render(d) 
 
 
-colors=['#ff0000','#ff0033','#ff0066','#ff0099','#ff00cc','#ff00ff',
-        '#996600','#996633','#996666','#996699','#9966cc','#9966ff',
-        '#669900','#669933','#669966','#669999','#6699cc','#cc99ff',
-        '#33cc00','#33cc33','#33cc66','#33cc99','#33cccc','#33ccff',
-        '#00ff00','#00ff33','#00ff66','#00ff99','#00ffcc','#00ffff',
-        '#996600','#996633','#996666','#996699','#9966cc','#9966ff',
-        '#669900','#669933','#669966','#669999','#6699cc','#cc99ff',
-        '#33cc00','#33cc33','#33cc66','#33cc99','#33cccc','#33ccff',
-        '#00ff00','#00ff33','#00ff66','#00ff99','#00ffcc','#00ffff',
-        ] + ['#000000']*100
+from misc_utils import COLORS
 
 def barchart(data,width=400,height=15,scale=None,
              label_width=50,values_width=50):
@@ -67,7 +57,7 @@ def colorize(d,sort_key=lambda x:x):
     t=[(x[1],colors[i % len(colors)],x[0]) for i,x in enumerate(s)]
     return barchart(t,label_width=150)   
 
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def charts():    
     cn=[]
     if auth.has_membership(role='manager'): 
@@ -79,7 +69,7 @@ def charts():
     if not is_gae:
         for k,item in enumerate(tutorials):
             m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
-            cn.append((item,colors[k],m))
+            cn.append((item,COLORS[k],m))
     else:        
         cn2={}
         for row in db(db.auth_user.id>0).select(db.auth_user.tutorials):
@@ -87,7 +77,7 @@ def charts():
                     if not cn2.has_key(item): cn2[item]=0
                     if row.tutorials.find('|%s|'%item)>=0: cn2[item]+=1
         for k,item in enumerate(tutorials):
-                cn.append((TUTORIALS[item],colors[k],cn2[item]))
+                cn.append((TUTORIALS[item],COLORS[k],cn2[item]))
                 k+=1
     cn.sort(key=lambda x: x[-1], reverse=True) 
 
@@ -133,7 +123,7 @@ def charts():
                 )
     return response.render(d)
     
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def brief():    
     cn=[]
 
@@ -172,7 +162,7 @@ def brief():
                 )
     return response.render(d)
 
-@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def maps():
     rows=db(db.auth_user.id>0).select(
             db.auth_user.first_name,

@@ -8,32 +8,19 @@ from gluon.sqlhtml import form_factory
 # The main public page
 #############################################
 
-##@cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)
+@caching
 def index():
     ## for pycontech: redirect(URL(c='about', f='index'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
     response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
-    session.forget()
     response.reg_count = cache.ram(request.env.path_info + ".reg_count", 
                                    lambda: db(db.auth_user).count(), 
                                    time_expire=60*5)
     response.days_left = (CONFERENCE_DATE - TODAY_DATE).days
-    # do not cache flatpage edits!:
-    if request.vars or request.args or request.flash or session.flash or auth.is_logged_in():
-        r = response.render(plugin_flatpage()) 
-    else:
-        r = cache.ram(request.env.path_info,lambda: response.render(plugin_flatpage()), time_expire=60*5)
-    return r
+    return response.render(plugin_flatpage()) 
 
-def testd():
-    response.reg_count = cache.ram(request.env.path_info + ".reg_count", 
-                                   lambda: db(db.auth_user).count(), 
-                                   time_expire=60*5)
-    response.days_left = (CONFERENCE_DATE - TODAY_DATE).days
-    response.view = 'generic.html'
-    return {'days': response.days_left, 'count': response.reg_count}
 
-#@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
+@caching
 def about():
     return response.render(dict())
 
@@ -81,7 +68,7 @@ def tweet():
     return dict(form=form)
 
 
-# @cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
+@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
 def twitter():
     session.forget()
     session._unlock(response)
@@ -96,12 +83,14 @@ def twitter():
             
             for obj in data["results"]:
                 the_tweets[obj["id"]] = (obj["created_at"], obj["from_user"], obj["profile_image_url"], obj["text"])
-            return dict(message = None, tweets = the_tweets)
+            ret = dict(message = None, tweets = the_tweets)
         else:
-            return dict(tweets = None, message = 'disabled')
+            ret = dict(tweets = None, message = 'disabled')
 
     except Exception, e:
-        return dict(tweets = None, message = DIV(T('Unable to download because:'),BR(),str(e)))
+        ret = dict(tweets = None, message = DIV(T('Unable to download because:'),BR(),str(e)))
+    return response.render(ret)
+
 
 #############################################
 # Allow registered visitors to download
@@ -240,6 +229,6 @@ def planet():
     # else send the rss object to be processed by
     # the view
     
-    return dict(rss = rss, rss2 = rss2)
+    return response.render(dict(rss = rss, rss2 = rss2))
 
 def privacy(): return plugin_flatpage()

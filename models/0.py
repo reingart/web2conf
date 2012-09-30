@@ -95,9 +95,9 @@ ATTENDEE_TYPES=(
 
 # 
 ATTENDEE_TYPE_COST=dict(
-     professional=dict(general=250, preconf=212, earlybird=175, speaker=125),
-     enthusiast=dict(general=150, preconf=127, earlybird=105,  speaker=85),
-     novice=dict(general=75, preconf=64, earlybird=55, speaker=45),
+     professional=dict(general=250, preconf=175, earlybird=175, speaker=125),
+     enthusiast=dict(general=150, preconf=105, earlybird=105,  speaker=85),
+     novice=dict(general=75, preconf=65, earlybird=55, speaker=45),
      gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
 ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)
@@ -219,6 +219,14 @@ CONFERENCE_URL=None
 CONFERENCE_COORDS=-20.2597103,-61.4510078
 #-31.2597103,-61.4510078
 
-COUNTRIES=['United States', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', "C&ocirc;te d'Ivoire", 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'East Timor', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'North Korea','South Korea', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macedonia', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia and Montenegro', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Swaziland', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe']
+from misc_utils import COUNTRIES, FLAGS
 
-FLAGS={'United States': 'us.png', 'Argentina': 'ar.png', 'Australia': 'au.png', 'Brazil': 'br.png', 'Chile': 'cl.png', 'Denmark': 'dk.png', 'Peru': 'pe.png', 'Canada': 'ca.png', 'Spain': 'es.png', 'Cuba': 'cu.png'}
+# caching decorator:
+
+def caching(fn):
+    "Special cache decorator (do not cache if user is logged in)"
+    if request.vars or request.args or response.flash or session.flash or auth.is_logged_in():
+        return fn
+    else:
+        session.forget()    # only if no session.flash (allow to clean it!)
+        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)

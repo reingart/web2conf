@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # try something like
 
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@caching
 def index():
     def cram(text, maxlen):
         """Omit part of a string if needed to make it fit in a

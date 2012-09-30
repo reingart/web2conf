@@ -12,7 +12,7 @@ if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
 else:
-    db=DAL(DBURI, pool_size=100)
+    db=DAL(DBURI, pool_size=20)
 
 PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 
@@ -167,21 +167,9 @@ if EMAIL_SERVER:
     
 ##if RECAPTCHA_PUBLIC_KEY:
 ##    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
-auth.define_tables()
+auth.define_tables(migrate=migrate, fake_migrate=fake_migrate)
 
 db.auth_membership.user_id.represent=lambda v: "%(last_name)s, %(first_name)s (%(id)s)" % db.auth_user[v]
-
-def require_address(person=None):
-    try:
-        if (request.vars.donation_to_PSF \
-           and float(request.vars.donation_to_PSF)!=0.0)\
-           or (person and person.donation_to_PSF):
-            db.auth_user.address1.requires.append(IS_NOT_EMPTY())
-            db.auth_user.city.requires.append(IS_NOT_EMPTY())
-            db.auth_user.state.requires.append(IS_NOT_EMPTY())
-            db.auth_user.zip_code.requires.append(IS_NOT_EMPTY())
-    except: pass
-require_address()
 
 db.auth_user.email.requires=[IS_LENGTH(128),IS_EMAIL(),IS_NOT_IN_DB(db,'auth_user.email')]
 db.auth_user.personal_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]

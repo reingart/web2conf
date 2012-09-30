@@ -130,7 +130,7 @@ def vote():
 
     return dict(form=form, levels=ACTIVITY_LEVEL_HINT, message=db.auth_user.tutorials.comment)
 
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@caching
 def accepted():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))
@@ -332,7 +332,7 @@ def add_author():
         request.flash = "Form has errors"
     return dict(form=form)
     
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@caching
 def speakers():
     if request.args:
         q = db.auth_user.id == request.args[0]
