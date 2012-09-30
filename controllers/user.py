@@ -83,7 +83,6 @@ def login():
         extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
         auth.settings.login_form = extended_login_form
     return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
-                                #onaccept=lambda form:update_pay(auth.user)
                                 ))
 
 def janrain():
