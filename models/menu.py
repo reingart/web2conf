@@ -27,9 +27,11 @@ else:
         [T('Summit'),True,URL(r=request,c='conference',f='summit')],
         [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
         [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
+        [T('Booths'),True,URL(r=request,c='stands',f='index')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')] ]
         ],
 
+        [T('Registration'),True,URL(r=request,c='conference',f='registration')],
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
         [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
         [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
