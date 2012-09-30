@@ -82,11 +82,15 @@ def pay():
         q = db.payment.from_person==auth.user_id
         q &= db.payment.status=="new"
         db(q).update(status="cancelled")
+        if amount>2:
+            status = "new"
+        else:
+            status = "done"
         # create the payment record
         # Not really a payment, it just records the data for further update
         payment_id = db.payment.insert(from_person=auth.user_id,
                                        rate=rate,
-                                       status="new",
+                                       status=status,
                                        invoice="Bono Contribucion PyCon %s (%s)" % (rate, cost),
                                        amount=amount)
     
