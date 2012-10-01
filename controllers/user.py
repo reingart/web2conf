@@ -142,11 +142,6 @@ def logout(): auth.logout(next=URL(r=request,c='default',f='index', args="nocach
 def profile():
     you=db.auth_user.id==auth.user.id
     person=db(you).select()[0]
-    require_address(person)
-    if person.amount_paid>0 or person.amount_subtracted>0:
-        db.auth_user.donation_to_PSF.writable=False
-        db.auth_user.attendee_type.writable=False
-        db.auth_user.discount_coupon.writable=False
     form=crud.update(db.auth_user,auth.user.id,
                      onaccept=update_person,
                      next='profile')
