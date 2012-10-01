@@ -31,11 +31,10 @@ def index():
 def pay():
     "Submit payment"
 
-    if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
-       if auth.user.speaker:
-           cost = 'speaker'
-       else:
-           cost = 'earlybird'
+    if auth.user.speaker:
+       cost = 'speaker'
+    elif TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
+       cost = 'earlybird'
     elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
         cost = 'preconf'
     else:
@@ -99,7 +98,8 @@ def pay():
         
         session.flash = T("Your payment has been generated!")
         redirect(URL("index"))
-    return dict(form=form)
+    attendee_types = sorted(ATTENDEE_TYPE_TEXT.items(), key=lambda x: ATTENDEE_TYPE_COST[x[0]], reverse=True)
+    return dict(form=form, attendee_types=attendee_types)
 
 
 
@@ -176,18 +176,40 @@ def checkpayment():
         amount = row.amount
         return "%s - %s (%s) - %s" % \
         (from_person, amount, order, status)
-        
+    """    
     dbset = db((db.payment.status!="Credited")&\
                (db.payment.method=="dineromail")&\
                (db.payment.status!="cancelled")&\
-               (db.payment.status!="Cancelled"))
-               
+               (db.payment.status!="Cancelled")&\
+               (db.payment.status!="done"))
+    """
+    pform = SQLFORM.factory(Field("first_name",
+                                  requires=IS_NOT_EMPTY(),
+                                  widget=SQLFORM.widgets.autocomplete(request,
+                                      db.auth_user.first_name,
+                                      limitby=(0,10),
+                                      min_length=2)),
+                             Field("last_name",
+                                  requires=IS_NOT_EMPTY(),
+                                  widget=SQLFORM.widgets.autocomplete(request,
+                                      db.auth_user.last_name,
+                                      limitby=(0,10),
+                                      min_length=2)))
+    presults = None
+    if pform.process(formname="payments_form", keepvalues=True).accepted:
+        puser = db((db.auth_user.first_name.contains(pform.vars.first_name))&(db.auth_user.last_name==pform.vars.last_name.strip())).select().first()
+        if puser is not None:
+            presults = db(db.payment.from_person==puser.id).select(\
+                              db.payment.order_id, db.payment.status,
+                              db.payment.amount,
+                              db.payment.invoice)
+    dbset = db(db.payment.status.belongs(["Pending", "Pendiente"]))
     form = SQLFORM.factory(Field("payment",
                                  "reference payment",
                                  requires=IS_IN_DB(dbset,
                                                    db.payment.id,
                                                    myformat)))
-    if form.process().accepted:
+    if form.process(formname="update_form").accepted:
         payment = form.vars.payment
         result = plugin_dineromail_check_status(payment,
                                                 update=True)
@@ -196,8 +218,11 @@ def checkpayment():
               db.payment.amount,
               db.payment.invoice]
               
-    payments = db(db.payment.status=="Credited").select(*fields)
-    return dict(result=result,form=form,payments=payments)
+    payments = db((db.payment.invoice!="test")&\
+                  (db.payment.status=="Credited")|\
+                  (db.payment.status=="done")\
+                  ).select(*fields, orderby=db.payment.created_on)
+    return dict(result=result,form=form,payments=payments,presults=presults,pform=pform)
 
 def success():
     session.flash = T("You have successfully finished the payment process. Thanks you.")

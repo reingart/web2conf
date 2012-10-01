@@ -79,8 +79,8 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 TODAY_DATE=datetime.datetime.today()
 PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
-EARLYBIRD_DATE=datetime.datetime(2012,9,30,23,59,59)
-PRECONF_DATE=datetime.datetime(2012,10,12,23,59,0)
+EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
+PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
 CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
@@ -95,12 +95,19 @@ ATTENDEE_TYPES=(
 
 # 
 ATTENDEE_TYPE_COST=dict(
-     professional=dict(general=250, preconf=175, earlybird=175, speaker=125),
-     enthusiast=dict(general=150, preconf=105, earlybird=105,  speaker=85),
-     novice=dict(general=75, preconf=65, earlybird=55, speaker=45),
+     professional=dict(general=250, preconf=195, earlybird=175, speaker=125),
+     enthusiast=dict(general=150, preconf=130, earlybird=115,  speaker=85),
+     novice=dict(general=75, preconf=75, earlybird=65, speaker=65),
      gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
 ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)
+
+ATTENDEE_TYPE_TEXT=dict(
+    professional="t-shirt, catering, closing party, pro listing (micro-sponsor: logo in badge and web site), and other extra goodies",
+    enthusiast="t-shirt, catering and other extra goodies",
+    novice="t-shirt",
+    gratis="badge, certificate, program guide, community magazine and special benefits (subject to availability)",
+    )
 
 TUTORIALS_LIST=(
 )

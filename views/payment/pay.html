@@ -5,5 +5,20 @@
 
 {{=form}}
 
+<h3>{{=T('Whats\'s included?')}}</h3>
+<ul>
+{{gratis = ""}}
+{{for attendee_type, text in attendee_types:}}
+  {{if attendee_type != "gratis":}}
+  <li><b>{{=T(attendee_type)}}</b>: {{=T(text)}}</li>
+  {{else:}}
+  {{gratis = text}}
+  {{pass}}
+{{pass}}
+</ul>
+{{if gratis:}}
+<p>{{=T("All registered attendees will receive free of charge:")}} {{=T(gratis)}}</p>
+{{pass}}
+<p>{{=T("For more information, please see")}} {{=A(T("Registration"), _href=URL(c="conference", f="registration"))}}</p>
 
 </div>
