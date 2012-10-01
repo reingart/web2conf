@@ -95,9 +95,15 @@ ATTENDEE_TYPES=(
 
 # 
 ATTENDEE_TYPE_COST=dict(
+<<<<<<< /root/web2conf/models/0.py
      professional=dict(general=250, preconf=195, earlybird=175, speaker=125),
      enthusiast=dict(general=150, preconf=130, earlybird=115,  speaker=85),
      novice=dict(general=75, preconf=75, earlybird=65, speaker=65),
+=======
+     professional=dict(general=250, preconf=175, earlybird=175, speaker=125),
+     enthusiast=dict(general=150, preconf=105, earlybird=105,  speaker=85),
+     novice=dict(general=75, preconf=65, earlybird=55, speaker=55),
+>>>>>>> /tmp/0.py~other.Ri4rmE
      gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
 ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)

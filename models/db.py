@@ -86,7 +86,6 @@ db.define_table('auth_user',
     format="%(last_name)s, %(first_name)s (%(id)s)",
     migrate=migrate, fake_migrate=fake_migrate)
 
-
 # web2py planet model
 
 db.define_table("feed",
