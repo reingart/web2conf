@@ -12,7 +12,7 @@
 {{for payment in payments:}}
 <h3>{{=T(payment.rate or "")}} ({{=payment.method}}) {{=payment.created_on}} ${{='%.2f'% payment.amount}}</h3>
 <h4>{{=T("Status: %s") % payment.status}}</h4>
-{{if payment.status=='new' and payment.amount and payment.amount>2.00:}}
+{{if payment.status=='new':}}
 {{=A(IMG(_src="https://argentina.dineromail.com/imagenes/botones/pagar-medios_c.gif", _style="background-color: white", _alt="Pagar con DineroMail"), _href=URL('dineromail', args=payment.id))}}
 {{pass}}
 {{pass}}

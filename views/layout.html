@@ -124,7 +124,7 @@ except: pass
          <ul>
          {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
             <li>
-              <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='static', f='uploads', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}</p>
+              <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}</p>
             </li>
           {{pass}}
         </ul>

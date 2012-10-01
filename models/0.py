@@ -97,7 +97,7 @@ ATTENDEE_TYPES=(
 ATTENDEE_TYPE_COST=dict(
      professional=dict(general=250, preconf=175, earlybird=175, speaker=125),
      enthusiast=dict(general=150, preconf=105, earlybird=105,  speaker=85),
-     novice=dict(general=75, preconf=65, earlybird=55, speaker=45),
+     novice=dict(general=75, preconf=65, earlybird=55, speaker=55),
      gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
 ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)

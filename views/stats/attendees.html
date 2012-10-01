@@ -26,6 +26,7 @@
 {{for row in rows:}}
 <tr>
 <td>{{=A(row.first_name+' '+row.last_name,_href=row.personal_home_page)}}</td><td>{{=A(row.company_name,_href=row.company_home_page)}}</td>
+{{if session.manager:}}<td><a href="mailto:{{=row.email}}">{{=row.email}}</a></td>{{pass}}
 </tr>
 {{pass}}
 </table>
