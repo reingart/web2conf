@@ -41,3 +41,12 @@
 <p><b>Importante:</b> eventualmente las fechas y horarios pueden cambiar sin previo aviso por cuestiones agenas a la organización del evento. Por favor, revise esta página frecuentemente.</p>
 </div>
 {{=DIV(hidden)}}
+
+{{=SCRIPT("""
+function markActivity(actInput, actId){
+  var isChecked = jQuery("#" + actInput).attr("checked");
+  if (isChecked != "checked"){isChecked = false;}
+  var theUrl = "%s/activity/" + actId + "/checked/" + isChecked;
+  jQuery.ajax({url: theUrl});
+}
+""" % URL(c="schedule", f="markactivity"))}}

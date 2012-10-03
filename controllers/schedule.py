@@ -39,6 +39,11 @@ def index():
     slots_per_date = {}
     rooms_per_date = {}
 
+    if auth.user_id:
+        myactivities = db(db.partaker.user_id==auth.user_id).select().as_list()
+    else:
+        myactivities = None
+
     for activity in rows:
         date = activity.scheduled_datetime.date()
         time = activity.scheduled_datetime.time()
@@ -71,6 +76,8 @@ def index():
 
     ##fields.append(BEAUTIFY(schedule))
     hidden = []
+
+    myactivities = db(db.partaker.user_id==auth.user_id).select()
 
     for day in sorted(activities_per_date.keys()):
         table = []
@@ -137,24 +144,35 @@ def index():
                                      close=T('close'),
                                      width=50, height=50)
                     hidden.append(a)
-
-                    td = TD(
-                        a.link(B(cram(activity.title, 50))),
-                               BR(),
-                               authors and \
-                               ACTIVITY_LEVEL_HINT[activity.level] \
-                               or '',
-                               authors and \
-                               I(" %s " % \
-                               (', '.join(activity.categories or \
-                                [])),
-                               BR(), "", authors, "") or "",
-                               _width=width,
-                               _style="text-align: center;",
-                               _id=not activity.confirmed and "unconfirmed" or "confirmed",
-                               _class="%s %s" % (activity.track,
-                                                 activity.type.replace(" ", "_"),
-                                                 ))
+                    activity_selected = False
+                    select_activity = ""
+                    if auth.user_id and myactivities:
+                        response.flash = ""
+                        for act in myactivities:
+                            if act["activity"] is not None:
+                                if (act["activity"].id==activity.id) and (act["add_me"]):
+                                    activity_selected = "on"
+                        select_activity = INPUT(value=activity_selected,
+                                                _type="checkbox",                        
+                                                _id="activity_selected_%s" % activity.id,
+                                                _class="activity choice",
+                                                _onclick="markActivity('activity_selected_%s', '%s');" % (activity.id, activity.id))
+                    td = TD(select_activity,
+                            a.link(B(cram(activity.title, 50))),
+                                   BR(),
+                                   authors and \
+                                   ACTIVITY_LEVEL_HINT[activity.level] \
+                                   or '',
+                                   authors and \
+                                   I(" %s " % \
+                                       (', '.join(activity.categories or \
+                                       [])),
+                                       BR(), "", authors, "") or "",
+                                     _width=width,
+                                     _style="text-align: center;",
+                                     _id=not activity.confirmed and "unconfirmed" or "confirmed",
+                                     _class="%s %s" % (activity.track,
+                                                       activity.type.replace(" ", "_")))
                     if activity.type in ACTIVITY_COMMON:
                         tr = [tr[0],]
                         td.attributes["_colspan"] = len(rooms)
@@ -366,3 +384,18 @@ def grid():
 
 
     return dict(form=form, out=out)
+
+@auth.requires_login()
+def markactivity():
+    if request.args[3] == "checked":
+        add_me = True
+    else:
+        add_me = False
+    activity = int(request.args[1])
+    comment = T("Marked in schedule on %s") % request.now
+    participation = db((db.partaker.user_id==auth.user_id)&(db.partaker.activity==activity)).select().first()
+    if participation is None:
+        db.partaker.insert(user_id=auth.user_id, activity=activity, add_me=add_me, comment=comment)
+    else:
+        participation.update_record(add_me=add_me, comment=comment)
+    raise HTTP(200, T("Done!"))
