@@ -113,7 +113,10 @@ def financials_csv():
 
 @auth.requires_membership(role='manager')
 def payments():
-    rows=db(db.payment.status!='PRE-PROCESSING')(db.payment.from_person==db.auth_user.id).select(orderby=~db.payment.created_on)
+    q = db.payment.id>0
+    q |= db.auth_user.id>0
+    q |= db.coupon.id>0
+    rows=db(q).select(left=[db.auth_user.on(db.payment.from_person==db.auth_user.id), db.coupon.on(db.coupon.used_by==db.payment.from_person)], orderby=~db.payment.id)
     return dict(payments=rows)
 
 # Select records for badge
