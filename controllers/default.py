@@ -1,10 +1,4 @@
 #############################################
-### general variables
-#############################################
-
-from gluon.sqlhtml import form_factory
-
-#############################################
 # The main public page
 #############################################
 
@@ -216,6 +210,7 @@ def get_planet_rss(arg):
 
 
 # feeds action
+@caching
 def planet():
     import gluon.contrib.rss2 as rss2
     rss = get_planet_rss(None)
