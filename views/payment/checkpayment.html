@@ -1,12 +1,24 @@
 {{extend 'layout.html'}}
 <h1>Update DineroMail payment status</h1>
+{{=H5(T("Request payment update"))}}
+{{=form}}
 {{if result is not None:}}
   {{=H5(T("Update result"))}}
   {{=BEAUTIFY(result)}}
-  {{=HR()}}
 {{pass}}
-{{=H5(T("Request payment update"))}}
-{{=form}}
+{{=HR()}}
+{{=H5(T("Search payments by user name"))}}
+{{=pform}}
+{{if presults is not None:}}
+  {{=H5(T("Payments query result"))}}
+  {{=SQLTABLE(presults, headers={"payment.order_id": T("Order"),
+                               "payment.status": T("Status"),
+                               "payment.amount": T("Amount"),
+                               "payment.invoice": T("Invoice")})}}
+{{pass}}
 {{=HR()}}
 {{=H3(T("Credited payments"))}}
-{{=SQLTABLE(payments)}}
+{{=SQLTABLE(payments, headers={"payment.order_id": T("Order"),
+                               "payment.from_person": T("From"),
+                               "payment.amount": T("Amount"),
+                               "payment.invoice": T("Invoice")})}}
