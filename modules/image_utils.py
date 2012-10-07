@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from PIL import Image, ImageDraw
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageOps
 
 from cStringIO import StringIO
 
@@ -71,7 +70,8 @@ def center(source, dest, max_width=165, max_height=61):
     try:
         im.paste(logo, box, logo)
     except ValueError:
-        # alternate method to workaround "bad transparency mask" issue        
+        # alternate method to workaround "bad transparency mask" issue
+        # warning: sometimes this doesn't work as expected!
         im = ImageOps.fit(logo, (max_width, max_height), Image.ANTIALIAS)
 
     im.save(dest)
