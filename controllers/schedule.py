@@ -3,6 +3,9 @@
 
 @caching
 def index():
+    response.files.append(URL(r=request,c='static',f='css/prettyCheckboxes.css'))
+    response.files.append(URL(r=request,c='static',f='js/prettyCheckboxes.js'))
+    
     def cram(text, maxlen):
         """Omit part of a string if needed to make it fit in a
            maximum length."""
@@ -40,9 +43,9 @@ def index():
     rooms_per_date = {}
 
     if auth.user_id:
-        myactivities = db(db.partaker.user_id==auth.user_id).select().as_list()
+        myactivities = db(db.partaker.user_id==auth.user_id).select()
     else:
-        myactivities = None
+        myactivities = []
 
     for activity in rows:
         date = activity.scheduled_datetime.date()
@@ -77,7 +80,7 @@ def index():
     ##fields.append(BEAUTIFY(schedule))
     hidden = []
 
-    myactivities = db(db.partaker.user_id==auth.user_id).select()
+    #myactivities = db(db.partaker.user_id==auth.user_id).select()
 
     for day in sorted(activities_per_date.keys()):
         table = []
@@ -146,7 +149,8 @@ def index():
                     hidden.append(a)
                     activity_selected = False
                     select_activity = ""
-                    if auth.user_id and myactivities:
+                    label = "activity_selected_%s" % activity.id
+                    if auth.user_id and myactivities is not None:
                         response.flash = ""
                         for act in myactivities:
                             if act["activity"] is not None:
@@ -154,11 +158,11 @@ def index():
                                     activity_selected = "on"
                         select_activity = INPUT(value=activity_selected,
                                                 _type="checkbox",                        
-                                                _id="activity_selected_%s" % activity.id,
-                                                _class="activity choice",
+                                                _id=label,
+                                                _class="pretty_checkbox",
                                                 _onclick="markActivity('activity_selected_%s', '%s');" % (activity.id, activity.id))
                     td = TD(select_activity,
-                            a.link(B(cram(activity.title, 50))),
+                            LABEL(_for=label),a.link(B(cram(activity.title, 50))),
                                    BR(),
                                    authors and \
                                    ACTIVITY_LEVEL_HINT[activity.level] \
