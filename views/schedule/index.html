@@ -23,9 +23,14 @@
 <span class="workshop"><A href="/2012/conference/workshops">{{=T('Workshop')}}</a></span >
 <span class="sprint"><A href="/2012/conference/sprints">{{=T('Sprint')}}</a></span >
 <br/>
-<b>{{=IMG(_src=URL(c='static',f='img/star.png'), _style="border: 0; padding-top: 0px; margin-top: 7px;")}} </b>: ¡Elegí las actividades a las que desas asistir!
-<b>(cupos limitados)</b><br/>
-{{=B(I(A("(solo para usuarios inscriptos)", _href=URL(c='user',f='login', vars={'_next': URL('index')})))) if not auth.is_logged_in() else ""}}
+<b>{{=IMG(_src=URL(c='static',f='img/star.png'), _style="border: 0; padding-top: 0px; margin-top: 7px;")}} </b>: 
+{{=T("Bookmark the activities you want to attend")}}
+<b>{{=T("(limited seats)")}}</b><br/>
+{{if not auth.is_logged_in():}}
+{{=B(I(A(T("(only for registered users)"), _href=URL(c='user',f='login', vars={'_next': URL('index')}))))}}
+{{else:}}
+{{=T("Download your bookmarks")}}: {{=A("iCalendar", _href=URL("ics"))}}
+{{pass}}
 </p>
 
 {{for i, (day, schedule_table) in enumerate(sorted(schedule_tables.iteritems())):}}

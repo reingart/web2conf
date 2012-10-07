@@ -403,3 +403,70 @@ def markactivity():
     else:
         participation.update_record(add_me=add_me, comment=comment)
     raise HTTP(200, T("Done!"))
+
+@auth.requires_login()
+def ics():
+    "Export customized schedule as an iCalendar file"
+    import datetime, time
+    q = db.partaker.user_id==auth.user_id
+    q &= db.partaker.activity==db.activity.id
+    q &= db.partaker.add_me==True
+    activities = db(q).select(
+        db.activity.id,
+        db.activity.title, 
+        db.activity.scheduled_datetime, 
+        db.activity.scheduled_room, 
+        db.activity.duration, 
+        db.activity.scheduled_room, 
+        db.activity.abstract,
+        db.activity.authors,
+        db.activity.type,
+        )
+    s = 'BEGIN:VCALENDAR' 
+    s += '\nVERSION:2.0' 
+    s += '\nX-WR-CALNAME:%s - %s' % (response.title, auth.user.last_name)
+    s += '\nX-WR-TIMEZONE:%s' % time.tzname[0]
+    s += '\nSUMMARY:%s' % response.title
+    s += '\nPRODID:-//PyCon %s Bookmarks//%s//EN' % (request.application, 
+                                                     request.env.http_host,)
+    s += '\nCALSCALE:GREGORIAN' 
+    s += '\nMETHOD:PUBLISH' 
+    format = '%Y%m%dT%H%M%SZ' 
+    
+    def ical_escape(text):
+        tokens = (("\\", "\\\\"), (";", r"\;"), (",", r"\,"), ("\n", "\\n"), ("\r", ""))
+        text = text.decode("utf8", "replace")
+        for (escape, replacement) in tokens:
+            text = text.replace(escape, replacement)
+        return text.encode("utf8", "replace")
+
+    for item in activities:
+        if not item.scheduled_datetime or not item.duration:
+            continue
+        url = '%s://%s%s' % (request.env.wsgi_url_scheme, 
+                             request.env.http_host,
+                             URL(c='activities', f='accepted', args=item.id))
+        s += '\nBEGIN:VEVENT' 
+        s += '\nUID:%s' % url 
+        s += '\nURL:%s' % url 
+        s += '\nDTSTART:%s' % item.scheduled_datetime.strftime(format) 
+        s += '\nDTEND:%s' % (item.scheduled_datetime+datetime.timedelta(minutes=item.duration)).strftime(format) 
+        s += '\nSUMMARY:%s (%s)' % (ical_escape(item.title), T(item.type))
+        authors = ical_escape(item.authors) 
+        abstract = ical_escape(item.abstract)
+        desc = "%s\\n\\n%s" % (authors, abstract)
+        s= str(s) # where it is converted to unicode?
+        s += '\nDESCRIPTION:' 
+        s += desc
+        if item.scheduled_room:
+            location = "%s, " % ACTIVITY_ROOMS.get(int(item.scheduled_room), "")
+            location += ACTIVITY_ROOMS_ADDRESS.get(int(item.scheduled_room), "")
+            s += '\nLOCATION:%s' % location 
+        s += '\nEND:VEVENT' 
+    s += '\nEND:VCALENDAR'
+    
+    response.headers['Content-Type']='text/calendar' 
+    filename = "pycon%s-%s-bookmark.ics" % (request.application, auth.user.last_name)
+    response.headers["Content-Disposition"] \
+        = "attachment; filename=%s" % filename
+    return s

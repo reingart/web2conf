@@ -144,6 +144,10 @@ ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
 # TODO: create a room table (id, name, venue)!
 ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 0: "-"}
+unq = "Universidad Nacional de Quilmes: Roque Saenz Peña 352, Bernal, Buenos Aires, Argentina"
+urban = "Urban Station (Sucursal Downtown): Maipú 547, Capital Federal, Argentina"
+educacionit = "Educacion IT: Lavalle 648 Piso 8, Capital Federal, Argentina"
+ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit, 7: urban, 8: urban, 9: urban, 10: urban, 0: "-"}
 ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")]*3 + \
                [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
                      A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
