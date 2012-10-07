@@ -230,3 +230,28 @@ def authors_stats():
                         orderby=~qty)
     response.view = "generic.html"
     return {'rows': rows, 'authors': len(rows)}
+
+
+@auth.requires_membership(role='manager')
+def activity_votes_to_partakers():
+    rows = db(db.activity.status=='accepted').select(
+            db.activity.id, 
+            db.activity.title, 
+            orderby=db.activity.title)
+    
+    activities= list(rows)
+    
+    participation = {}
+    for row in db(db.partaker).select():
+        participation.setdefault(row.user_id, []).append(row.activity)
+    
+    ret = 0
+    for user in db(db.auth_user).select():
+        for activity in activities:
+            voted = (user.tutorials and activity.title in user.tutorials)
+            if voted and ( user.id not in participation or activity.id not in participation[user.id]):
+                db.partaker.insert(user_id=user.id, activity=activity.id, add_me=True, comment="user vote")
+                ret += 1
+   
+    
+    return str(ret)
