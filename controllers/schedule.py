@@ -403,14 +403,34 @@ def markactivity():
     else:
         participation.update_record(add_me=add_me, comment=comment)
     raise HTTP(200, T("Done!"))
-
-@auth.requires_login()
-def ics():
+    
+def bookmarks():
     "Export customized schedule as an iCalendar file"
     import datetime, time
-    q = db.partaker.user_id==auth.user_id
-    q &= db.partaker.activity==db.activity.id
-    q &= db.partaker.add_me==True
+    
+    if auth.is_logged_in():
+        user_id = auth.user_id
+        user = auth.user
+    elif request.args:
+        user_id = request.args[0]
+        url_hash = request.args[1]
+        # check security hash is correct
+        user = db.auth_user[user_id]
+        if not user.security_hash == url_hash:
+            user_id = None
+    else:
+        user_id = None
+    # get user bookmarked activities, or all the activities if not logged in:
+    if user_id:
+        q = db.partaker.user_id==user_id
+        q &= db.partaker.activity==db.activity.id
+        q &= db.partaker.add_me==True
+        filename = "pycon%s-%s-bookmark.ics" % (request.application, user.last_name)
+        calname = "%s - %s" % (response.title, user.last_name)
+    else:
+        q = db.activity.status=='accepted'
+        filename = "pycon%s-bookmark.ics" % (request.application)
+        calname = "%s" % (response.title, )
     activities = db(q).select(
         db.activity.id,
         db.activity.title, 
@@ -424,7 +444,7 @@ def ics():
         )
     s = 'BEGIN:VCALENDAR' 
     s += '\nVERSION:2.0' 
-    s += '\nX-WR-CALNAME:%s - %s' % (response.title, auth.user.last_name)
+    s += '\nX-WR-CALNAME:%s' % calname
     s += '\nX-WR-TIMEZONE:%s' % time.tzname[0]
     s += '\nSUMMARY:%s' % response.title
     s += '\nPRODID:-//PyCon %s Bookmarks//%s//EN' % (request.application, 
@@ -446,11 +466,13 @@ def ics():
         url = '%s://%s%s' % (request.env.wsgi_url_scheme, 
                              request.env.http_host,
                              URL(c='activities', f='accepted', args=item.id))
+        # convert local times to UTC
+        start = item.scheduled_datetime - datetime.timedelta(seconds=-time.timezone)
         s += '\nBEGIN:VEVENT' 
         s += '\nUID:%s' % url 
         s += '\nURL:%s' % url 
-        s += '\nDTSTART:%s' % item.scheduled_datetime.strftime(format) 
-        s += '\nDTEND:%s' % (item.scheduled_datetime+datetime.timedelta(minutes=item.duration)).strftime(format) 
+        s += '\nDTSTART:%s' % start.strftime(format) 
+        s += '\nDTEND:%s' % (start+datetime.timedelta(minutes=item.duration)).strftime(format) 
         s += '\nSUMMARY:%s (%s)' % (ical_escape(item.title), T(item.type))
         authors = ical_escape(item.authors) 
         abstract = ical_escape(item.abstract)
@@ -465,8 +487,13 @@ def ics():
         s += '\nEND:VEVENT' 
     s += '\nEND:VCALENDAR'
     
+    # remove accents
+    
+    import unicodedata
+    nkfd_form = unicodedata.normalize('NFKD', unicode(s, "utf8", "ignore"))
+    only_ascii = nkfd_form.encode('ASCII', 'ignore')
+    
     response.headers['Content-Type']='text/calendar' 
-    filename = "pycon%s-%s-bookmark.ics" % (request.application, auth.user.last_name)
     response.headers["Content-Disposition"] \
         = "attachment; filename=%s" % filename
-    return s
+    return only_ascii

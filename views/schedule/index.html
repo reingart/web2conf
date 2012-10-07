@@ -28,8 +28,9 @@
 <b>{{=T("(limited seats)")}}</b><br/>
 {{if not auth.is_logged_in():}}
 {{=B(I(A(T("(only for registered users)"), _href=URL(c='user',f='login', vars={'_next': URL('index')}))))}}
+{{#=A(T("Full Google Calendar"), _href="http://www.google.com/calendar/render?cid=%s://%s%s" % (request.env.wsgi_url_scheme, request.env.http_host, URL('bookmarks')))}}
 {{else:}}
-{{=T("Download your bookmarks")}}: {{=A("iCalendar", _href=URL("ics"))}}
+{{=T("Download your bookmarks")}}: {{=A("iCalendar", _href=URL("bookmarks", args=[auth.user_id, db.auth_user[auth.user_id].security_hash]))}}
 {{pass}}
 </p>
 
@@ -62,7 +63,5 @@ function markActivity(actInput, actId){
 
 
 {{=SCRIPT("""
-$(document).ready(function(){
     $('input[type=checkbox],input[type=radio]').prettyCheckboxes();
-});
 """)}}
