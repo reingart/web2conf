@@ -427,6 +427,7 @@
 'Format': 'Formato',
 'Friday': 'Viernes',
 'From': 'De',
+'Full Google Calendar': 'Full Google Calendar',
 'Function disabled': 'Function disabled',
 'General': 'General',
 'General Information': 'Información Gral.',
