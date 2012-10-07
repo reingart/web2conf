@@ -131,6 +131,11 @@ db.auth_user.cv.comment=XML(A(str(T('Job Fair')) + ' [3]',_href='#footnote3'))
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 
+## Virtual fields:
+import md5
+# security hash can be used to validate user_id in public url (ie. schedule bookmark)
+db.auth_user.security_hash = Field.Virtual(lambda row:  "created_by_ip" in row.auth_user and md5.new("%s%s" % (row.auth_user.created_by_ip, row.auth_user.created_on)).hexdigest())
+
 auth=Auth(globals(),db)                      # authentication/authorization
 
 db.auth_user.password.requires=[CRYPT()]
