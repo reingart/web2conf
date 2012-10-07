@@ -403,6 +403,10 @@ def markactivity():
     else:
         participation.update_record(add_me=add_me, comment=comment)
     raise HTTP(200, T("Done!"))
+
+@auth.requires_login()
+def ics():
+    redirect(URL('bookmarks'))
     
 def bookmarks():
     "Export customized schedule as an iCalendar file"
