@@ -162,6 +162,7 @@
 'Activity Keynote SH Confirmed. Thank you!': 'Activity Keynote SH Confirmed. Thank you!',
 'Activity La guía máxima para portar a GTK+3 Confirmed. Thank you!': 'Activity La guía máxima para portar a GTK+3 Confirmed. Thank you!',
 'Activity Las Maravillas de Google App Engine Confirmed. Thank you!': 'Activity Las Maravillas de Google App Engine Confirmed. Thank you!',
+'Activity Layer D - Programación Semántica Confirmed. Thank you!': 'Activity Layer D - Programación Semántica Confirmed. Thank you!',
 'Activity Lib Free or Die Hard: Diseñando librerías en python Confirmed. Thank you!': 'Activity Lib Free or Die Hard: Diseñando librerías en python Confirmed. Thank you!',
 'Activity Media Measurement Confirmed. Thank you!': 'Activity Media Measurement Confirmed. Thank you!',
 'Activity MongoDB native to web development - London Framework Confirmed. Thank you!': 'Activity MongoDB native to web development - London Framework Confirmed. Thank you!',
