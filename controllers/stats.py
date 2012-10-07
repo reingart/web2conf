@@ -54,7 +54,7 @@ def colorize(d,sort_key=lambda x:x):
     s.sort(key=sort_key)
     s.reverse()
         
-    t=[(x[1],colors[i % len(colors)],x[0]) for i,x in enumerate(s)]
+    t=[(x[1],COLORS[i % len(COLORS)],x[0]) for i,x in enumerate(s)]
     return barchart(t,label_width=150)   
 
 @caching
