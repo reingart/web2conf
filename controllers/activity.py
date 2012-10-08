@@ -355,7 +355,9 @@ def download():
     if not request.args:
         raise HTTP(404)
     query = (db.attachment.file==request.args[0])&(db.activity.id==db.attachment.activity_id)
-    activity = db(query).select(db.activity.id,db.activity.status)[0]
+    activity = db(query).select(db.activity.id,db.activity.status).first()
+    if not activity:
+        raise HTTP(404)
     if activity.status=='accepted' or auth.has_membership(role='reviewer') or user_is_author(activity.id):
         return response.download(request,db)
     raise HTTP(501)
