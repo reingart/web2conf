@@ -352,6 +352,8 @@ def speakers():
     return dict(authors=authors, activities_by_author=activities_by_author)
 
 def download(): 
+    if not request.args:
+        raise HTTP(404)
     query = (db.attachment.file==request.args[0])&(db.activity.id==db.attachment.activity_id)
     activity = db(query).select(db.activity.id,db.activity.status)[0]
     if activity.status=='accepted' or auth.has_membership(role='reviewer') or user_is_author(activity.id):
