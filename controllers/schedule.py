@@ -15,71 +15,89 @@ def index():
             text = text[:pre] + '...'
         return text.encode('utf8')
 
-    q = db.activity.type!='poster'
-    #q &= db.activity.type!='project'
-    q &= db.activity.status=='accepted'
-    q &= db.activity.scheduled_datetime!=None
-    rows = db(q).select(db.activity.id,
-                        db.activity.title,
-                        db.activity.track,
-                        db.activity.status,
-                        db.activity.abstract,
-                        db.activity.level,
-                        db.activity.type,
-                        db.activity.created_by,
-                        db.activity.authors,
-                        db.activity.categories,
-                        db.activity.duration,
-                        db.activity.confirmed,
-                        db.activity.scheduled_datetime,
-                        db.activity.scheduled_room,
-                        )
-    levels = {}
-    for i, level in enumerate(ACTIVITY_LEVELS):
-        levels[level] = XML("&loz;"* (i+1),)
-
-    activities_per_date = {}
-    slots_per_date = {}
-    rooms_per_date = {}
+    def timetable():
+        q = db.activity.type!='poster'
+        #q &= db.activity.type!='project'
+        q &= db.activity.status=='accepted'
+        q &= db.activity.scheduled_datetime!=None
+        rows = db(q).select(db.activity.id,
+                            db.activity.title,
+                            db.activity.track,
+                            db.activity.status,
+                            db.activity.level,
+                            db.activity.type,
+                            db.activity.created_by,
+                            db.activity.authors,
+                            db.activity.categories,
+                            db.activity.duration,
+                            db.activity.confirmed,
+                            db.activity.scheduled_datetime,
+                            db.activity.scheduled_room,
+                            )
+        levels = {}
+        for i, level in enumerate(ACTIVITY_LEVELS):
+            levels[level] = XML("&loz;"* (i+1),)
+    
+        activities_per_date = {}
+        slots_per_date = {}
+        rooms_per_date = {}
+        for activity in rows:
+            date = activity.scheduled_datetime.date()
+            time = activity.scheduled_datetime.time()
+            room = int(activity.scheduled_room)
+            activities_per_date.setdefault(date, []).append(activity)
+            if not room in rooms_per_date.get(date, []):
+                rooms_per_date.setdefault(date, []).append(room)
+            if time not in slots_per_date.get(date, []):
+                slots_per_date.setdefault(date, {}).setdefault(time, {})
+                # find overlapped slots
+                if activity.duration and activity.type not in ('open space', 'project', 'sprint', 'social', 'special'):
+                    for i in range(activity.duration/60):
+                        hidden_slot = activity.scheduled_datetime + datetime.timedelta(minutes=60*i)
+                        hidden_slot_time = hidden_slot.time()
+                        if hidden_slot_time not in slots_per_date.get(date, []):
+                            slots_per_date[date].setdefault(hidden_slot_time, {})
+                elif activity.duration:
+                    # record duration for special activities (social, meetings, sprints, etc.)
+                    slots_per_date[date][time] = activity.duration
+    
+        
+        rooms = ACTIVITY_ROOMS.copy()
+    
+        activities = {None: ""}
+        activities.update(dict([(row.id, row) for row in rows]))
+        schedule = dict([((row.scheduled_datetime,
+                           row.scheduled_room),
+                          row.id) for row in rows])
+    
+        hidden = {'speakers': {}, 'activities': {}}
+        for activity in rows:
+            if activity.created_by not in hidden['speakers'] and len(activity.authors)>2:
+                u = PluginMModal(title=activity.authors, content="",
+                                         callback=URL('authors', args=[activity.created_by]),
+                                         close=T('close'), width=50,
+                                         height=50)
+                hidden['speakers'][activity.created_by] = u
+            if activity.id not in hidden['activities']:
+                a = PluginMModal(title=activity.title, content="",
+                                     callback=URL('content', args=[activity.id]),                                    
+                                     close=T('close'),
+                                     width=50, height=50)
+                hidden['activities'][activity.id] = a
+        
+        return rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden
+    
+    rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden = cache.ram(
+                                   request.env.path_info + "timetable", 
+                                   lambda: timetable(), 
+                                   time_expire=60)
+    schedule_tables = {}
 
     if auth.user_id:
         myactivities = db(db.partaker.user_id==auth.user_id).select()
     else:
         myactivities = []
-
-    for activity in rows:
-        date = activity.scheduled_datetime.date()
-        time = activity.scheduled_datetime.time()
-        room = int(activity.scheduled_room)
-        activities_per_date.setdefault(date, []).append(activity)
-        if not room in rooms_per_date.get(date, []):
-            rooms_per_date.setdefault(date, []).append(room)
-        if time not in slots_per_date.get(date, []):
-            slots_per_date.setdefault(date, {}).setdefault(time, {})
-            # find overlapped slots
-            if activity.duration and activity.type not in ('open space', 'project', 'sprint', 'social', 'special'):
-                for i in range(activity.duration/60):
-                    hidden_slot = activity.scheduled_datetime + datetime.timedelta(minutes=60*i)
-                    hidden_slot_time = hidden_slot.time()
-                    if hidden_slot_time not in slots_per_date.get(date, []):
-                        slots_per_date[date].setdefault(hidden_slot_time, {})
-            elif activity.duration:
-                # record duration for special activities (social, meetings, sprints, etc.)
-                slots_per_date[date][time] = activity.duration
-
-    
-    rooms = ACTIVITY_ROOMS.copy()
-
-    schedule_tables = {}
-    activities = {None: ""}
-    activities.update(dict([(row.id, row) for row in rows]))
-    schedule = dict([((row.scheduled_datetime,
-                       row.scheduled_room),
-                      row.id) for row in rows])
-
-    ##fields.append(BEAUTIFY(schedule))
-    hidden = []
-
+        
     #myactivities = db(db.partaker.user_id==auth.user_id).select()
 
     for day in sorted(activities_per_date.keys()):
@@ -114,39 +132,14 @@ def index():
                            or None
 
                 if activity:
-                    author = db.auth_user[activity.created_by]
                     if activity.authors and \
                        len(activity.authors.strip()) > 1:
-                        u = PluginMModal(title=activity.authors,
-                            content=(author.photo and \
-                                     IMG(_alt=author.last_name,
-                                         _src=URL(r=request,
-                                                  c='default',
-                                                  f='fast_download',
-                                                  args=author.photo),
-                                         _width="100px",
-                                         _height="100px", \
-                                         _style="margin-left: 5px; \
-                                         margin-right: 5px; \
-                                         margin-top: 3px; \
-                                         margin-bottom: 3px; \
-                                         float: left;").xml() or \
-                                         '') + \
-                                     MARKMIN(author.resume or \
-                                             '').xml(),
-                                     close=T('close'), width=50,
-                                     height=50)
-                        hidden.append(u)
+                        u = hidden['speakers'][activity.created_by]
                         authors = u.link(cram(activity.authors, 25))
                     else:
                         authors = ''
 
-                    a = PluginMModal(title=activity.title, \
-                            content=MARKMIN(activity.abstract or \
-                                            '').xml(),
-                                     close=T('close'),
-                                     width=50, height=50)
-                    hidden.append(a)
+                    a = hidden['activities'][activity.id]
                     activity_selected = False
                     select_activity = ""
                     label = "activity_selected_%s" % activity.id
@@ -204,10 +197,39 @@ def index():
         schedule_tables[day] = TABLE(*table, _class="schedule")
 
     d = dict(activities_per_date=activities_per_date,
-             levels=levels, hidden=hidden,
+             levels=levels, hidden=hidden['activities'].values()+hidden['speakers'].values(),
              schedule_tables=schedule_tables)
     return response.render(d)
 
+@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
+def content():
+    "Render the activity summary for each modal box in the schedule"
+    if not request.args:
+        raise HTTP(404)
+    activity = db.activity[request.args[0]]
+    if not activity.status=='accepted':
+        raise HTTP(403)
+    return MARKMIN(activity.abstract or '')
+
+@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
+def authors():
+    "Render the speaker summary for each modal box in the schedule"
+    if not request.args:
+        raise HTTP(404)
+    author = db.auth_user[request.args[0]]
+    if not author.speaker:
+        raise HTTP(403)
+    if author.photo:
+        img = IMG(_alt=author.last_name,
+                    _src=URL(r=request, c='default',
+                             f='fast_download', args=author.photo),
+                    _width="100px", _height="100px", 
+                     _style="margin-left: 5px; margin-right: 5px; \
+                             margin-top: 3px; margin-bottom: 3px; \
+                             float: left;").xml()
+    else:
+        img = ""
+    return img + MARKMIN(author.resume or '').xml()
 
 @auth.requires_membership(role="manager")
 def agenda():
