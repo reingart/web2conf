@@ -469,7 +469,7 @@ def bookmarks():
             continue
         url = '%s://%s%s' % (request.env.wsgi_url_scheme, 
                              request.env.http_host,
-                             URL(c='activities', f='accepted', args=item.id))
+                             URL(c='activity', f='accepted', args=item.id))
         # convert local times to UTC
         start = item.scheduled_datetime - datetime.timedelta(seconds=-time.timezone)
         s += '\nBEGIN:VEVENT' 
@@ -477,11 +477,12 @@ def bookmarks():
         s += '\nURL:%s' % url 
         s += '\nDTSTART:%s' % start.strftime(format) 
         s += '\nDTEND:%s' % (start+datetime.timedelta(minutes=item.duration)).strftime(format) 
-        s += '\nSUMMARY:%s (%s)' % (ical_escape(item.title), T(item.type))
+        s = str(s) # where it is converted to unicode?
+        s += '\nSUMMARY:%s (%s)' % (ical_escape(item.title), str(T(item.type)))
         authors = ical_escape(item.authors) 
         abstract = ical_escape(item.abstract)
         desc = "%s\\n\\n%s" % (authors, abstract)
-        s= str(s) # where it is converted to unicode?
+        s = str(s) # where it is converted to unicode?
         s += '\nDESCRIPTION:' 
         s += desc
         if item.scheduled_room:
@@ -494,7 +495,9 @@ def bookmarks():
     # remove accents
     
     import unicodedata
-    nkfd_form = unicodedata.normalize('NFKD', unicode(s, "utf8", "ignore"))
+    if not isinstance(s, unicode):
+        s = unicode(s, "utf8", "ignore")
+    nkfd_form = unicodedata.normalize('NFKD', s)
     only_ascii = nkfd_form.encode('ASCII', 'ignore')
     
     response.headers['Content-Type']='text/calendar' 
