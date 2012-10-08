@@ -53,12 +53,12 @@ submenu_info=[
 ]
 if ENABLE_TALKS:
    submenu_activities = []
-   if PROPOSALS_DEADLINE_DATE<TODAY_DATE:
+   if True: #PROPOSALS_DEADLINE_DATE<TODAY_DATE:
         url = URL(r=request,c='schedule',f='index')
    else:
         url = URL(r=request,c='conference',f='proposals')
    response.menu.append([T('Activities'),False,url,submenu_activities])
-   submenu_activities.append([T('Proposals'),False, url])
+   #submenu_activities.append([T('Proposals'),False, url])
    submenu_activities.append([T('Schedule'),False,URL(r=request,c='schedule',f='index')])
    submenu_activities.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
