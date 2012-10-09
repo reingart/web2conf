@@ -562,6 +562,7 @@
 'email': 'email',
 'extreme talk': 'charla extrema',
 'extreme_talk': 'charla_extrema',
+'full schedule (customizable!)': 'full schedule (customizable!)',
 'general': 'general',
 'halal': 'halal',
 'info': 'Información',

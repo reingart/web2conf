@@ -611,6 +611,7 @@
 'email': 'email',
 'extreme talk': 'extreme talk',
 'extreme_talk': 'extreme_talk',
+'full schedule (customizable!)': 'full schedule (customizable!)',
 'general': 'general',
 'halal': 'halal',
 'info': 'Información',
