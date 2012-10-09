@@ -37,7 +37,7 @@ if ENABLE_PAYMENTS:
                 Field('used','boolean',default=False,writable=False,),
                 Field('used_by',db.auth_user,default=None, writable=False,),
                 Field('used_on','datetime',default=request.now,writable=False,),
-                )
+                 migrate=migrate)
 
     ##db.coupon.person.requires=IS_NULL_OR(IS_IN_DB(db,'auth_user.id','%(first_name)s %(last_name)s [%(id)s]'))
 
