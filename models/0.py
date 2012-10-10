@@ -240,4 +240,4 @@ def caching(fn):
         return fn
     else:
         session.forget()    # only if no session.flash (allow to clean it!)
-        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)
+        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.disk)(fn)
