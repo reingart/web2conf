@@ -430,25 +430,15 @@ def markactivity():
 def ics():
     redirect(URL('bookmarks'))
     
-def bookmarks():
+def icalendar(user):
     "Export customized schedule as an iCalendar file"
     import datetime, time
+    from cStringIO import StringIO
     
-    if auth.is_logged_in():
-        user_id = auth.user_id
-        user = auth.user
-    elif request.args:
-        user_id = request.args[0]
-        url_hash = request.args[1]
-        # check security hash is correct
-        user = db.auth_user[user_id]
-        if not user.security_hash == url_hash:
-            user_id = None
-    else:
-        user_id = None
+    ical = StringIO()
     # get user bookmarked activities, or all the activities if not logged in:
-    if user_id:
-        q = db.partaker.user_id==user_id
+    if user:
+        q = db.partaker.user_id==user.id
         q &= db.partaker.activity==db.activity.id
         q &= db.partaker.add_me==True
         filename = "pycon%s-%s-bookmark.ics" % (request.application, user.last_name)
@@ -468,15 +458,15 @@ def bookmarks():
         db.activity.authors,
         db.activity.type,
         )
-    s = 'BEGIN:VCALENDAR' 
-    s += '\nVERSION:2.0' 
-    s += '\nX-WR-CALNAME:%s' % calname
-    s += '\nX-WR-TIMEZONE:%s' % time.tzname[0]
-    s += '\nSUMMARY:%s' % response.title
-    s += '\nPRODID:-//PyCon %s Bookmarks//%s//EN' % (request.application, 
-                                                     request.env.http_host,)
-    s += '\nCALSCALE:GREGORIAN' 
-    s += '\nMETHOD:PUBLISH' 
+    ical.write('BEGIN:VCALENDAR')
+    ical.write('\nVERSION:2.0')
+    ical.write('\nX-WR-CALNAME:%s' % calname)
+    ical.write('\nX-WR-TIMEZONE:%s' % time.tzname[0])
+    ical.write('\nSUMMARY:%s' % response.title)
+    ical.write('\nPRODID:-//PyCon %s Bookmarks//%s//EN' % (request.application, 
+                                                     request.env.http_host,))
+    ical.write('\nCALSCALE:GREGORIAN')
+    ical.write('\nMETHOD:PUBLISH')
     format = '%Y%m%dT%H%M%SZ' 
     
     def ical_escape(text):
@@ -494,25 +484,26 @@ def bookmarks():
                              URL(c='activity', f='accepted', args=item.id))
         # convert local times to UTC
         start = item.scheduled_datetime - datetime.timedelta(seconds=-time.timezone)
-        s += '\nBEGIN:VEVENT' 
-        s += '\nUID:%s' % url 
-        s += '\nURL:%s' % url 
-        s += '\nDTSTART:%s' % start.strftime(format) 
-        s += '\nDTEND:%s' % (start+datetime.timedelta(minutes=item.duration)).strftime(format) 
-        s = str(s) # where it is converted to unicode?
-        s += '\nSUMMARY:%s (%s)' % (ical_escape(item.title), str(T(item.type)))
+        ical.write('\nBEGIN:VEVENT') 
+        ical.write('\nUID:%s' % url) 
+        ical.write('\nURL:%s' % url)
+        ical.write('\nDTSTART:%s' % start.strftime(format))
+        ical.write('\nDTEND:%s' % (start+datetime.timedelta(minutes=item.duration)).strftime(format))
+        ical.write('\nSUMMARY:%s (%s)' % (ical_escape(item.title), str(T(item.type))))
         authors = ical_escape(item.authors) 
         abstract = ical_escape(item.abstract)
         desc = "%s\\n\\n%s" % (authors, abstract)
-        s = str(s) # where it is converted to unicode?
-        s += '\nDESCRIPTION:' 
-        s += desc
+        ical.write('\nDESCRIPTION:')
+        ical.write(desc)
         if item.scheduled_room:
             location = "%s, " % ACTIVITY_ROOMS.get(int(item.scheduled_room), "")
             location += ACTIVITY_ROOMS_ADDRESS.get(int(item.scheduled_room), "")
-            s += '\nLOCATION:%s' % location 
-        s += '\nEND:VEVENT' 
-    s += '\nEND:VCALENDAR'
+            ical.write('\nLOCATION:%s' % location)
+        ical.write('\nEND:VEVENT')
+    ical.write('\nEND:VCALENDAR')
+    
+    s = ical.getvalue()
+    ical.close()
     
     # remove accents
     
@@ -521,8 +512,44 @@ def bookmarks():
         s = unicode(s, "utf8", "ignore")
     nkfd_form = unicodedata.normalize('NFKD', s)
     only_ascii = nkfd_form.encode('ASCII', 'ignore')
-    
+
+    return only_ascii, filename
+
+
+def bookmarks():
+    if auth.is_logged_in():
+        user_id = auth.user_id
+        user = auth.user
+    elif request.args:
+        user_id = request.args[0]
+        url_hash = request.args[1]
+        # check security hash is correct
+        user = db.auth_user[user_id]
+        if not user.security_hash == url_hash:
+            user_id = None
+    else:
+        user = None
+
+    try:
+        ical, filename = icalendar(user)
+    except Exception, e:
+        raise RuntimeError("%s %s" % e)
+
     response.headers['Content-Type']='text/calendar' 
     response.headers["Content-Disposition"] \
-        = "attachment; filename=%s" % filename
-    return only_ascii
+            = "attachment; filename=%s" % filename
+    return ical
+
+    
+@auth.requires_membership(role="manager")
+def test_ical():
+    ret = []
+    rows = db(db.auth_user.id>0).select()
+    for u in rows:
+        try:
+            s, fn = icalendar(u)
+            ret.append("%s: ok %s %d "% (u.id, fn, len(s)))
+        except Exception, e:
+            ret.append("%s: err %s" % (u.id, e))
+    response.view = "generic.html"
+    return {"ret":ret}
