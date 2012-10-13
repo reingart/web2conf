@@ -69,7 +69,11 @@ def charts():
     if not is_gae:
         for k,item in enumerate(tutorials):
             m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
-            cn.append((item,COLORS[k],m))
+            try:
+                color = COLORS[k]
+            except IndexError:
+                color = ""
+            cn.append((item,color,m))
     else:        
         cn2={}
         for row in db(db.auth_user.id>0).select(db.auth_user.tutorials):
