@@ -62,7 +62,7 @@ def tweet():
     return dict(form=form)
 
 
-@cache(request.env.path_info,time_expire=60*15,cache_model=cache.disk)
+@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
 def twitter():
     session.forget()
     session._unlock(response)
