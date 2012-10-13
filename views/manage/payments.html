@@ -17,6 +17,7 @@
 {{total=0}}
 {{sponsors=0}}
 {{tshirts=dict() }}
+{{rates=dict()}}
 {{for p in payments:}}
 <tr>
 {{if request.args and request.args[0]=='paid' and (p.payment.status.lower() not in ('done', 'credited') or p.payment.rate in ('gratis', 'test', None)): continue}}
@@ -24,6 +25,7 @@
 {{sponsors+= p.payment.amount==0 and 1 or 0}}
 {{total+=p.payment.amount}}
 {{tshirts[p.auth_user.t_shirt_size] = tshirts.get(p.auth_user.t_shirt_size, 0) + 1}}
+{{rates[p.payment.rate] = rates.get(p.payment.rate, 0) + 1}}
 <td>{{=p.payment.id}}</td>
 <td>{{=p.payment.created_on.strftime('%d-%b-%Y')}}</td>
 <td>{{=A("%s, %s" % (p.auth_user.first_name, p.auth_user.last_name),_href=URL(r=request,f='impersonate',args=p.auth_user.id))}}
@@ -43,6 +45,12 @@
 <h4>T-Shirt sizes:</h4>
 <ul>
 {{for k, v in tshirts.items():}}
+<li>{{="%s: %s" % (k, v)}}
+{{pass}}
+</ul>
+<h4>Rates:</h4>
+<ul>
+{{for k, v in rates.items():}}
 <li>{{="%s: %s" % (k, v)}}
 {{pass}}
 </ul>
