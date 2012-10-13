@@ -109,14 +109,15 @@ def sample():
     #fn = "sponsor.logo.b9d3847ca9270ce7.6d616368696e616c69732e706e67.png"
     if user.sponsor_id:
         fn = db.sponsor[user.sponsor_id].logo
-        
-        source = os.path.join(request.folder, 'uploads', fn)
-        temp = os.path.join(request.folder, 'private', 'qr', fn) + ".png"
-        image_utils.center(source, temp)
-        
-        # clean company name
-        f['company_name'] = ""
-
+        if fn:
+            source = os.path.join(request.folder, 'uploads', fn)
+            temp = os.path.join(request.folder, 'private', 'qr', fn) + ".png"
+            image_utils.center(source, temp)
+            
+            # clean company name
+            f['company_name'] = ""
+        else:
+            temp = None 
     else:
         temp = None
 
