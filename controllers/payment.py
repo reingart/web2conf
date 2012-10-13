@@ -224,6 +224,21 @@ def checkpayment():
                   ).select(*fields, orderby=db.payment.created_on)
     return dict(result=result,form=form,payments=payments,presults=presults,pform=pform)
 
+@auth.requires_membership("manager")
+def checkall():
+    result = []
+    q = ((db.payment.status!="Credited")&\
+               (db.payment.method=="dineromail")&\
+               (db.payment.status!="cancelled")&\
+               (db.payment.status!="Cancelled")&\
+               (db.payment.status!="done"))
+    q &= db.payment.id>200
+    for payment in db(q).select():
+        result.append((payment.id,payment.amount,plugin_dineromail_check_status(payment.id,
+                                                update=True)))
+    response.view = "generic.html"
+    return dict(result=result)
+
 def success():
     session.flash = T("You have successfully finished the payment process. Thanks you.")
     redirect(URL("index"))
