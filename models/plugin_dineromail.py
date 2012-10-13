@@ -52,14 +52,15 @@ PLUGIN_DINEROMAIL_SHOP_CHECK_IN = {"mexico": None,
                           "argentina": "https://argentina.dineromail.com/Shop/Shop_Ingreso.asp",
                           "brasil": None}
 
-PLUGIN_DINEROMAIL_REPORT_STATUSES = {1: T("Correct"),
-                                     2: T("Malformed"),
-                                     3: T("Invalid account number"),
-                                     4: T("Invalid password"),
-                                     5: T("Invalid query type"),
-                                     6: T("Ivalid operation ID"),
-                                     7: T("Invalid account or password"),
-                                     8: T("No operations found")}
+PLUGIN_DINEROMAIL_REPORT_STATUSES = {1: ("Correct"),
+                                     2: ("Malformed"),
+                                     3: ("Invalid account number"),
+                                     4: ("Invalid password"),
+                                     5: ("Invalid query type"),
+                                     6: ("Ivalid operation ID"),
+                                     7: ("Invalid account or password"),
+                                     8: ("No operations found"),
+                                     9: ("???"),}
                                      
 PLUGIN_DINEROMAIL_STATUSES = {1: T("Pending"), 2: T("Credited"),
                               3: T("Cancelled")}
@@ -193,6 +194,7 @@ def plugin_dineromail_update_reports(data):
         message = T("Message: %(noops)s. Error: %(error)s") % \
     dict(noops=T("No operations updated"),
          error=T(error))
+        ##raise RuntimeError(message)
         return (False, message)
 
 # build a basic query for the remote payment database
@@ -242,8 +244,8 @@ def plugin_dineromail_check_status(code, update=False):
         code).select().first()
         status = operation.status
         description = PLUGIN_DINEROMAIL_STATUSES[status]
-    except AttributeError:
+    except AttributeError, e:
         status = None
-        description = T("No payment records found for code %s") % code
+        description = T("No payment records found for code %s (%s(") % (code, e)
         
     return status, description
