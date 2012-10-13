@@ -743,6 +743,7 @@
 'Student (regular), $200': 'Estudiante (regular), $200',
 'Student Works': 'Trabajos Estudiantiles',
 'Student works contest': 'Concurso Trabajos Estudiantiles',
+'Students': 'Estudiantes',
 'Submit': 'Enviar',
 'Submit a Activity Proposal': 'Enviar Propuesta de Actividad',
 'Submit a Talk Proposal': 'Envíe una propuesta de charla',
