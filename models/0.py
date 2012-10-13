@@ -77,7 +77,7 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
-PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,15,0,0,0)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
 PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
@@ -97,7 +97,7 @@ ATTENDEE_TYPES=(
 ATTENDEE_TYPE_COST=dict(
      professional=dict(general=250, preconf=195, earlybird=175, speaker=125),
      enthusiast=dict(general=150, preconf=130, earlybird=115,  speaker=85),
-     novice=dict(general=75, preconf=75, earlybird=65, speaker=65),
+     novice=dict(general=85, preconf=75, earlybird=65, speaker=75),
      gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
 ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)
@@ -161,7 +161,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'tutorial': datetime.datetime(2012,6,30,23,59,59),
     'keynote': datetime.datetime(2012,9,12,0,0,0),
     'plenary': datetime.datetime(2012,9,12,0,0,0),
-    'poster': datetime.datetime(2012,10,12,0,0,0),
+    'poster': datetime.datetime(2012,10,15,23,59,59),
     'paper': datetime.datetime(2012,9,12,0,0,0),
     'project': datetime.datetime(2012,10,12,0,0,0),
     'stand': datetime.datetime(2012,10,12,0,0,0),
@@ -240,4 +240,4 @@ def caching(fn):
         return fn
     else:
         session.forget()    # only if no session.flash (allow to clean it!)
-        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.disk)(fn)
+        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)
