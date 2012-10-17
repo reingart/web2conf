@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 # try something like
 
+from text_utils import cram
+
 @caching
 def index():
     response.files.append(URL(r=request,c='static',f='css/prettyCheckboxes.css'))
     response.files.append(URL(r=request,c='static',f='js/prettyCheckboxes.js'))
-    
-    def cram(text, maxlen):
-        """Omit part of a string if needed to make it fit in a
-           maximum length."""
-        text = text.decode('utf-8')
-        if len(text) > maxlen:
-            pre = max(0, (maxlen-3))
-            text = text[:pre] + '...'
-        return text.encode('utf8')
 
     def timetable():
         q = db.activity.type!='poster'
@@ -533,7 +526,7 @@ def bookmarks():
     try:
         ical, filename = icalendar(user)
     except Exception, e:
-        raise RuntimeError("%s %s" % e)
+        raise RuntimeError("%s" % e)
 
     response.headers['Content-Type']='text/calendar' 
     response.headers["Content-Disposition"] \
