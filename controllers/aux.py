@@ -122,7 +122,7 @@ def activity_accept_bulk():
 
     return ids
 
-
+@auth.requires(auth.has_membership(role='manager'))
 def activity_grid():
     q = db.activity.id>0
     form = SQLFORM.smartgrid(db(q).select())
@@ -172,11 +172,13 @@ def copy_labels():
     elements = db(db.pdf_element.pdf_template_id==1).select(orderby=db.pdf_element.priority)
     # setup initial offset and width and height:
     x0, y0 = 10, 10
-    dx, dy = 85.5, 55
+    dx, dy = 75, 105
+    sx = [0, 0, 2, 2] # 2mm separation between col 2 and 3
+    sy = [0, 0, 0, 0]
     # create new template to hold several labels/badges:
-    rows, cols = 5,  2
-    db(db.pdf_element.pdf_template_id==2).delete()
-    pdf_template_id = 2# db.pdf_template.insert(title="sample badge %s rows %s cols" % (rows, cols), format="A4")
+    rows, cols = 4,  4
+    pdf_template_id = int(request.args[0])# db.pdf_template.insert(title="sample badge %s rows %s cols" % (rows, cols), format="A4")
+    db(db.pdf_element.pdf_template_id==pdf_template_id).delete()
     # copy the base elements:
     k = 0
     for i in range(rows):
@@ -184,16 +186,19 @@ def copy_labels():
             k += 1
             for element in elements:
                 e = dict(element)
+                if e['name']=='background' and not 'background' in request.args:
+                    continue
                 e['name'] = "%s%02d" % (e['name'], k)
                 e['pdf_template_id'] = pdf_template_id
-                e['x1'] = e['x1'] + x0 + dx*j
-                e['x2'] = e['x2'] + x0 + dx*j
-                e['y1'] = e['y1'] + y0 + dy*i
-                e['y2'] = e['y2'] + y0 + dy*i
+                e['x1'] = e['x1'] + x0 + dx*j + sx[j]
+                e['x2'] = e['x2'] + x0 + dx*j + sx[j]
+                e['y1'] = e['y1'] + y0 + dy*i + sx[i]
+                e['y2'] = e['y2'] + y0 + dy*i + sx[i]
                 del e['update_record']
                 del e['delete_record']
                 del e['id']
                 db.pdf_element.insert(**e)
+    response.view = "generic.html"
     return {'new_pdf_template_id': pdf_template_id}
 
 
