@@ -187,8 +187,8 @@ db.auth_user.reviewer.writable=db.auth_user.reviewer.readable=auth.has_membershi
 db.auth_user.speaker.writable=db.auth_user.speaker.readable=auth.has_membership('manager')
 
 # Enable tutorial selection after proposal deadline
-db.auth_user.tutorials.writable = db.auth_user.tutorials.readable = TODAY_DATE>PROPOSALS_DEADLINE_DATE
-db.auth_user.tutorials.label = "Charlas Preferidas"
+##db.auth_user.tutorials.writable = db.auth_user.tutorials.readable = TODAY_DATE>PROPOSALS_DEADLINE_DATE
+##db.auth_user.tutorials.label = "Charlas Preferidas"
 
 # Enable simplified registration (no password asked)
 if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.controller=='user' and request.function=='register':
@@ -197,6 +197,7 @@ if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.contr
     ##db.auth_user.confirmed.default = False
 else:
     db.auth_user.confirmed.default = False
+    db.auth_user.password.comment = "(nueva para este sitio)"
     ##db.auth_user.confirmed.readable = True
     ##db.auth_user.confirmed.writable = True
     ##db.auth_user.address.requires = IS_NOT_EMPTY()
