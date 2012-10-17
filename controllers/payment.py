@@ -31,6 +31,11 @@ def index():
 def pay():
     "Submit payment"
 
+    # count payments
+    q = db.payment.from_person==auth.user_id
+    q &= db.payment.status!="cancelled"
+    payment_count = db(q).count()
+
     if auth.user.speaker:
        cost = 'speaker'
     elif TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
@@ -99,7 +104,7 @@ def pay():
         session.flash = T("Your payment has been generated!")
         redirect(URL("index"))
     attendee_types = sorted(ATTENDEE_TYPE_TEXT.items(), key=lambda x: ATTENDEE_TYPE_COST[x[0]], reverse=True)
-    return dict(form=form, attendee_types=attendee_types)
+    return dict(form=form, attendee_types=attendee_types, payment_count=payment_count)
 
 
 
@@ -167,8 +172,8 @@ def checkpayment():
     def myformat(row):
         try:
             person = db.auth_user[row.from_person]
-            from_person = "%s %s" % \
-            (person.first_name, person.last_name)
+            from_person = "%s %s %s" % \
+            (person.email, person.first_name, person.last_name)
         except (AttributeError, KeyError, ValueError):
             from_person = "?"
         status = row.status
@@ -203,7 +208,7 @@ def checkpayment():
                               db.payment.order_id, db.payment.status,
                               db.payment.amount,
                               db.payment.invoice)
-    dbset = db(db.payment.status.belongs(["Pending", "Pendiente"]))
+    dbset = db(db.payment.status.belongs(["Pending", "Pendiente", "cancelled"]))
     form = SQLFORM.factory(Field("payment",
                                  "reference payment",
                                  requires=IS_IN_DB(dbset,
@@ -229,10 +234,12 @@ def checkall():
     result = []
     q = ((db.payment.status!="Credited")&\
                (db.payment.method=="dineromail")&\
-               (db.payment.status!="cancelled")&\
-               (db.payment.status!="Cancelled")&\
+#               (db.payment.status!="cancelled")&\
+#               (db.payment.status!="Cancelled")&\
                (db.payment.status!="done"))
-    q &= db.payment.id>200
+    if request.args:
+        q &= db.payment.id>=int(request.args[0])
+        q &= db.payment.id<int(request.args[1])
     for payment in db(q).select():
         result.append((payment.id,payment.amount,plugin_dineromail_check_status(payment.id,
                                                 update=True)))

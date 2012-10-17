@@ -2,6 +2,9 @@
 
 <div class="frame">
 <h2>{{=T('Pay')}}</h2>
+{{if payment_count:}}
+<p><b>{{=T("Warning")}}</b>: {{=A(T("You have %s payments generated, click here to see the status", payment_count), _href=URL("index"))}}</p>
+{{pass}}
 
 {{=form}}
 
