@@ -125,11 +125,11 @@ def change_password():
     redirect(URL(f="password"))
 
 def password():
-    return dict(form=auth.retrieve_password(next='login'))
+    return dict(form=auth.retrieve_password(next=URL(c='default',f='index')))
 
 def reset_password():
     response.view="user/password.html"
-    return dict(form=auth.reset_password(next=URL(f='profile')))
+    return dict(form=auth.reset_password())
 
 def retrieve_username():
     return dict(form=auth.retrieve_username(next='login'))
@@ -144,6 +144,7 @@ def profile():
     person=db(you).select()[0]
     form=crud.update(db.auth_user,auth.user.id,
                      onaccept=update_person,
+                     deletable=False,
                      next='profile')
     return dict(form=form)
 
