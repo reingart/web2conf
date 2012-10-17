@@ -1,9 +1,9 @@
 {{=H3(T("Conference Blog"), " ", T("Last posts"))}}
 <ul>
 {{ # show a couple of feeds }}
-{{ for i, item in enumerate(rss.items): }}
+{{ for i, item in enumerate(rss): }}
   {{ if i < PLANET_FEEDS_MAX: }}
-    {{ =LI(A(EM(item.title), _href=item.link), " ", T("by"), " ", item.author, " ", T("on"), " ", item.pubDate.date()) }}
+    {{ =LI(A(EM(item['title']), _href=item['link']), " ", T("by"), " ", item['author'], " ", T("on"), " ", item['pubDate'].date()) }}
   {{ else: }}
     {{ break }}
   {{ pass }}

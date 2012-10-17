@@ -71,7 +71,9 @@ def twitter():
     try:
         if TWITTER_HASH:
             # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
-            tweets = urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read()
+            tweets = cache.disk(request.env.path_info + ".tweets", 
+                                           lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read(), 
+                                           time_expire=60*15)
             data = sj.loads(tweets, encoding="utf-8")
             the_tweets = dict()
             
@@ -212,8 +214,18 @@ def get_planet_rss(arg):
 # feeds action
 @caching
 def planet():
+    #return ""
     import gluon.contrib.rss2 as rss2
-    rss = get_planet_rss(None)
+
+    # store planet rss entries in disk (forever...)
+    def get_rss_feeds():
+        rss = get_planet_rss(None)
+        rss = [{'title': item.title, 'author': item.author, 'pubDate': item.pubDate, 'link': item.link, 'description': item.description} for item in rss.items]
+        return rss
+
+    rss = cache.disk(request.env.path_info + ".planet", 
+                                   get_rss_feeds, 
+                                   time_expire=60*15)
 
     # .rss requests
     if request.extension == "rss":
