@@ -131,7 +131,10 @@ def plugin_dineromail_update_reports(data):
     
     f = urllib2.urlopen(PLUGIN_DINEROMAIL_URLS[PLUGIN_DINEROMAIL_COUNTRY],
                         query_data)
-    tag = TAG(f.read())
+    # apparently dineromail is answering in latin1:
+    # 'utf8' codec can't decode byte 0xf1 in position 443: invalid continuation byte
+    s = f.read().decode("latin1", "replace").encode("utf8")
+    tag = TAG(s)
     
     # check if report is ok
     status = int(tag.element("estadoreporte").flatten())
