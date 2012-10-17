@@ -116,7 +116,7 @@ def payments():
     q = db.payment.id>0
     q |= db.auth_user.id>0
     q |= db.coupon.id>0
-    rows=db(q).select(left=[db.auth_user.on(db.payment.from_person==db.auth_user.id), db.coupon.on(db.coupon.used_by==db.payment.from_person)], orderby=~db.payment.id)
+    rows=db(q).select(left=[db.auth_user.on(db.payment.from_person==db.auth_user.id), db.coupon.on(db.coupon.used_by==db.payment.from_person)], orderby=~db.payment.modified_on)
     return dict(payments=rows)
 
 # Select records for badge
