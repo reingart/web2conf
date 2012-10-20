@@ -3,7 +3,7 @@
 
 from text_utils import cram
 
-@caching
+#@caching
 def index():
     response.files.append(URL(r=request,c='static',f='css/prettyCheckboxes.css'))
     response.files.append(URL(r=request,c='static',f='js/prettyCheckboxes.js'))
@@ -53,8 +53,8 @@ def index():
                 elif activity.duration:
                     # record duration for special activities (social, meetings, sprints, etc.)
                     slots_per_date[date][time] = activity.duration
-    
-        
+
+      
         rooms = ACTIVITY_ROOMS.copy()
     
         activities = {None: ""}
@@ -77,13 +77,24 @@ def index():
                                      close=T('close'),
                                      width=50, height=50)
                 hidden['activities'][activity.id] = a
+
+        q = db.partaker.add_me==True
+        if 'votes' in request.vars:
+            qv = (db.partaker.comment.contains("vote"))
+            if request.vars['votes']=='no':
+                qv = ~qv
+            q &= qv
+        rows = db(q).select(db.partaker.activity,
+                            db.partaker.user_id.count().with_alias("partakers"),
+                            groupby=db.partaker.activity,)
+        partakers = dict([(row.partaker.activity, row.partakers) for row in rows])
         
-        return rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden
+        return rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden, partakers 
     
-    rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden = cache.ram(
+    rooms, levels, activities, schedule, activities_per_date, slots_per_date, rooms_per_date, hidden, partakers  = cache.ram(
                                    request.env.path_info + "timetable", 
                                    lambda: timetable(), 
-                                   time_expire=60)
+                                   time_expire=0)
     schedule_tables = {}
 
     if auth.user_id:
@@ -147,6 +158,7 @@ def index():
                                                 _id=label,
                                                 _class="pretty_checkbox",
                                                 _onclick="markActivity('activity_selected_%s', '%s');" % (activity.id, activity.id))
+                    attendance = partakers.get(activity.id, "")
                     td = TD(select_activity,
                             LABEL(_for=label),a.link(B(cram(activity.title, 50))),
                                    BR(),
@@ -158,6 +170,14 @@ def index():
                                        (', '.join(activity.categories or \
                                        [])),
                                        BR(), "", authors, "") or "",
+                                   IMG(_src=URL(c='static', f='img/warning.png'),
+                                       _title=T("our estimate of attendance reaches the room size"),
+                                       _style="float:right; border:0;")
+                                       if attendance>=ACTIVITY_ROOMS_EST_SIZES[room]
+                                       else "",
+                                   TAG.SUP(attendance, _style="float:right;") 
+                                       if auth.is_logged_in() and auth.has_membership("manager")
+                                       else "",
                                      _width=width,
                                      _style="text-align: center;",
                                      _id=not activity.confirmed and "unconfirmed" or "confirmed",
