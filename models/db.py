@@ -97,7 +97,7 @@ db.define_table("feed",
     Field("general", "boolean", comment=T("Many categories (needs filters)"), label=T("general")),
     migrate=migrate, fake_migrate=fake_migrate)
 
-PLANET_FEEDS_MAX = 10
+PLANET_FEEDS_MAX = 12
 
 # end of web2py planet model
 
