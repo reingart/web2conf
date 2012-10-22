@@ -3,7 +3,7 @@
 
 from text_utils import cram
 
-#@caching
+@caching
 def index():
     response.files.append(URL(r=request,c='static',f='css/prettyCheckboxes.css'))
     response.files.append(URL(r=request,c='static',f='js/prettyCheckboxes.js'))
@@ -171,7 +171,7 @@ def index():
                                        [])),
                                        BR(), "", authors, "") or "",
                                    IMG(_src=URL(c='static', f='img/warning.png'),
-                                       _title=T("our estimate of attendance reaches the room size"),
+                                       _title=T("our estimate of attendance reaches the room size, last remaining seats!"),
                                        _style="float:right; border:0;")
                                        if attendance>=ACTIVITY_ROOMS_EST_SIZES[room]
                                        else "",
