@@ -260,3 +260,38 @@ def activity_votes_to_partakers():
    
     
     return str(ret)
+
+@auth.requires_membership(role='manager')
+def insert_partakers():
+    "insert participation records from external sources (special activities)"
+    
+    form = SQLFORM.factory(
+        Field("activity_id", db.activity, 
+              default=137,
+              requires=IS_IN_DB(db, db.activity.id, "%(title)s")),
+        Field("emails", "text"),
+        Field("comment", "string", default="registrado en el pgday"),
+        )
+        
+    ret = []
+    if form.accepts(request.vars, session):
+        participation = {}
+        for row in db(db.partaker.activity==form.vars.activity_id).select():
+            participation[row.user_id] = row.add_me
+        
+        for email in form.vars.emails.split():
+            if email[-1]==",":
+                email = email[:-1]
+            user = db(db.auth_user.email==email).select().first()
+            if user:
+                if user.id in participation and not participation[user.id]:
+                    q = db.partaker.user_id==user.id
+                    q &= db.partaker.activity==form.vars.activity_id
+                    r = db(q).update(add_me=True)
+                    ret.append("%s %s: update %s" % (user.id, email, r))
+                if user.id not in participation:
+                    db.partaker.insert(user_id=user.id, activity=form.vars.activity_id, add_me=True, comment=form.vars.comment)
+                    ret.append("%s %s: isert" % (user.id, email))
+      
+    response.view = "generic.html"
+    return dict(form=form, ret=ret)
