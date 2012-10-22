@@ -38,7 +38,7 @@ db.define_table('auth_user',
     db.Field('password','password',default='',label=T('Password'),readable=False),
     db.Field('level','text',label=T('Python knowledge level'),requires=IS_IN_SET(('principiante','intermedio','avanzado'))),
     db.Field('tutorials','list:string',label=T('Tutorials'),readable=False,writable=False),
-    #db.Field('dni','integer'),
+    db.Field('dni','integer'),
     db.Field('certificate','boolean',default=False,label=T('I want a certificate of attendance'),readable=False,writable=False),
     db.Field('address',length=255,label=T('Mailing Address'),default=''),
     db.Field('city',label=T('City'),default=''),
@@ -109,7 +109,7 @@ db.auth_user.email.comment=T('(required)')
 db.auth_user.password.comment=not JANRAIN and T('(required)') or T('(optional)')
 db.auth_user.resume.widget=lambda field,value: SQLFORM.widgets.text.widget(field,value,_cols="10",_rows="8")
 db.auth_user.photo.comment=T('Your picture (100px)')
-#db.auth_user.dni.comment=T('(required if you need a certificate)')
+db.auth_user.dni.comment=T('(required if you need a certificate)')
 #db.auth_user.certificate.comment=XML(A(str(T('El Costo de Certificado es $x.-')) + '[2]',_href='#footnote2'))
 db.auth_user.t_shirt_size.requires=IS_IN_SET(T_SHIRT_SIZES,T_SHIRT_SIZES_LABELS)
 db.auth_user.t_shirt_size.comment=XML(A(str(T('cost TBD')) + ' [2]',_href='#footnote2'))
