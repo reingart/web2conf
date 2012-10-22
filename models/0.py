@@ -150,7 +150,7 @@ educacionit = "Educacion IT: Lavalle 648 Piso 8, Capital Federal, Argentina"
 ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit, 7: urban, 8: urban, 9: urban, 10: urban, 0: "-"}
 del unq, urban, educacionit
 # Estimate room sizes (actual size*attendance factor: 0.30 (talks), *1 for workshops, 0.60 for sprints (shared))
-ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 30, 3: 25, 4: 20, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 0: "-"}
+ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 40, 3: 40, 4: 40, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 0: "-"}
 ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")]*3 + \
                [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
                      A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
