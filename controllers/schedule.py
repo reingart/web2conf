@@ -173,7 +173,8 @@ def index():
                                    IMG(_src=URL(c='static', f='img/warning.png'),
                                        _title=T("our estimate of attendance reaches the room size, last remaining seats!"),
                                        _style="float:right; border:0;")
-                                       if attendance>=ACTIVITY_ROOMS_EST_SIZES[room]
+                                       if auth.is_logged_in() and auth.has_membership("manager") 
+                                          and attendance>=ACTIVITY_ROOMS_EST_SIZES[room]
                                        else "",
                                    TAG.SUP(attendance, _style="float:right;") 
                                        if auth.is_logged_in() and auth.has_membership("manager")

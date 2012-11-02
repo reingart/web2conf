@@ -235,20 +235,31 @@ def plugin_dineromail_check_status(code, update=False):
     update=<bool> is optional and forces a remote operation
     details update.
     """
-
+    
+    report = dict()
+    if not isinstance(code, (list, set, tuple)):
+        code = [code,]
+    elif isinstance(code, dict):
+        code = code.keys()
     if update:
         result, message = \
-        plugin_dineromail_update_reports([code,])
+        plugin_dineromail_update_reports(code)
     else:
         result = message = None
     try:
         # Get the locally stored transaction detail
-        operation = db(db.plugin_dineromail_operation.code == \
-        code).select().first()
-        status = operation.status
-        description = PLUGIN_DINEROMAIL_STATUSES[status]
+        query = db.plugin_dineromail_operation.code == code[0]
+        if len(code) > 0:
+            for n, c in enumerate(code):
+                if n > 0:
+                    query |= db.plugin_dineromail_operation.code == c
+        operations = db(query).select()
+        for operation in operations:
+            report[operation.code] = {"status": operation.status,
+                                       "description": PLUGIN_DINEROMAIL_STATUSES[operation.status]}
     except AttributeError, e:
-        status = None
-        description = T("No payment records found for code %s (%s(") % (code, e)
-        
-    return status, description
+        report[None] = {"status": None,
+                        "description": T("No payment records found for codes %s (%s)") % (str(code), e)}
+    report["result"] = result
+    report["message"] = message
+    return report
