@@ -113,9 +113,9 @@ def index():
             th.append(TH(name, _colspan=rooms_names.count(name)))
         table.append(THEAD(TR(*th)))
         slots = sorted(slots_per_date[day])
-        for slot in slots:
-            if len(slots)==1 and slots_per_date.get(day, {}).get(slot):
-                slot_duration = slots_per_date[day][slot]
+        for slot_n, slot in enumerate(slots):
+            slot_duration = slots_per_date.get(day, {}).get(slot)
+            if len(slots) < 4 and slot_duration > 60 and slot_n == len(slots)-1:
                 slot_end = datetime.datetime.combine(day, slot) + datetime.timedelta(minutes=slot_duration)
                 caption = T("%s to %s") % (slot.strftime("%H:%M"), 
                                         slot_end.strftime("%H:%M"))
@@ -173,7 +173,8 @@ def index():
                                    IMG(_src=URL(c='static', f='img/warning.png'),
                                        _title=T("our estimate of attendance reaches the room size, last remaining seats!"),
                                        _style="float:right; border:0;")
-                                       if attendance>=ACTIVITY_ROOMS_EST_SIZES[room]
+                                       if attendance>=ACTIVITY_ROOMS_EST_SIZES[room] and
+                                          auth.is_logged_in() and auth.has_membership("manager")
                                        else "",
                                    TAG.SUP(attendance, _style="float:right;") 
                                        if auth.is_logged_in() and auth.has_membership("manager")
