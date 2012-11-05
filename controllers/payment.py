@@ -208,12 +208,13 @@ def checkpayment():
                               db.payment.order_id, db.payment.status,
                               db.payment.amount,
                               db.payment.invoice)
-    dbset = db(db.payment.status.belongs(["Pending", "Pendiente", "cancelled"]))
+    # dbset = db(db.payment.status.belongs(["Pending", "Pendiente", "cancelled"]))
+    dbset = db(db.payment.status.belongs(["Pending", "Pendiente"]))    
     form = SQLFORM.factory(Field("payment",
-                                 "reference payment",
+                                 "list:reference payment",
                                  requires=IS_IN_DB(dbset,
                                                    db.payment.id,
-                                                   myformat)))
+                                                   myformat, multiple=True)))
     if form.process(formname="update_form").accepted:
         payment = form.vars.payment
         result = plugin_dineromail_check_status(payment,
