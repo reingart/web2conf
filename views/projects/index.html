@@ -4,7 +4,7 @@
 <h1>{{=T("Sprint Projects")}}</h1>
 {{for project in projects:}}
 {{author=db(db.auth_user.id==project.created_by).select().first()}}
-<h3>
+<h3 id="{{=project.id}}">
 {{if project.logo:}}{{=IMG(_alt=project.title,_src=URL(r=request, c='default', f='fast_download', args=project.logo),_border='0',_style="vertical-align: middle")}}
 {{else:}}
 {{=project.title}}
