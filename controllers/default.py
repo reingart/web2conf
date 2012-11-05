@@ -10,10 +10,10 @@ def index():
     response.reg_count = cache.ram(request.env.path_info + ".reg_count", 
                                    lambda: db(db.auth_user).count(), 
                                    time_expire=60*5)
-    response.days_left = (CONFERENCE_DATE - TODAY_DATE).days
+    days = (CONFERENCE_DATE.date() - TODAY_DATE.date()).days
+    response.days_left = days if days > 0 else 0
     return response.render(plugin_flatpage()) 
-
-
+    
 @caching
 def about():
     return response.render(dict())
@@ -71,9 +71,22 @@ def twitter():
     try:
         if TWITTER_HASH:
             # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
-            tweets = cache.disk(request.env.path_info + ".tweets", 
-                                           lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read(), 
-                                           time_expire=60*15)
+            try: 
+                tweets = cache.disk(request.env.path_info + ".tweets", 
+                                               lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read(), 
+                                               time_expire=60*15)
+            except:
+               import os
+               # manually clean cache (just in case)
+               path = os.path.join(request.folder,'cache')
+               for f in os.listdir(path):
+                    try:
+                        if f[:1]!='.': os.unlink(os.path.join(path,f))
+                    except IOError:
+                        r = False
+               # try to reload
+               redirect(URL("twitter"))       
+            
             data = sj.loads(tweets, encoding="utf-8")
             the_tweets = dict()
             
@@ -218,14 +231,24 @@ def planet():
     import gluon.contrib.rss2 as rss2
 
     # store planet rss entries in disk (forever...)
-    def get_rss_feeds():
+    import portalocker
+    import os, cPickle as pickle
+    path = os.path.join(request.folder,'cache', "planet.rss")
+    if not os.path.exists(path):
+        f = open(path, "w+")
         rss = get_planet_rss(None)
         rss = [{'title': item.title, 'author': item.author, 'pubDate': item.pubDate, 'link': item.link, 'description': item.description} for item in rss.items]
-        return rss
-
-    rss = cache.disk(request.env.path_info + ".planet", 
-                                   get_rss_feeds, 
-                                   time_expire=60*15)
+    else:
+        f = open(path, "r+")
+        rss = None
+    portalocker.lock(f, portalocker.LOCK_EX)
+    if not rss:
+        rss = pickle.load(f)
+    else:
+        f.seek(0)
+        pickle.dump(rss, f)
+    portalocker.unlock(f)
+    f.close()
 
     # .rss requests
     if request.extension == "rss":
