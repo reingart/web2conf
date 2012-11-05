@@ -143,15 +143,19 @@ ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
 # TODO: create a room table (id, name, venue)!
-ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 0: "-"}
+ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 11: "Auditorio US21", 0: "-"}
 unq = "Universidad Nacional de Quilmes: Roque Saenz Peña 352, Bernal, Buenos Aires, Argentina"
 urban = "Urban Station (Sucursal Downtown): Maipú 547, Capital Federal, Argentina"
 educacionit = "Educacion IT: Lavalle 648 Piso 8, Capital Federal, Argentina"
-ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit, 7: urban, 8: urban, 9: urban, 10: urban, 0: "-"}
+us21 = "Universidad Siglo 21: Av. Córdoba 1551, Capital Federal, Argentina"
+ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit, 7: urban, 8: urban, 9: urban, 10: urban, 11: us21, 0: "-"}
 del unq, urban, educacionit
 # Estimate room sizes (actual size*attendance factor: 0.30 (talks), *1 for workshops, 0.60 for sprints (shared))
-ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 40, 3: 40, 4: 40, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 0: "-"}
-ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")]*3 + \
+ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 40, 3: 40, 4: 40, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 11: 40, 0: "-"}
+ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")] + \
+               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
+                     A("U. Siglo 21", _href="http://www.21.edu.ar/"), " - C.A.B.A.")] + \
+               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")] + \
                [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
                      A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
                [SPAN(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""]
