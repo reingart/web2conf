@@ -295,3 +295,19 @@ def insert_partakers():
       
     response.view = "generic.html"
     return dict(form=form, ret=ret)
+
+@auth.requires_membership(role='manager')
+def update_attendee_types():
+    if 'reset' in request.args:
+        db(db.auth_user.id>0).update(attendee_type="gratis")
+    q = db.payment.id>0
+    q |= db.auth_user.id>0
+    q |= db.coupon.id>0
+    rows=db(q).select(left=[db.auth_user.on(db.payment.from_person==db.auth_user.id), db.coupon.on(db.coupon.used_by==db.payment.from_person)], orderby=~db.payment.modified_on)
+    i=0
+    for p in rows:
+        if not (p.payment.status.lower() not in ('done', 'credited') or p.payment.rate in ('gratis', 'test', None)):
+            db(db.auth_user.id==p.payment.from_person).update(attendee_type=p.payment.rate)
+            i+=1
+    response.view = "generic.html"
+    return {'i': i}
