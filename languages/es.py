@@ -559,6 +559,7 @@
 'No payment due at this time': 'No necesita pago en este momento',
 'No payment records found for code %s': 'No payment records found for code %s',
 'No payment records found for code %s (%s(': 'No payment records found for code %s (%s(',
+'No payment records found for codes %s (%s)': 'No payment records found for codes %s (%s)',
 'No payments!': 'No payments!',
 'No records found': 'No records found',
 'Nobody registered for tutorials': 'Nadie se ha registrado para tutoriales',
