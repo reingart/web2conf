@@ -82,7 +82,7 @@ REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
 PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
-REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
+REGCLOSE_DATE=datetime.datetime(2012,11,9,23,59,59)
 CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
