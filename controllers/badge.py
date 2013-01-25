@@ -93,7 +93,8 @@ def sample():
             'bold': True, 'italic': False, 'underline': False, 
             'foreground': 0xC0C0C0, 'background': 0xFFFFFF,
             'align': "L", 'text': "SAMPLE", 'priority': 10000}
-    f.elements.append(field)
+    if not auth.has_membership(role="manager"):
+        f.elements.append(field)
     
     response.headers['Content-Type']='application/pdf'
     return f.render('badge.pdf', dest='S')
