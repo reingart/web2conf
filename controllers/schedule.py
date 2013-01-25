@@ -176,7 +176,7 @@ def index():
                                        if attendance>=ACTIVITY_ROOMS_EST_SIZES[room] and
                                           auth.is_logged_in() and auth.has_membership("manager")
                                        else "",
-                                   TAG.SUP(attendance, _style="float:right;") 
+                                   TAG.SUP(A(attendance, _href=URL(c='schedule', f='partakers', args=[activity.id])), _style="float:right;") 
                                        if auth.is_logged_in() and auth.has_membership("manager")
                                        else "",
                                      _width=width,
@@ -567,3 +567,13 @@ def test_ical():
             ret.append("%s: err %s" % (u.id, e))
     response.view = "generic.html"
     return {"ret":ret}
+
+@auth.requires_membership(role="manager")
+def partakers():
+    response.view = "generic.html"
+    project = db.activity[request.args(0)]
+    q = db.partaker.activity == project.id
+    q &= db.partaker.add_me == True
+    q &= db.partaker.user_id == db.auth_user.id
+    partakers = db(q).select(db.auth_user.email)
+    return dict(partakers=[p.email for p in partakers])
