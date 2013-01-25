@@ -42,7 +42,7 @@
 </p>
 
 {{for i, (day, schedule_table) in enumerate(sorted(schedule_tables.iteritems())):}}
-  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d/%m/%Y"))}} - {{=ACTIVITY_VENUE[i]}}</h3>
+  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d"))}} - {{=ACTIVITY_VENUE[i]}}</h3>
   {{=schedule_table}}
 {{pass}}
 
