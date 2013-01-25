@@ -82,7 +82,7 @@ REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
 EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
 PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
-REGCLOSE_DATE=datetime.datetime(2012,11,9,23,59,59)
+REGCLOSE_DATE=datetime.datetime(2012,11,18,23,59,59)
 CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
@@ -152,13 +152,13 @@ ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit
 del unq, urban, educacionit
 # Estimate room sizes (actual size*attendance factor: 0.30 (talks), *1 for workshops, 0.60 for sprints (shared))
 ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 40, 3: 40, 4: 40, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 11: 40, 0: "-"}
-ACTIVITY_VENUE=[SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")] + \
-               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
-                     A("U. Siglo 21", _href="http://www.21.edu.ar/"), " - C.A.B.A.")] + \
-               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), " - Ciudad de Bs. As.")] + \
-               [SPAN(A("UrbanStation", _href="http://argentina.enjoyurbanstation.com/es/"), ", ",
-                     A("EducaciónIT", _href="http://www.educacionit.com.ar/"), " - C.A.B.A.")] + \
-               [SPAN(A("Universidad Nacional de Quilmes", _href="http://www.unq.edu.ar/"), " - Bernal")]*2 + [""]
+ACTIVITY_VENUE=[SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), " - Ciudad de Bs. As.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), ", ",
+                     A("U. Siglo 21", _href="http://www.pgday.com.ar/buenosaires2012/venue"), " - C.A.B.A.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), " - Ciudad de Bs. As.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), ", ",
+                     A("EducaciónIT", _href="http://ar.pycon.org/2012/venue"), " - C.A.B.A.")] + \
+               [SPAN(A("Universidad Nacional de Quilmes", _href="http://ar.pycon.org/2012/venue"), " - Bernal")]*2 + [""]
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
