@@ -135,6 +135,8 @@ for sponsor in sponsors:
     if sponsor.level:
         response.sponsors.setdefault(sponsor.level, []).append(sponsor)
 
+right_sidebar_enabled = True
+
 #randomize sponsors...
 ##import random
 ##random.shuffle(response.sponsors[str(SPONSOR_LEVELS[1])])

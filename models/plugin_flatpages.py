@@ -158,8 +158,8 @@ def plugin_flatpage():
                       _onclick="this.form.action.value='history';this.form.submit();"))
 
     response.view = view or FLATPAGE_VIEW
-    response.title = title
-    response.subtitle = subtitle
+    ##response.title = title
+    ##response.subtitle = subtitle
     if format=='WIKI':
         body = WIKI(body)
     elif format=='HTML':

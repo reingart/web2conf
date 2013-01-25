@@ -204,7 +204,7 @@ ENABLE_EXPENSES = False
 ENABLE_FINANCIAL_AID = True
 ENABLE_PAYMENTS = True
 
-if True and DEV_TEST:    # for local development
+if DEV_TEST:    # for local development
     HOST='localhost:8000'
     HOST_NEXT='localhost:8000'
 else:
@@ -243,7 +243,7 @@ from misc_utils import COUNTRIES, FLAGS
 
 def caching(fn):
     "Special cache decorator (do not cache if user is logged in)"
-    if request.vars or request.args or response.flash or session.flash or auth.is_logged_in():
+    if DEV_TEST or request.vars or request.args or response.flash or session.flash or auth.is_logged_in():
         return fn
     else:
         session.forget()    # only if no session.flash (allow to clean it!)

@@ -9,19 +9,31 @@ $(function()
   });
 </script>
 {{pass}}
-{{=A(SPAN(XML(T("Registration"))), _href=URL(c='conference', f='registration'), _class="btn-sponsor")}}
 
-{{#=DIV(A(IMG(_src=URL(c="static", f="img/tickets_small.png")), _title=T("Registration"), _href=URL(c="conference", f="registration")), _style='float: right')}}
-{{#=DIV(A(IMG(_src=URL(c="static", f="img/calendar.png")), _title=T("Schedule"),  _href=URL(c="schedule", f="index")), _style='float: right')}}
-{{#=DIV(A(IMG(_src=URL(c="static", f="img/news.png")), _title=T("Planet News"), _href=URL(c="default", f="planet")), _style='float: right')}}
+<div class="jumbotron">
+    <h1>¡Python es super awesome!</h1>
+    <p class="lead">Python es un lenguaje dinámico comparable con Java, .NET, PHP y Ruby
+mucho más intuitivo y fácil de aprender, alentando la colaboración.
+Disfruta programar tan rápido como piensas, de forma clara y expresiva.
+Ven y conoce porqué Google, Yahoo, Disney, Cisco, LucasFilm, Red Hat,
+Pixar, VMware, Canonical (Ubuntu), NASA, YouTube y varias empresas
+nacionales, universidades locales, docentes e investigadores usan Python!</p>
+    <a class="btn btn-large btn-success" href="{{=URL(c="user", f="registration")}}">Inscribite hoy!</a>
+</div>
 
-<h3>{{=T("%s days left") % (response.days_left,)}} 
-{{=A(T("%s registrations so far") % (response.reg_count,), _href=URL(c='stats', f='attendees'), _style='text-decoration: none;')}}<br/>
-<i>{{=A(T("full schedule (reserve your seat!)"), _href=URL(c='schedule', f='index'), _style='text-decoration: none;')}}</i></h3>
+<hr>
+
+<div class="alert">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h3>{{=T("%s days left") % (response.days_left,)}} 
+    {{=A(T("%s registrations so far") % (response.reg_count,), _href=URL(c='stats', f='attendees'), _style='text-decoration: none;')}}<br/>
+    <i>{{=A(T("full schedule (reserve your seat!)"), _href=URL(c='schedule', f='index'), _style='text-decoration: none;')}}</i></h3>
+</div>
+
 
 <div style="padding: 5px"></div>
 
-<div class="frame">
+<div class="hero-unit">
 {{=body}}
 </div>
 
@@ -36,11 +48,7 @@ $(function()
 
 {{ =HR() }}
 {{if True or TWITTER_HASH:}}
-  <div>
     <h3><img src={{=URL(c="static", f="img/twitter.png")}} alt="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}} &nbsp;
     <a href="https://twitter.com/pyconar" class="twitter-follow-button" data-show-count="false" data-lang="es">Seguir a @pyconar</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></h3>
-      <div class="tweets" class="tweets">
         {{ =LOAD(c="default", f="twitter.load", ajax=True) }}
-      </div>
-  </div>
 {{pass}}

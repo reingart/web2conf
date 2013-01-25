@@ -1,156 +1,178 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--
-Design by Free CSS Templates, modified by Massimo Di Pierro
-http://www.freecsstemplates.org
-Released for free under a Creative Commons Attribution 2.5 License
-
-Name       : Flavour
-Description: A two-column, fixed-width design with dark color scheme.
-Version    : 1.0
-Released   : 20080425
--->
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]><html class="ie ie6 ie-lte9 ie-lte8 ie-lte7 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
+<!--[if IE 7]><html class="ie ie7 ie-lte9 ie-lte8 ie-lte7 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
+<!--[if IE 8]><html class="ie ie8 ie-lte9 ie-lte8 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
+<!--[if IE 9]><html class="ie9 ie-lte9 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{=T.accepted_language or 'en'}}"> <!--<![endif]-->
 <head>
-<title>{{="%s: %s" % (response.title, response.subtitle)}}</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="{{=response.keywords}}" />
-<meta name="description" content="{{=response.description}}" />
-<link rel="icon" href="{{=URL(r=request,c='static',f='img/favicon.ico')}}" type="image/x-icon">
-<link rel="stylesheet" type="text/css" href="{{=URL(r=request,c='static',f='style.css')}}" />
-{{include 'web2py_ajax.html'}}
-<script src="{{=URL(r=request,c='static',f='scripts/sfmenu.js')}}"></script>
-<script src="{{=URL(r=request,c='static',f='scripts/jquery.dimensions.js')}}"></script><script src="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{=URL(r=request,c='static',f='scripts/jqueryMultiSelect.css')}}" />
-<script>
-$(document).ready(function() { $('.sf-menu').superfish({ animation: {height:'show'}, delay:500 });
-$('#auth_user_tutorials').multiSelect({selectAll: false});
-});
-</script>
-<script type="text/javascript">
+  <meta charset="utf-8" />
+  <!-- www.phpied.com/conditional-comments-block-downloads/ -->
+  <!-- Always force latest IE rendering engine
+       (even in intranet) & Chrome Frame
+       Remove this if you use the .htaccess -->
+  <!--[if IE]>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
+      <![endif]-->
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-31246695-1']);
-  _gaq.push(['_trackPageview']);
+  <title>{{=response.title or request.application}}</title>
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  <!-- http://dev.w3.org/html5/markup/meta.name.html -->
+  <meta name="application-name" content="{{=request.application}}" />
 
-</script>
+  <!-- Speaking of Google, don't forget to set your site up:
+       http://google.com/webmasters -->
+  <meta name="google-site-verification" content="" />
+
+  <!--  Mobile Viewport Fix
+        j.mp/mobileviewport & davidbcalhoun.com/2010/viewport-metatag
+        device-width: Occupy full width of the screen in its current orientation
+        initial-scale = 1.0 retains dimensions instead of zooming out if page height > device height
+        user-scalable = yes allows the user to zoom in -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="shortcut icon" href="{{=URL('static','images/favicon.ico')}}" type="image/x-icon">
+  <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
+
+  <!-- All JavaScript at the bottom, except for Modernizr which enables
+       HTML5 elements & feature detects -->
+  <script src="{{=URL('static','js/modernizr.custom.js')}}"></script>
+
+  <!-- include stylesheets -->
+  {{  
+  response.files.append(URL('static','css/web2py.css'))
+  response.files.append(URL('static','css/bootstrap.min.css'))
+  response.files.append(URL('static','css/bootstrap-responsive.min.css'))
+  response.files.append(URL('static','css/web2py_bootstrap.css'))
+  }}
+
+  {{include 'web2py_ajax.html'}}
+
+  {{
+  # using sidebars need to know what sidebar you want to use
+  left_sidebar_enabled = globals().get('left_sidebar_enabled',False)
+  right_sidebar_enabled = globals().get('right_sidebar_enabled',False)
+  middle_columns = {0:'span12',1:'span9',2:'span6'}[
+    (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
+  }}
+
+  <!-- uncomment here to load jquery-ui
+       <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" media="all" />
+       <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+       uncomment to load jquery-ui //-->
+  <noscript><link href="{{=URL('static', 'css/web2py_bootstrap_nojs.css')}}" rel="stylesheet" type="text/css" /></noscript>
+  {{block head}}{{end}}
 </head>
+
 <body>
-<div id="header">
-  <div id="header-container">
-  <div id="logo">
-  <img src="{{=URL(r=request,c='static',f='img/masthead5.gif')}}" border="0">
-  <h1>{{=A(response.header[0], _href=URL(c='default',f='index'))}}</h1>
-  <h2>{{=A(response.header[1], _href=URL(c='conference',f='venue'))}}</h2>
-  </div>
-  <div id="account-bar">
-   {{try:}}{{=auth.navbar(action=URL(c="user", f="index"))}}{{except:pass}}
-      <div id="search">
-        <form method="get" action="http://www.google.com/search">
-        <a href="?lang=es">Español</a> / <a href="?lang=en">English</a>
-        {{pass}} - 
-          <fieldset>
-            <input id="search-text" type="text" name="as_q" value="" size="15"/>
-            <input type="hidden" name="as_sitesearch" value="ar.pycon.org/2012">
-            <input type="submit" id="search-submit" value="{{=T("Search")}}" />
-          </fieldset>
-        </form>
-      </div>
-     </div>
-  </div>
-</div>
-<div id="menu">
-  <div id="menu-container">
-  {{=MENU(response.menu, _class = 'sf-menu')}}
-  </div>
-</div>
-<div id="page">
-  <div id="content">
-    <!-- AddToAny BEGIN -->
-    <div style="float:right; padding-top:6px;" class="a2a_kit a2a_default_style">
-    <a class="a2a_dd" href="http://www.addtoany.com/share_save">Share</a></div>
-    <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
-    <!-- AddToAny END -->
-    {{
-try:
-   if not response.flash and form.errors:
-       response.flash=T("There are errors in your form below")
-   pass
-except: pass
-    }}
-    {{if response.flash:}}<div class="flash">{{=response.flash}}</div>{{pass}}
-    {{if auth.user and request.controller=="default":}}<h3>{{=T('Hello')}} {{=auth.user.first_name}}
-    {{if auth.has_membership('manager'):}} (manager){{pass}}
-    {{if session.balance is not None and session.balance>0 and not request.function=='pay':}}, {{=T('You have not paid for your registration; the cost is')}} ${{=T('%0.2f' % session.balance)}} [{{=A(T('pay now'),_href=URL(r=request,c='payment',f='pay'))}}]
-    {{elif session.balance is not None and session.balance<0 and not request.function=='pay':}}, {{=T('You have a credit of')}} ${{=T('%0.2f' % -session.balance)}} [{{=A(T('info'),_href=URL(r=request,c='payment',f='pay'))}}]{{pass}}</h3>{{pass}}
-    {{include}}
-    <br/><div class="frame">
-    <div style="width: 600px; float:left;">
-        <h3>{{=T('About')}} {{=response.title}}</h3>
-        {{=XML(response.footer)}}
-    </div>
-    <div style="width: 60px; float: right;">
-    {{if FACEBOOK_EVENT:}}
-        {{=A(IMG(_src=URL(c='static', f='media/facebook.png'), _width='55px', _heigh='55px'), _href=FACEBOOK_EVENT, _title="Follow us in Facebook!")}}
-    {{pass}}
-    {{if LINKEDIN_EVENT:}}
-        {{=A(IMG(_src=URL(c='static', f='media/linked_in.jpg')), _href=LINKEDIN_EVENT, _title="Add the event to your Linked-In profile")}}
-    {{pass}}
-    </div>
-    </div>
-  </div>
-  {{if response.sidebar:}}
-  <div id="sidebar">
-    <ul>
-      {{for _i in response.sidebar or []:}}
-      <li>
-         <h2>{{=_i[0]}}</h2>
-         {{if isinstance(_i[1],list):}}
-         <ul>
-           {{for _j in _i[1]:}}
-           <li>{{=A(_j[0],_href=_j[1])}}</li>
-           {{pass}}
-         </ul>
-         {{else:}}
-         <p>{{=_i[1]}}</p>
-         {{pass}}
-      </li>
-      {{pass}}
-    </ul>
-  </div>
-  {{pass}}
-  {{if response.sponsors:}}
-  <div id="sidebar">
-    <ul>
-      {{for sponsor_level in SPONSOR_LEVELS: }}
-      {{if response.sponsors.get(sponsor_level):}}
-      <li>
-         <h2>{{=T(sponsor_level)}}</h2>
-         <ul>
-         {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
-            <li>
-              <p>{{=A(IMG(_alt=sponsor.alt,_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}</p>
-            </li>
+  <!-- Navbar ================================================== -->
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="flash">{{=response.flash or ''}}</div>
+    <div class="navbar-inner">
+      <div class="container">
+        <!-- the next tag is necessary for bootstrap menus, do not remove -->
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+	{{=response.logo or ''}}
+        <ul id="navbar" class="nav pull-right">{{='auth' in globals() and auth.navbar(mode="dropdown") or ''}}</ul>
+        <div class="nav-collapse">
+          {{is_mobile=request.user_agent().is_mobile}}
+          {{if response.menu:}}
+          {{=MENU(response.menu, _class='mobile-menu nav' if is_mobile else 'nav',mobile=is_mobile,li_class='dropdown',ul_class='dropdown-menu')}}
           {{pass}}
-        </ul>
-      </li>
-      {{pass}}
-      {{pass}}
-    </ul>
-  </div>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div><!--/top navbar -->
+
+  <div class="container">
+    <!-- Masthead ================================================== -->
+    <header class="mastheader row" id="header">
+        <div class="span12">
+            <div class="page-header">
+                <h1>
+                    {{=IMG(_src=URL(c="static", f="img/pyconar.gif"))}}
+                    {{=response.title or request.application}}
+                    <small>{{=response.subtitle or ''}}</small>
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <section id="main" class="main row">
+        {{if left_sidebar_enabled:}}
+        <div class="span3 left-sidebar">
+            {{block left_sidebar}}
+            <h3>Left Sidebar</h3>
+            <p></p>
+            {{end}}
+        </div>
+        {{pass}}
+
+        <div class="{{=middle_columns}}">
+            {{block center}}
+            {{include}}
+            {{end}}
+        </div>
+
+        {{if right_sidebar_enabled:}}
+        <div class="span3">
+            {{block right_sidebar}}
+            {{if response.sponsors:}}
+                  {{for sponsor_level in SPONSOR_LEVELS: }}
+                  {{if response.sponsors.get(sponsor_level):}}
+                     <h3>{{=T(sponsor_level)}}</h3>
+                     <ul class="thumbnails">
+                     {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
+                        <li class="span4">
+                          {{=A(IMG(_alt=sponsor.alt,_class="thumbnail",_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}
+                        </li>
+                      {{pass}}
+                    </ul>
+                  {{pass}}
+                  {{pass}}
+              {{pass}}
+            {{end}}
+        </div>
+        {{pass}}
+    </section><!--/main-->
+
+    <!-- Footer ================================================== -->
+    <div class="row">
+        <footer class="footer span12" id="footer">
+            <div class="footer-content">
+                {{block footer}} <!-- this is default footer -->
+                <div class="copyright pull-left">{{=T('Copyright')}} &#169; {{=request.now.year}}</div>
+                <div id="poweredBy" class="pull-right">
+                    {{=T('Powered by')}}
+                    <a href="http://www.web2py.com/">web2py</a>
+                </div>
+                {{end}}
+            </div>
+        </footer>
+    </div>
+
+  </div> <!-- /container -->
+
+  <!-- The javascript =============================================
+       (Placed at the end of the document so the pages load faster) -->
+  <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
+  <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
+  <!--[if lt IE 7 ]>
+      <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
+      <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+      <![endif]-->
+  
+  {{if response.google_analytics_id:}}
+  <script src="{{=URL('static','js/analytics.min.js')}}"></script>
+  <script type="text/javascript">
+  analytics.initialize({
+    'Google Analytics':{trackingId:'{{=response.google_analytics_id}}'} 
+  });</script>
   {{pass}}
-  <div style="clear: both;">&nbsp;</div>
-  </div>
-
-
-  <div id="footer">
-    <h2><a href="http://www.web2py.com.ar"><img alt="web2py" src="{{=URL(r=request,c='static',f='media/web2py_logor.png')}}" border="0" />&nbsp&nbsp<sup>POWERED</sup></a></h2>
-    <h3>{{=A(T("About this software"), _href=URL(c='default',f='about'))}}</h3>
-  </div>
+  <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
 </body>
 </html>

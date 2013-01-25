@@ -49,7 +49,10 @@ if request.function in ('register', 'profile') and 'speaker' in request.args:
     db.auth_user.country.requires = IS_NOT_EMPTY(T("(required for speakers)"))
     db.auth_user.phone_number.requires = IS_NOT_EMPTY(T("(required for speakers)"))
 
-
+def user():
+    # todo: fix
+    redirect(URL(f="login"))
+    
 def index():
     # URL rewrite for backward compatibility (navbar)
     f = request.args and request.args[0] or 'profile'

@@ -2,11 +2,9 @@
 # The main public page
 #############################################
 
-@caching
+#@caching
 def index():
     ## for pycontech: redirect(URL(c='about', f='index'))
-    response.files.append(URL(r=request,c='static',f='jquery-slideshow.css'))
-    response.files.append(URL(r=request,c='static',f='jquery-slideshow.js'))
     response.reg_count = cache.ram(request.env.path_info + ".reg_count", 
                                    lambda: db(db.auth_user).count(), 
                                    time_expire=60*5)
@@ -62,7 +60,7 @@ def tweet():
     return dict(form=form)
 
 
-@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
+##@cache(request.env.path_info,time_expire=60*15,cache_model=cache.ram)
 def twitter():
     session.forget()
     session._unlock(response)
@@ -129,9 +127,12 @@ def fast_download():
     response.headers['Content-Type'] = gluon.contenttype.contenttype(ext)
     
     # remove/add headers that prevent/favors caching
-    del response.headers['Cache-Control']
-    del response.headers['Pragma']
-    del response.headers['Expires']
+    if 'Cache-Control' in response.headers: 
+        del response.headers['Cache-Control']
+    if 'Pragma' in response.headers:
+        del response.headers['Pragma']
+    if 'Expires' in response.headers:
+        del response.headers['Expires']
     filename = os.path.join(request.folder,'uploads',request.args(0))
 
     # resize speaker pictures!

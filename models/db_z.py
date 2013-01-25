@@ -12,8 +12,8 @@ PLANET_TITLE = get_option("PLANET_TITLE", 'PyCon Argentina 2012')
 
 EMAIL_VERIFICATION=get_option("EMAIL_VERIFICATION", True)
 
-response.title=PLANET_TITLE
-response.subtitle=get_option("LAYOUT_SUBTITLE", '')
+##response.title=PLANET_TITLE
+##response.subtitle=get_option("LAYOUT_SUBTITLE", '')
 response.header=(get_option("LAYOUT_HEADER_FIRST", "PyCon Argentina 2012"), get_option("LAYOUT_HEADER_SECOND", "12 al 17 de Noviembre - Quilmes - Buenos Aires"))
 response.footer=get_option("LAYOUT_FOOTER", '''Conferencia Nacional del Lenguaje Python <b>Noviembre de 2012</b> en Buenos Aires (organizado por miembros de <a href="http://www.python.org.ar/">PyAr</a>). <br/>
 Más Información: <a href="http://python.org.ar/pyar/Eventos/Conferencias">http://python.org.ar/</a>&nbsp;

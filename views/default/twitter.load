@@ -3,16 +3,18 @@
 {{ pass }}
 
 {{ if tweets is not None: }}
-<div id="tweets">
-<ul>
+<ul class="media-list">
 {{ for k in reversed(sorted(tweets)): }}
-<li>
+    <li class="media">
   {{ # tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
-  {{ =IMG(_src=tweets[k][2], _width="48px", _height="48px")}}
-  <h4>{{ ="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
-  {{ =MARKMIN(tweets[k][3].encode('utf8', 'ignore')) }}
-</li>
+        <a class="pull-left" href="#">
+ 		 {{ =IMG(_src=tweets[k][2], _width="48px", _height="48px")}}
+        </a>
+	    <div class="media-body">
+      		<h4 class="media-heading">{{ ="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
+  			{{ =MARKMIN(tweets[k][3].encode('utf8', 'ignore')) }}
+        </div>
+	</li>
 {{ pass }}
 </ul>
-</div>
 {{ pass }}

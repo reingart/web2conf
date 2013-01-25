@@ -208,7 +208,7 @@ def index():
 
             table.append(TR(*tr))
 
-        schedule_tables[day] = TABLE(*table, _class="schedule")
+        schedule_tables[day] = TABLE(*table, _class="table-bordered table-hover table-condensed")
 
     d = dict(activities_per_date=activities_per_date,
              levels=levels, hidden=hidden['activities'].values()+hidden['speakers'].values(),
