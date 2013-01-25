@@ -21,22 +21,22 @@ def upload():
             f.write(data)
             f.close()
         ret = dict(filename=filename, data=data, request=request, folder=request.folder, data2=data2)
-        
+
     else:
         ret = dict(form=form, request=request)
     return ret
-    
+
 def testwiki():
     return dict(t=MARKMIN("visita http://www.web2py.com "))
-    
+
 @auth.requires(auth.has_membership(role='manager'))
 def autores():
     query = (db.activity.id>0)
     rows =db(query).select(
         db.activity.authors,
-        db.activity.id.count(), 
+        db.activity.id.count(),
         groupby=(db.activity.authors,),
-        orderby=~(db.activity.id.count()))        
+        orderby=~(db.activity.id.count()))
     return dict(rows=rows)
 
 @auth.requires(auth.has_membership(role='manager'))
@@ -64,18 +64,34 @@ def active_authors():
 
 @auth.requires(auth.has_membership(role='manager'))
 def rename_activity():
-    #old = "The Bad, The bad and Ugly."
-    #new = "The Good, the Bad and the Ugly"
-    ret = []
-    for user in  db(db.auth_user.tutorials.like('%%|%s|%%'%old)).select():
-        tutorials = user.tutorials
-        if tutorials and old in tutorials:
-            tutorials.remove(old)
-            tutorials.append(new)
-            db(db.auth_user.id==user.id).update(tutorials=tutorials)
-            
-            ret.append((user.id, tutorials))
+    response.view = 'generic.html'
+    form = SQLFORM.factory(
+            Field("old", default="The Bad, The bad and Ugly."),
+            Field("new", default="Código compatible con python 2 y 3, en el mismo fuente"),
+            )
+    ret = []       
+    if form.accepts(request.vars, session):
+        for user in  db(db.auth_user.tutorials.like('%%|%s|%%'%old)).select():
+            tutorials = user.tutorials
+            if tutorials and old in tutorials:
+                tutorials.remove(form.vars.old)
+                tutorials.append(form.vars.new)
+                db(db.auth_user.id==user.id).update(tutorials=tutorials)
+    
+                ret.append((user.id, tutorials))
+    return dict(ret=ret, form=form)
+
+@auth.requires(auth.has_membership(role='manager'))
+def missing_activity():
+    response.view = 'generic.html'
+    ret = []       
+    tutorials = [a.title for a in db(db.activity).select(db.activity.title)]
+    for user in  db(db.auth_user).select():
+        for tutorial in user.tutorials:
+            if tutorial not in tutorials and tutorial not in ret:
+                ret.append(tutorial)
     return dict(ret=ret)
+
 
 @auth.requires(auth.has_membership(role='manager'))
 def activity_accept_bulk():
@@ -90,7 +106,7 @@ def activity_accept_bulk():
     for id in ids:
         if id.strip():
             db(db.activity.id==id).update(status="accepted")
-        
+
     return ids
 
 
@@ -115,7 +131,7 @@ def create_badge():
 @auth.requires(auth.has_membership(role='manager'))
 def info():
     return {'request': request, 'response': response, 'session': session}
-    
+
 @auth.requires(auth.has_membership(role='manager'))
 def create_cert():
     pdf_template_id = db.pdf_template.insert(title="sample cert", format="A4")
@@ -132,7 +148,7 @@ def create_cert():
 
 @auth.requires_membership(role='manager')
 def copy_labels():
-    # read base label/badge elements from db 
+    # read base label/badge elements from db
     elements = db(db.pdf_element.pdf_template_id==1).select(orderby=db.pdf_element.priority)
     # setup initial offset and width and height:
     x0, y0 = 10, 10
@@ -163,7 +179,7 @@ def copy_labels():
 
 @auth.requires_membership(role='manager')
 def copy_temp():
-    # read base label/badge elements from db 
+    # read base label/badge elements from db
     pdf_template_id = 4
     elements = db(db.pdf_element.pdf_template_id==3).select(orderby=db.pdf_element.priority)
     for element in elements:
@@ -181,9 +197,16 @@ def update_username():
         db(db.auth_user.id==row.id).update(username=row.email)
     return "ok"
 
+@auth.requires_membership(role='reviewer')
 def authors_stats():
     q = db.author.activity_id==db.activity.id
+    q &= ((db.activity.type.contains('talk'))|(db.activity.type=='tutorial'))
+    ##q &= (db.activity.status=='pending')    
     q &= db.auth_user.id==db.author.user_id
-    rows = db(q).select(db.auth_user.id, db.auth_user.first_name, db.auth_user.last_name, groupby=db.auth_user.id|db.auth_user.first_name|db.auth_user.last_name)
+    qty=db.activity.id.count()#.with_alias('qty')
+    rows = db(q).select(db.auth_user.id, db.auth_user.first_name, db.auth_user.last_name, 
+                        qty, 
+                        groupby=db.auth_user.id|db.auth_user.first_name|db.auth_user.last_name,
+                        orderby=~qty)
     response.view = "generic.html"
-    return {'rows': rows}
+    return {'rows': rows, 'authors': len(rows)}

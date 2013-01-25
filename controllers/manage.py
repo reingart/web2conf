@@ -69,7 +69,11 @@ def maillist():
     Create a comma-separated mail list of attendees;
     could expand to create many different lists.
     '''
-    rec=db((db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')).select(db.auth_user.email,orderby=db.auth_user.email)
+    #q = (db.auth_user.amount_due<=0)&(db.auth_user.attendee_type!='non_attending')
+    q = db.auth_user.id>0
+    if 'speakers' in request.args:
+        q &= db.auth_user.speaker == True
+    rec=db(q).select(db.auth_user.email,orderby=db.auth_user.email)
     response.headers['Content-Type']='text/csv'
     ## BUG: (yarko:) str calls csv-writer,
     ##   which on both Ubuntu & Win returns \r\n for newline; need to find & fix
@@ -109,7 +113,10 @@ def financials_csv():
 
 @auth.requires_membership(role='manager')
 def payments():
-    rows=db(db.payment.status!='PRE-PROCESSING')(db.payment.from_person==db.auth_user.id).select(orderby=~db.payment.created_on)
+    q = db.payment.id>0
+    q |= db.auth_user.id>0
+    q |= db.coupon.id>0
+    rows=db(q).select(left=[db.auth_user.on(db.payment.from_person==db.auth_user.id), db.coupon.on(db.coupon.used_by==db.payment.from_person)], orderby=~db.payment.modified_on)
     return dict(payments=rows)
 
 # Select records for badge
@@ -354,3 +361,38 @@ def events():
     events = db(db.event).select()
     return dict(events=events)
 
+
+@auth.requires_membership(role='manager')
+def generate_coupon():
+    response.view = "generic.html"
+    form = SQLFORM.factory(
+        Field("discount", "float"),
+        Field("description"),
+        Field("qty", "integer"),
+        )
+    ret = []
+    if form.accepts(request.vars, session):
+        for i in range(form.vars.qty):
+            code = str(uuid.uuid4())[:8]
+            ret.append("%s %s " % (form.vars.description,code))
+            db.coupon.insert(
+                code=code,
+                discount=form.vars.discount,
+                description=form.vars.description,
+                amount=0,
+            )
+    return dict(form=form, ret=ret)
+
+@auth.requires_membership(role='manager')
+def freeze():
+    # move sponsor logos to static/upload
+    import shutil
+    for sponsors in response.sponsors.values():
+        for sponsor in sponsors:
+            fn = sponsor.logo      
+            source = os.path.join(request.folder, 'uploads', fn)
+            dest = os.path.join(request.folder, 'static', 'uploads', fn)
+            shutil.copy(source, dest)
+            
+    # TODO: freeze speaker images!
+    return "OK"

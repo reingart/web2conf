@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+
+<h1>{{=T("Edit your Badge")}}</h1>
+{{for el in form.elements("[type=text]"):}}
+  {{el.attributes["_style"] = "width: 20em;"}}
+{{pass}}
+
+{{=form}}
+
+{{if response.new_window:}}
+   <script type="text/javascript">
+    jQuery(document).ready(function() {
+        window.open('{{=response.new_window}}');
+    });
+    </script>
+<h3>{{=T("Sample Badge Preview")}}</h3>
+<p>
+{{=T("A new window will open with the sample badge in PDF")}}
+{{=A(T("click here"), _href=response.new_window, _target="new")}} {{=T("(if popups are blocked)")}}
+{{pass}}

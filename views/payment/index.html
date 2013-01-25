@@ -1,0 +1,25 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+{{=A(SPAN(XML(T("Create or update your<br><b>payment</b>"))), _class="btn-sponsor", _href=URL("pay"))}}
+
+<h2>{{=T("List of generated payments")}}</h2>
+
+{{if payments:}}
+<p>
+<i>{{=T('If you have pending payments (new status), reload this page to check for status updates. ')}}</i>
+</p>
+{{for payment in payments:}}
+<h3>{{=T(payment.rate or "")}} ({{=payment.method}}) {{=payment.created_on}} ${{='%.2f'% payment.amount}}</h3>
+<h4>{{=T("Status: %s") % payment.status}}</h4>
+{{if payment.status=='new' and payment.amount and payment.amount>2.00:}}
+{{=A(IMG(_src="https://argentina.dineromail.com/imagenes/botones/pagar-medios_c.gif", _style="background-color: white", _alt="Pagar con DineroMail"), _href=URL('dineromail', args=payment.id))}}
+{{pass}}
+{{pass}}
+</table>
+{{else:}}
+{{=H2(T('No payments!'))}}
+{{pass}}
+
+
+</div>

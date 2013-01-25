@@ -4,6 +4,42 @@
 
 crud=Crud(globals(),db)
 
+def coords_by_address(person):
+    import re, urllib
+    try:
+        address=urllib.quote("%s, %s %s, %s" % (person.city,person.state,person.zip_code,person.country))
+        t=urllib.urlopen('http://maps.google.com/maps/geo?q=%s&output=xml'%address).read()
+        item=re.compile('\<coordinates\>(?P<la>[^,]*),(?P<lo>[^,]*).*?\</coordinates\>').search(t)
+        la,lo=float(item.group('la')),float(item.group('lo'))
+        return la,lo
+    except Exception, e: 
+        #raise RuntimeError(str(e))
+        pass
+    #raise RuntimeError(str("%s = %s" % (address, t)))
+    return 0.0,0.0
+
+def update_zip(person):    
+    ### compute zip code
+    import shelve,os
+    ##if not person.zip_code: return
+    """
+    code=person.zip_code.strip()[:5]
+    if not is_gae:
+       zips=shelve.open(os.path.join(request.folder,'private/zips.shelve'))
+    if not is_gae and person.country=='United States' and zips.has_key(code):
+        la,lo,city,state=zips[code]
+    else:
+        la,lo=0.0,0.0
+    """
+    lo,la=coords_by_address(person)
+    db(db.auth_user.id==person.id).update(latitude=la, longitude=lo)
+    return lo,la
+
+def update_person(form):
+    update_zip(form.vars)
+    return
+
+
 # set required field for speakers
 if request.function in ('register', 'profile') and 'speaker' in request.args:
     db.auth_user.resume.requires = IS_NOT_EMPTY(T("(required for speakers)"))
@@ -42,24 +78,36 @@ def login():
     from gluon.contrib.login_methods.extended_login_form import ExtendedLoginForm
 
     alt_login_form, signals = create_rpx_login_form()
+            
     if alt_login_form:
         extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
         auth.settings.login_form = extended_login_form
     return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
-                                onaccept=lambda form:update_pay(auth.user)))
+                                ))
 
 def janrain():
     alt_login_form, signals = create_rpx_login_form()
     auth.settings.login_form = alt_login_form
     return dict(form=auth.login(next=URL(r=request,c='user',f='profile'),
-                                onaccept=lambda form:update_pay(auth.user)))
+                                ##onaccept=lambda form:update_pay(auth.user),
+                                ))
 
 def verify():
     return auth.verify_email(next=URL(r=request,f='login'))
 
 def register():
-    alt_login_form, signals = create_rpx_login_form(f="janrain")
-
+    # request captcha only in the registration form:
+    if RECAPTCHA_PUBLIC_KEY:
+        auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
+        # disable email verification (if using captcha)
+        auth.settings.registration_requires_verification = False
+    
+    # don't show janrain if user is filling the form manually:
+    if not request.vars:
+        alt_login_form, signals = create_rpx_login_form(f="janrain")
+    else:
+        alt_login_form = signals = None
+        
     if (signals and
         any([True for signal in signals if request.vars.has_key(signal)])
        ):
@@ -77,11 +125,11 @@ def change_password():
     redirect(URL(f="password"))
 
 def password():
-    return dict(form=auth.retrieve_password(next='login'))
+    return dict(form=auth.retrieve_password(next=URL(c='default',f='index')))
 
 def reset_password():
     response.view="user/password.html"
-    return dict(form=auth.reset_password(next=URL(f='profile')))
+    return dict(form=auth.reset_password())
 
 def retrieve_username():
     return dict(form=auth.retrieve_username(next='login'))
@@ -94,13 +142,9 @@ def logout(): auth.logout(next=URL(r=request,c='default',f='index', args="nocach
 def profile():
     you=db.auth_user.id==auth.user.id
     person=db(you).select()[0]
-    require_address(person)
-    if person.amount_paid>0 or person.amount_subtracted>0:
-        db.auth_user.donation_to_PSF.writable=False
-        db.auth_user.attendee_type.writable=False
-        db.auth_user.discount_coupon.writable=False
     form=crud.update(db.auth_user,auth.user.id,
                      onaccept=update_person,
+                     deletable=False,
                      next='profile')
     return dict(form=form)
 
@@ -137,5 +181,5 @@ def join_reviewers():
         auth.add_membership(group_id, auth.user_id)
         session.flash = T("Added to Reviewer Group!")
     else:
-        session.flash = T("Already in the Reviewer Group!") 
+        session.flash = T("Already in the Reviewer Group!")
     redirect(URL(c='activity', f='proposed'))

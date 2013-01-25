@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 
 #### yarko ---< F/A (financial aid) forms >----
 if ENABLE_FINANCIAL_AID:
@@ -121,7 +121,7 @@ if ENABLE_FINANCIAL_AID:
             # return str("t2.email(\n"+EMAIL_SENDER+"["+FA_EMAIL_TO+person.email+"]"+"\nsubject="+'PyCon FA Application Updated [#%s]' % fa.id+body+"\n)")
             print "t2.email(\n",EMAIL_SENDER,[FA_EMAIL_TO,person.email],"\nsubject=",'PyCon FA Application Updated [#%s]' % fa.id,body,")"
         else:
-            mail.send(to=[FA_EMAIL_TO,person.email],
+            mail.send(to=person.email, cc=FA_EMAIL_TO,
                       subject='Financial Aid Application Updated [#%s]' % fa.id,
                       message=body)
     

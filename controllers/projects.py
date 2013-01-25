@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 # try something like
 def index(): 
     rows = db((db.activity.type=='project')&(db.activity.status=='accepted')).select()

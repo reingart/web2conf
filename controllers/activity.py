@@ -22,29 +22,41 @@ def proposed():
 
 @auth.requires(auth.has_membership(role='reviewer') or TODAY_DATE>REVIEW_DEADLINE_DATE)
 def ratings():
-    query = (db.review.activity_id==db.activity.id) & (db.auth_user.id==db.activity.created_by)
-    avg = db.review.rating.sum() / db.review.rating.count()
-    ratings=db(query).select(
-        db.activity.ALL,
-        db.auth_user.ALL,
+    query = (db.auth_user.id==db.activity.created_by)
+    activities_author = db(query).select(db.auth_user.ALL, db.activity.ALL)
+    rows = db(db.review.id>0).select(
+        db.review.activity_id,
         db.review.rating.sum(), 
         db.review.rating.count(), 
-        avg, 
-        groupby=(db.activity.ALL,),
-        orderby=~avg)
-    
+        groupby=(db.review.activity_id,),
+        )
+    ratings = {}
+
+    for row in rows:
+        s = row[db.review.rating.sum()]
+        c = row[db.review.rating.count()]
+        ratings[row.review.activity_id] = {
+            'avg': c and s/float(c), 
+            'sum': s, 
+            'count': c,
+            }
+
     votes = {}
-    tutorial_list = [r.activity.title for r in ratings]
+    tutorial_list = [r.activity.title for r in activities_author]
     for k,item in enumerate(tutorial_list ):
         m=db(db.auth_user.tutorials.like('%%|%s|%%'%item)).count()
         votes[item] = m
                 
-    ratings = sorted(ratings, key=lambda row: (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"]), row["COUNT(review.rating)"]), reverse=True)     
-    d = dict(ratings=ratings, votes=votes, levels=ACTIVITY_LEVEL_HINT)
+    ##ratings = sorted(ratings, key=lambda row: (row["SUM(review.rating)"] / float(row["COUNT(review.rating)"]), row["COUNT(review.rating)"]), reverse=True)     
+    d = dict(activities_author =activities_author , ratings=ratings, votes=votes, levels=ACTIVITY_LEVEL_HINT)
     return response.render(d)
 
 @auth.requires_login()
 def vote():
+    if get_option("ALLOW_VOTE") == False:
+        response.generic_patterns = ["*",]
+        return dict(message=H3(T("Voting is disabled")))
+
     import random
     
     rows = db(db.activity.status=='pending').select(
@@ -118,14 +130,14 @@ def vote():
 
     return dict(form=form, levels=ACTIVITY_LEVEL_HINT, message=db.auth_user.tutorials.comment)
 
-##@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@caching
 def accepted():
     db.activity['represent']=lambda activity: A('%s by %s' % (activity.title,activity.authors),
        _href=URL(r=request,f='activity_info',args=[activity.id]))
     query=(db.activity.status=='accepted')&(db.auth_user.id==db.activity.created_by)
     
-    activities = (T('keynote'),T('panel'),T('plenary'),T('tutorial'),
-                 T('talk'),T('extreme talk'))
+    activities = ('keynote','panel','tutorial',
+                 'talk','extreme talk', 'poster', 'workshop')
                  
     # change the next line for GAE
     query &= (db.activity.type.belongs(activities))
@@ -201,12 +213,14 @@ def propose():
 
 @auth.requires(auth.has_membership(role='manager') or (user_is_author() and TODAY_DATE<PROPOSALS_DEADLINE_DATE))
 def update():
+    deletable = db.activity.title.writable = not ALLOW_VOTE
     if not db(db.activity.created_by==auth.user.id and db.activity.id==request.args[0]).count():
         redirect(URL(r=reuqest,f='index'))
     check_speaker_profile()
     form=crud.update(db.activity, request.args[0],
                      next='display/[id]',
-                     ondelete=lambda form: redirect(URL(r=request,f='index')))
+                     ondelete=lambda form: redirect(URL(r=request,f='index')),
+                     deletable=deletable)
     return dict(form=form)
 
 @auth.requires(auth.has_membership(role='manager') or user_is_author() or auth.has_membership(role='reviewer'))
@@ -215,7 +229,9 @@ def display():
     rows = db(db.activity.id==activity_id).select()
     activity = rows[0]
     item=crud.read(db.activity,activity_id)
-    authors = db(db.auth_user.id==activity.created_by).select()
+    q = db.auth_user.id==db.author.user_id
+    q &= db.author.activity_id==activity_id
+    authors = db(q).select(db.auth_user.ALL)
     comments=db(db.comment.activity_id==activity_id).select()
     attachments=db(db.attachment.activity_id==activity_id).select()
     query = db.review.activity_id==activity_id
@@ -316,7 +332,7 @@ def add_author():
         request.flash = "Form has errors"
     return dict(form=form)
     
-@cache(request.env.path_info,time_expire=60,cache_model=cache.ram)
+@caching
 def speakers():
     if request.args:
         q = db.auth_user.id == request.args[0]
@@ -325,15 +341,23 @@ def speakers():
     s=db(q)
     authors=s.select(db.auth_user.ALL,
                   orderby=db.auth_user.last_name|db.auth_user.first_name)
-    rows = db((db.activity.id==db.author.activity_id)&(db.activity.status=='accepted')).select()
+    activities = ('keynote','panel','tutorial',
+                 'talk','extreme talk', 'poster', 'workshop')
+    q = (db.activity.id==db.author.activity_id)&(db.activity.status=='accepted')
+    q &= db.activity.type.contains(activities)             
+    rows = db(q).select()
     activities_by_author = {}
     for row in rows:
         activities_by_author.setdefault(row.author.user_id, []).append(row.activity) 
     return dict(authors=authors, activities_by_author=activities_by_author)
 
 def download(): 
+    if not request.args:
+        raise HTTP(404)
     query = (db.attachment.file==request.args[0])&(db.activity.id==db.attachment.activity_id)
-    activity = db(query).select(db.activity.id,db.activity.status)[0]
+    activity = db(query).select(db.activity.id,db.activity.status).first()
+    if not activity:
+        raise HTTP(404)
     if activity.status=='accepted' or auth.has_membership(role='reviewer') or user_is_author(activity.id):
         return response.download(request,db)
     raise HTTP(501)
@@ -380,3 +404,29 @@ def email_author(form):
     if to:
         db.commit()   # just in case, save the changes to the db if email fails
         notify(subject, text, to=to, cc=cc)
+
+@auth.requires_membership("manager")
+def challenged():
+    """ Retrieve votes not corresponding to
+    listed activities (name conflicts) and
+    store the results as a static file
+    """
+    response.generic_patterns = ["*",]
+    d_challenged = dict()
+    t_challenged = TBODY()
+    for voter in db(db.auth_user).select():
+        if not voter.tutorials in (None, ""):
+            for tt in voter.tutorials:
+                act = db(db.activity.title == tt).select().first()
+                if act is None:
+                    # agregar a dict por nombre
+                    if not tt in d_challenged:
+                        d_challenged[tt] = 0
+                    d_challenged[tt] += 1
+                    t_challenged.append(TR(TD(voter.id), TD("%s %s" % (voter.first_name, voter.last_name)), TD(tt)))
+    results = UL()
+    for k, v in d_challenged.iteritems():
+        results.append(LI("%s: %s" % (k, v)))
+    return dict(message=H3(T("List of mismatching activity names voted")),
+                challenged=results,
+                votes=TABLE(THEAD(TR(TH(T("user")), TH(T("name")), TH("voted for"))), t_challenged))

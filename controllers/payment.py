@@ -1,78 +1,113 @@
 # -*- coding: utf-8 -*-
 
-#############################################
-# Submit payment
-#############################################
+class IS_VALID_COUPON(object):
+    def __call__(self, value):
+        # In development (DEV_TEST), there is no need (and no way) to lock the coupon update
+        coupon = db(db.coupon.code==value).select(for_update=not DEV_TEST, limitby=(0, 1)).first()
+        if not coupon:
+            error_message = T("Coupon does not exist!")
+        elif coupon.used_by:
+            error_message = T("Coupon is already used!")
+        else:
+            error_message = None
+        return (value, error_message)
+    def formatter(self, value):
+        return value
 
+
+@auth.requires_login()
+def index():
+    "List payment and pay methods"
+    q = (db.payment.from_person==auth.user_id) 
+    q &= (db.payment.status != "cancelled")
+
+    payments = db(q).select()
+    previous_payments = db((db.payment.from_person==auth.user_id) & \
+    (db.payment.status != "new")).select()
+    return dict(payments=payments,)
+
+        
 @auth.requires_login()
 def pay():
-    person=db(db.auth_user.id==auth.user.id).select()[0]
-    balance=session.balance
-    pay=H2(T('No payment due at this time'))
-    return dict(person=person,transfers_in=[],
-                transfers_out=[],payments=[],
-                pay=pay,balance=balance)
+    "Submit payment"
 
-@auth.requires_login()
-def cancel_transfer():
-    try:
-         db((db.money_transfer.id==request.args[0])&(db.money_transfer.to_person==auth.user.id)&(db.money_transfer.approved==False)).delete()
-         session.flash=T('Transfer cancelled')
-         redirect(URL(r=request,f='pay'))
-    except Exception:
-         session.flash=T('Invalid operation')
-         redirect(URL(r=request,f='pay'))
+    # count payments
+    q = db.payment.from_person==auth.user_id
+    q &= db.payment.status!="cancelled"
+    payment_count = db(q).count()
 
-@auth.requires_login()
-def register_other():
-    transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-    form=SQLFORM(db.auth_user,fields=['first_name','last_name','email','attendee_type','tutorials','discount_coupon'])
-    errors=[]
-    due=0.0
-    if form.accepts(request.vars,session):
-        amount=update_person(form)
-        db.money_transfer.insert(from_person=form.vars.id,
-                   to_person=auth.user.id,amount=amount,approved=False,
-                   description="%s %s (%s) 's Fees transferred to %s %s (%s)" % (form.vars.first_name, form.vars.last_name, form.vars.id, auth.user.first_name,auth.user.last_name,auth.user.id))
-        transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-        session.flash=T('Attendee registered and balance transferred')
-        redirect(URL(r=request,f='pay'))
-    return dict(form=form,transfers_in=transfers_in)
+    if auth.user.speaker:
+       cost = 'speaker'
+    elif TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
+       cost = 'earlybird'
+    elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
+        cost = 'preconf'
+    else:
+        cost = 'general'
 
-@auth.requires_login()
-def pay_check(): return dict()
-
-@auth.requires_login()
-def pay_other():
-    transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-    form=FORM('Tokens: ',INPUT(_name='codes',requires=IS_NOT_EMPTY()),INPUT(_type='submit'))
-    errors=[]
-    due=0.0
-    if form.accepts(request.vars,session):
-        for code in request.vars.codes.split(','):
-            try:
-                id,pay_token=code.strip().split('-')
-                if id==auth.user.id: raise Exception
-                if int(id) in [r.from_person for r in transfers_in]: raise Exception
-                row=db(db.auth_user.id==id).select()[0]
-                if not row.pay_token.upper()==pay_token.upper(): raise Exception                
-                amount=max(0.0,row.amount_billed-row.amount_paid)
-                db.money_transfer.insert(from_person=row.id,
-                        to_person=auth.user.id,amount=amount,approved=False,
-                        description="%s %s (%s)'s Fees transferred to %s %s (%s)" % (row.first_name, row.last-name, row.id, auth.user.first_name, auth.user.last_name, auth.user.id))
-                transfers_in=db(db.money_transfer.to_person==auth.user.id).select()
-            except:
-                errors.append(code.strip())
-        if not errors:
-            session.flash=T('Balance transferred')
-            redirect(URL(r=request,f='pay'))
+    rates = [(rate, "%s (%s): $ %s" % (T(rate), T(cost), prices[cost]))
+             for rate, prices
+             in sorted(ATTENDEE_TYPE_COST.items(), key=lambda x: x[1][cost])
+             if rate is not None
+             ]
+    form = SQLFORM.factory(
+         Field("attendee_type", label=T("Type"), 
+                 requires=IS_IN_SET(rates), default=request.vars.rate or "gratis"),
+         Field("donation", type="double", 
+                 label=T("Additional Donation"), comment=T("(optional)")),
+         Field("coupon_code", type="string", length=8,
+                 label=T("Coupon code"), comment=T("(discounts)"), 
+                 requires=IS_EMPTY_OR(IS_VALID_COUPON())),
+         submit_button=T("Confirm"),
+         )
+    if form.accepts(request.vars, session):
+        # book coupon
+        if form.vars.coupon_code:
+            db(db.coupon.code==form.vars.coupon_code).update(used_by=auth.user_id)
+            coupon = db(db.coupon.code==form.vars.coupon_code).select().first()
         else:
-            response.flash='Invalid Tokens: '+', '.join(errors)
-    return dict(form=form,transfers_in=transfers_in)
+            coupon = None
+        # calculate payment amount
+        rate = form.vars.attendee_type
+        amount = ATTENDEE_TYPE_COST[rate][cost]
+        if coupon:
+            amount -= coupon.discount * amount / 100.00
+            amount -= coupon.amount
+        if amount <= 0:
+            amount = 0
+        if form.vars.donation:
+            amount += form.vars.donation
+        # update user data:
+        db(db.auth_user.id==auth.user_id).update(
+            attendee_type=rate,           
+            donation=form.vars.donation,
+            )
+        # cancel any pending payment
+        q = db.payment.from_person==auth.user_id
+        q &= db.payment.status=="new"
+        db(q).update(status="cancelled")
+        if amount>2:
+            status = "new"
+        else:
+            status = "done"
+        # create the payment record
+        # Not really a payment, it just records the data for further update
+        payment_id = db.payment.insert(from_person=auth.user_id,
+                                       rate=rate,
+                                       status=status,
+                                       invoice="Bono Contribucion PyCon %s (%s)" % (rate, cost),
+                                       amount=amount)
+    
+        # for payment lookup on dineromail notification
+        db.payment[payment_id].update_record(order_id=payment_id)
+        
+        session.flash = T("Your payment has been generated!")
+        redirect(URL("index"))
+    attendee_types = sorted(ATTENDEE_TYPE_TEXT.items(), key=lambda x: ATTENDEE_TYPE_COST[x[0]], reverse=True)
+    return dict(form=form, attendee_types=attendee_types, payment_count=payment_count)
 
-@auth.requires_login()
-def pay_other_info():
-    return dict(person=db(db.auth_user.id==auth.user.id).select()[0])
+
+
 
 @auth.requires_login()
 def invoice():
@@ -83,41 +118,39 @@ def dineromail():
     """ Compose a DineroMail purchase request
     and redirect to DineroMail shop feature."""
 
+    payment_id = request.args[0]
+    payment = db(db.payment.id==payment_id).select().first()
+
     import uuid
     import urllib
 
     check_in= \
         PLUGIN_DINEROMAIL_SHOP_CHECK_IN[PLUGIN_DINEROMAIL_COUNTRY]
 
-    # Not really a payment, it just records the data for further update
-    payment_id = db.payment.insert(from_person=auth.user_id,
-                                   method="dineromail",
-                                   status="new",
-                                   invoice=\
-                                   request.vars.NombreItem,
-                                   amount=\
-                                   float(request.vars.PrecioItem))
+##https://argentina.dineromail.com/Shop/Shop_Ingreso.asp?NombreItem=Patrocinio+Oro+PyCon+Argentina+2012&TipoMoneda=1&PrecioItem=7500%2E00&E_Comercio=1415311&
+##NroItem=PyConAr2012&image_url=http%3A%2F%2Far%2Epycon%2Eorg%2F2012%2Fstatic%2Fimg%2Flogo%5Fdineromail%2Ejpg&
+##DireccionExito=http%3A%2F%2F&DireccionFracaso=http%3A%2F%2F&DireccionEnvio=0&Mensaje=1
 
-    arguments=["NombreItem",
-               "TipoMoneda",
-               "PrecioItem",
-               "E_Comercio",
-               "NroItem",
-               "image_url",
-               "DireccionExito",
-               "DireccionFracaso",
-               "DireccionEnvio",
-               "Mensaje"]
+    arguments= {"NombreItem": payment.invoice or '',
+               "TipoMoneda": "1",
+               "PrecioItem": str(payment.amount),
+               "E_Comercio": PLUGIN_DINEROMAIL_ACCOUNT, #"1415311",
+               "NroItem": "PyConAr2012",
+               "image_url": "http://ar.pycon.org/2012/static/img/logo_dineromail.jpg",
+               "DireccionExito": "http://ar.pycon.org/2012/payment/success",
+               "DireccionFracaso": "http://ar.pycon.org/2012/payment/failure",
+               "DireccionEnvio": "0",
+               "Mensaje": "1"}
 
     url = "%s?" % check_in
-    for x, argument in enumerate(arguments):
+    for x, (argument, value) in enumerate(arguments.items()):
         if x == 0:
             url += "%s=%s" % (argument,
-                             urllib.quote(request.vars[argument]))
+                             urllib.quote(value))
         else:
             url += "&%s=%s" % (argument,
-                              urllib.quote(request.vars[argument]))
-    url += "&trx_id=%s" % payment_id
+                              urllib.quote(value))
+    url += "&TRX_ID=%s" % payment_id
 
     redirect(url)
 
@@ -132,3 +165,92 @@ def dineromail_update():
             pass
         response.flash = T("Done!")
     return dict(form=form)
+
+@auth.requires_membership("manager")
+def checkpayment():
+    result = None
+    def myformat(row):
+        try:
+            person = db.auth_user[row.from_person]
+            from_person = "%s %s %s" % \
+            (person.email, person.first_name, person.last_name)
+        except (AttributeError, KeyError, ValueError):
+            from_person = "?"
+        status = row.status
+        order = row.order_id
+        amount = row.amount
+        return "%s - %s (%s) - %s" % \
+        (from_person, amount, order, status)
+    """    
+    dbset = db((db.payment.status!="Credited")&\
+               (db.payment.method=="dineromail")&\
+               (db.payment.status!="cancelled")&\
+               (db.payment.status!="Cancelled")&\
+               (db.payment.status!="done"))
+    """
+    pform = SQLFORM.factory(Field("first_name",
+                                  requires=IS_NOT_EMPTY(),
+                                  widget=SQLFORM.widgets.autocomplete(request,
+                                      db.auth_user.first_name,
+                                      limitby=(0,10),
+                                      min_length=2)),
+                             Field("last_name",
+                                  requires=IS_NOT_EMPTY(),
+                                  widget=SQLFORM.widgets.autocomplete(request,
+                                      db.auth_user.last_name,
+                                      limitby=(0,10),
+                                      min_length=2)))
+    presults = None
+    if pform.process(formname="payments_form", keepvalues=True).accepted:
+        puser = db((db.auth_user.first_name.contains(pform.vars.first_name))&(db.auth_user.last_name==pform.vars.last_name.strip())).select().first()
+        if puser is not None:
+            presults = db(db.payment.from_person==puser.id).select(\
+                              db.payment.order_id, db.payment.status,
+                              db.payment.amount,
+                              db.payment.invoice)
+    # dbset = db(db.payment.status.belongs(["Pending", "Pendiente", "cancelled"]))
+    dbset = db(db.payment.status.belongs(["Pending", "Pendiente"]))    
+    form = SQLFORM.factory(Field("payment",
+                                 "list:reference payment",
+                                 requires=IS_IN_DB(dbset,
+                                                   db.payment.id,
+                                                   myformat, multiple=True)))
+    if form.process(formname="update_form").accepted:
+        payment = form.vars.payment
+        result = plugin_dineromail_check_status(payment,
+                                                update=True)
+    fields = [db.payment.order_id,
+              db.payment.from_person,
+              db.payment.amount,
+              db.payment.invoice]
+              
+    payments = db((db.payment.invoice!="test")&\
+                  (db.payment.status=="Credited")|\
+                  (db.payment.status=="done")\
+                  ).select(*fields, orderby=db.payment.created_on)
+    return dict(result=result,form=form,payments=payments,presults=presults,pform=pform)
+
+@auth.requires_membership("manager")
+def checkall():
+    result = []
+    q = ((db.payment.status!="Credited")&\
+               (db.payment.method=="dineromail")&\
+#               (db.payment.status!="cancelled")&\
+#               (db.payment.status!="Cancelled")&\
+               (db.payment.status!="done"))
+    if request.args:
+        q &= db.payment.id>=int(request.args[0])
+        q &= db.payment.id<int(request.args[1])
+    for payment in db(q).select():
+        result.append((payment.id,payment.amount,plugin_dineromail_check_status(payment.id,
+                                                update=True)))
+    response.view = "generic.html"
+    return dict(result=result)
+
+def success():
+    session.flash = T("You have successfully finished the payment process. Thanks you.")
+    redirect(URL("index"))
+
+def failure():
+    session.flash = T("The payment process has failed.")
+    redirect(URL("index"))

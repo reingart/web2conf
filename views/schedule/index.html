@@ -2,19 +2,11 @@
 {{tr_classes = ['odd', 'even']}}
 <div class="frame">
 
-<h2>{{=T('Timetable')}}</h2>
+<h1>{{=T('Schedule')}}</h1>
 
-<p>Para mayor información y detalle de las actividades y oradores, ver:
-<ul>
-<li>{{=A(T('Accepted Activities'),_href=URL(r=request,c='activity',f='accepted'))}}</li>
-<li>{{=A(T('Speakers'),_href=URL(r=request,c='activity',f='speakers'))}}</li>
-</ul>
-</p>
-
-{{=H3("tables")}}
-{{for name, schedule_table in schedule_tables.iteritems():}}
-  {{=H5(name)}}
-  {{=schedule_table}}
+{{if not auth.is_logged_in():}}
+<p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.
+<i><b>¡{{=A("Inscribite", _href=URL(c='user',f='register'))}} para más info y recibir novedades!.</b></i></p>
 {{pass}}
 
 <p style="text-align: center">
@@ -22,6 +14,61 @@
 {{for level in ACTIVITY_LEVELS:}}
   <span>{{=levels[level]}} {{=T(level)}}&nbsp;&nbsp;</span>
 {{pass}}
+<br/>
+{{=T('Legend:')}}
+<span class="keynote">{{=T('Keynote')}}</span> 
+<span class="extreme"><A href="/2012/conference/extreme">{{=T('Extreme')}}</a></span >
+<span class="science"><A href="/2012/conference/science">{{=T('Science')}}</a></span >
+<span class="tutorial"><A href="/2012/conference/tutorials">{{=T('Tutorial')}}</a></span >
+<span class="workshop"><A href="/2012/conference/workshops">{{=T('Workshop')}}</a></span >
+<span class="sprint"><A href="/2012/conference/sprints">{{=T('Sprint')}}</a></span >
+{{if auth.has_membership(role="manager"):}}
+<br/>{{=IMG(_src=URL(c='static',f='img/warning.png'), _style="border: 0; padding-top: 0px; margin-top: 7px;")}} </b>: 
+{{=T("our estimate of attendance reaches the room size, last remaining seats!")}}
+{{pass}}
+<br/>
+<b>{{=IMG(_src=URL(c='static',f='img/star.png'), _style="border: 0; padding-top: 0px; margin-top: 7px;")}} </b>: 
+{{=T("Bookmark the activities you want to attend")}}
+<b>{{=T("(limited seats)")}}</b>
+<a href="http://pyconar.blogspot.com.ar/2012/10/cronograma-personalizado-reserva-tu.html">{{=T("Help")}}</a><br/>
+{{if not auth.is_logged_in():}}
+{{=B(I(A(T("(only for registered users)"), _href=URL(c='user',f='login', vars={'_next': URL('index')}))))}}
+{{#=A(T("Full Google Calendar"), _href="http://www.google.com/calendar/render?cid=%s://%s%s" % (request.env.wsgi_url_scheme, request.env.http_host, URL('bookmarks')))}}
+{{else:}}
+{{=T("Download your bookmarks")}}: {{=A("iCalendar", _href=URL("bookmarks", args=[auth.user_id, db.auth_user[auth.user_id].security_hash]))}}
+<br/>
+{{=T("(subscribte to that link to get updates in your calendar application automatically)")}}
+{{pass}}
 </p>
+
+{{for i, (day, schedule_table) in enumerate(sorted(schedule_tables.iteritems())):}}
+  <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d"))}} - {{=ACTIVITY_VENUE[i]}}</h3>
+  {{=schedule_table}}
+{{pass}}
+
+<p>Para mayor información y detalle de las actividades y oradores, ver:
+<ul>
+<li>{{=A(T('Accepted Activities'),_href=URL(r=request,c='activity',f='accepted'))}}</li>
+<li>{{=A(T('Speakers'),_href=URL(r=request,c='activity',f='speakers'))}}</li>
+</ul>
+<br/>
+{{=T("Unconfirmed activities are shown shaded until author confirms scheduled date, time and room.")}}
+</p>
+
 <p><b>Importante:</b> eventualmente las fechas y horarios pueden cambiar sin previo aviso por cuestiones agenas a la organización del evento. Por favor, revise esta página frecuentemente.</p>
 </div>
+{{=DIV(hidden)}}
+
+{{=SCRIPT("""
+function markActivity(actInput, actId){
+  var isChecked = jQuery("#" + actInput).attr("checked");
+  if (isChecked != "checked"){isChecked = false;}
+  var theUrl = "%s/activity/" + actId + "/checked/" + isChecked;
+  jQuery.ajax({url: theUrl});
+}
+""" % URL(c="schedule", f="markactivity"))}}
+
+
+{{=SCRIPT("""
+    $('input[type=checkbox],input[type=radio]').prettyCheckboxes();
+""")}}

@@ -27,9 +27,11 @@ else:
         [T('Summit'),True,URL(r=request,c='conference',f='summit')],
         [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
         [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
+        [T('Booths'),True,URL(r=request,c='stands',f='index')],
         [T('Talk Proposals'),True,URL(r=request,c='conference',f='proposals')] ]
         ],
 
+        [T('Registration'),True,URL(r=request,c='conference',f='registration')],
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
         [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
         [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
@@ -51,13 +53,13 @@ submenu_info=[
 ]
 if ENABLE_TALKS:
    submenu_activities = []
-   if REVIEW_DEADLINE_DATE<TODAY_DATE:
+   if True: #PROPOSALS_DEADLINE_DATE<TODAY_DATE:
         url = URL(r=request,c='schedule',f='index')
    else:
         url = URL(r=request,c='conference',f='proposals')
    response.menu.append([T('Activities'),False,url,submenu_activities])
-   submenu_activities.append([T('Proposals'),False, url])
-   submenu_activities.append([T('Timetable'),False,URL(r=request,c='schedule',f='index')])
+   #submenu_activities.append([T('Proposals'),False, url])
+   submenu_activities.append([T('Schedule'),False,URL(r=request,c='schedule',f='index')])
    submenu_activities.append([T('Accepted Activities'),False,URL(r=request,c='activity',f='accepted')])
    submenu_activities.append([T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')])
    submenu_activities.append([T('Speakers'),False,URL(r=request,c='activity',f='speakers')])
@@ -99,6 +101,7 @@ if auth.has_membership(role='manager'):
         [T('Financials'),False,URL(r=request,c='manage',f='financials')],
         [T('Expenses'),True,URL(r=request,c='expenses',f='index')],
         [T('Payments'),False,URL(r=request,c='manage',f='payments')],
+        [T('DineroMail'),False,URL(r=request,c='payment',f='checkpayment')],
         # [T('CSV for Badges'),False,URL(r=request,c='manage',f='badges')],
         [T('Badges'),False,URL(r=request,c='manage',f='badge',args='auth_user')],
         [T('Tutorials'),False,URL(r=request,c='manage',f='list_by_tutorial')],

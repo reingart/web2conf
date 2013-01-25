@@ -8,6 +8,7 @@ db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
     db.Field('type','text',label=T("Type")),
+    db.Field('code', readable=False, writable=False,),
     db.Field('duration','integer',label=T("Duration in minutes")), # era 45 min
     db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
     db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
@@ -18,7 +19,7 @@ db.define_table('activity',
     db.Field('track','string',label=T("Track"),represent=lambda x: T(x)),
     db.Field('logo','upload', comment=T("only used for sprints)")),
     db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
-    db.Field('scheduled_room',label=T("Scheduled Room"),requires=IS_EMPTY_OR(IS_IN_SET(ACTIVITY_ROOMS)), writable=False,readable=False),
+    db.Field('scheduled_room',label=T("Scheduled Room"),requires=IS_EMPTY_OR(IS_IN_SET(sorted(ACTIVITY_ROOMS.items()))), writable=False,readable=False),
     db.Field('status',default='pending',label=T("Status"),writable=False,readable=False),
     db.Field('confirmed','boolean',default=False,writable=False,readable=False),
     db.Field('video',length=128,label=T('Video'),default='',writable=False,readable=False),
@@ -35,10 +36,10 @@ db.define_table('activity',
     migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table("partaker", Field("activity", db.activity),
-                Field("user", db.auth_user),
                 Field("user_id", db.auth_user),
                 Field("add_me", "boolean", default=True, comment=T("Confirm my assistance")),
-                Field("comment", "text", comment=T("Write a comment for the project's owner")))
+                Field("comment", "text", comment=T("Write a comment for the project's owner")),
+                migrate=migrate, fake_migrate=fake_migrate)
 
 if request.controller != 'appadmin':
     db.activity.description.represent=lambda value: XML(value)
@@ -74,7 +75,8 @@ db.activity.duration.represent=lambda activity_duration: activity_duration and (
 
 db.activity.notes.default = "Tipo de público: \nConocimientos previos: \nRequisitos Especiales: (hardware, materiales, ayuda financiera)"
 
-db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity), migrate=migrate, fake_migrate=fake_migrate)
+db.define_table('activity_archived',db.activity,db.Field('activity_proposal',db.activity),
+                migrate=migrate, fake_migrate=fake_migrate)
 
 db.define_table('attachment',
    db.Field('activity_id',db.activity,label=T('ACTIVITY'),writable=False),
@@ -145,7 +147,11 @@ def activity_is_accepted():
     if db((db.activity.id==request.args[0])&(db.activity.status=='accepted')).count():
         return True
 
-TUTORIALS_LIST=[row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)]
+# TODO: enhance with proper tables...
+TUTORIALS_LIST= cache.ram(request.env.path_info + ".tutorials", 
+                                   lambda: [row.title for row in db(db.activity.status=='accepted').select(db.activity.title, orderby=db.activity.title)], 
+                                   time_expire=60*5)
+
 class IS_IN_SET_NOT_EMPTY(IS_IN_SET):
     def __call__(self, value):
         (values, error) = IS_IN_SET.__call__(self,value)
@@ -160,3 +166,5 @@ A('más información',_target='_blank',_href='/2011/activity/accepted'),T(", la 
 ACTIVITY_LEVEL_HINT = {}
 for i, level in enumerate(ACTIVITY_LEVELS):
     ACTIVITY_LEVEL_HINT[level] = XML("&loz;"* (i+1),)
+
+db.activity.code.requires = IS_EMPTY_OR(IS_NOT_IN_DB(db, db.activity.code))

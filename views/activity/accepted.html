@@ -4,14 +4,15 @@
 
 <h1>{{=T('Accepted Activities')}}</h1>
 
-<p><b>Nota: </b>El listado de actividades es provisorio, próximamente será actualizado con las charlas plenarias, paneles y talleres</p>
+<p><b>Nota: </b>El listado de actividades es provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.</p>
 <p><i><b>¡Quedate conectado con PyConAr para más info y novedades!.</b></i></p>
 
 {{for activity_type in ACTIVITY_TYPES:}}
-{{rows_by_activity = [row for row in rows if row.activity.type.lower().strip()==activity_type]}}
+{{for track in ACTIVITY_TRACKS:}}
+{{rows_by_activity = [row for row in rows if row.activity.type.lower().strip()==activity_type and row.activity.track==track]}}
 {{if rows_by_activity: }}
 <p/>
-<h2>{{=T(activity_type).capitalize()}}</h2>
+<h2>{{=T(activity_type)}} - track {{=T(track).lower()}}</h2>
 {{for row in sorted(rows_by_activity, key=lambda x:x.activity.title.upper()):}}
 {{activity=row.activity}}
 {{author=row.auth_user}}
@@ -20,36 +21,37 @@
 <h3 style="padding-top: 1em; >{{=A(activity.title,_href=URL(r=request,f='display_activity',args=activity.id))}}
 <a class="headerlink" href="#{{=activity.id}}" title="Enlace permanente a esta charla">¶</a><a onclick="jQuery('{{="#attachs%s"% activity.id}}').slideToggle()" alt="archivos"><img src={{=URL(r=request,c='static',f="media/16_file_page.png")}} alt="archivos" border="0"></a>
 <a onclick="jQuery('{{="#video%s"% activity.id}}').slideToggle()" alt="videos"><img src={{=URL(r=request,c='static',f="media/16_image.png")}} alt="videos" border="0"></a></h3>
-  <span style="padding-left: 3em;  font-weight: bold;"> 
+  <span style="padding-left: 3em;  font-weight: bold;">
  {{=A(activity.authors,_href=author.personal_home_page)}} ({{=A(author.company_name,_href=author.company_home_page)}})</td>
   <sup><a onclick="jQuery('{{="#bio%s"% activity.id}}').slideToggle()">bio</a></sup> <br/>
-  </span> 
+  </span>
 
-  <div id="{{="bio%s"% activity.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume and MARKMIN(author.resume, sep="") or ''}}</div>     
-  <span style="padding-left: 3em; font-weight: bold;">{{=activity.duration}}{{=T("min")}} {{=T("Level")}} {{=T(activity.level)}} {{=activity.confirmed and "(%s %s %s)" % ("%s %s %s" % (T(activity.scheduled_datetime.strftime("%A")), activity.scheduled_datetime.strftime("%d"), activity.scheduled_datetime.strftime("%H:%M")), T("Room"), ACTIVITY_ROOMS[int(activity.scheduled_room)]) or ""}}</span><br/> 
-  <span style="padding-left: 3em; font-weight: bold;"> 
+  <div id="{{="bio%s"% activity.id}}" style="display: none; padding-left: 4em; padding-bottom: 1em; font-size: smaller">{{=author.resume and MARKMIN(author.resume, sep="") or ''}}</div>
+  <span style="padding-left: 3em; font-weight: bold;">{{=activity.duration}}{{=T("min")}} {{=T("Level")}} {{=T(activity.level)}} {{if activity.confirmed and activity.scheduled_datetime and activity.scheduled_room:}} {{= "(%s %s %s)" % ("%s %s %s" % (T(activity.scheduled_datetime.strftime("%A")), activity.scheduled_datetime.strftime("%d"), activity.scheduled_datetime.strftime("%H:%M")), T("Room"), ACTIVITY_ROOMS[int(activity.scheduled_room)]) or ""}}{{pass}}</span><br/>
+  <span style="padding-left: 3em; font-weight: bold;">
     Categorias: {{=', '.join(activity.categories)}}
-  </span> 
-  <div class="wiki" style="padding-left: 3em;">{{=MARKMIN(activity.abstract, sep="br")}}</div> 
+  </span>
+  <div class="wiki" style="padding-left: 3em;">{{=MARKMIN(activity.abstract, sep="br")}}</div>
   {{if False:}}
-  <span style="padding-left: 3em; font-weight: bold; font-size: smaller"><a onclick="jQuery('{{="#description%s"% activity.id}}').slideToggle()">Más información</a> - 
-  <a onclick="jQuery('{{="#attachs%s"% activity.id}}').slideToggle()">Archivos</a> - 
+  <span style="padding-left: 3em; font-weight: bold; font-size: smaller"><a onclick="jQuery('{{="#description%s"% activity.id}}').slideToggle()">Más información</a> -
+  <a onclick="jQuery('{{="#attachs%s"% activity.id}}').slideToggle()">Archivos</a> -
   <a onclick="jQuery('{{="#video%s"% activity.id}}').slideToggle()">Video</a><br/>
-  </span> 
+  </span>
   {{pass}}
-  <div id="{{="description%s"% activity.id}}" style="display: none; padding-left: 4em; font-size: smaller">{{=ACTIVITY_SHOW_DESCRIPTION and XML(activity.description) or ''}}</div>  
+  <div id="{{="description%s"% activity.id}}" style="display: none; padding-left: 4em; font-size: smaller">{{=ACTIVITY_SHOW_DESCRIPTION and XML(activity.description) or ''}}</div>
   <div id="{{="attachs%s"% activity.id}}" style="display: none; padding-left: 4em; font-size: smaller">
       <br/>
       <ul>{{for attach in attachs.get(activity.id,[]):}}
           <li>{{=attach.description}}: {{=A(attach.filename,_href=URL(r=request,f='download',args=attach.file,vars={'filename':attach.filename}))}}</li>
           {{pass}}
       </ul>
-  </div>  
-  
-  <div id="{{="video%s"% activity.id}}" style="display: none; padding-left: 4em; font-size: smaller"> 
-    <embed src="{{=activity.video}}" type="application/x-shockwave-flash" width="480" height="350" allowscriptaccess="always" allowfullscreen="true"></embed> <br/> 
+  </div>
+
+  <div id="{{="video%s"% activity.id}}" style="display: none; padding-left: 4em; font-size: smaller">
+    <embed src="{{=activity.video}}" type="application/x-shockwave-flash" width="480" height="350" allowscriptaccess="always" allowfullscreen="true"></embed> <br/>
   </div>
 </div>
+{{pass}}
 {{pass}}
 {{pass}}
 {{pass}}

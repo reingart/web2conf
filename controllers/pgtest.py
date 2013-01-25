@@ -5,6 +5,7 @@ keywords = reserved_sql_keywords.POSTGRESQL
 
 def index(): return dict(message="hello from pgtest.py")
 
+@auth.requires_membership("manager")
 def test_keywords():
     response.generic_patterns = ["*",]
     report = UL()

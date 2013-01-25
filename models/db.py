@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = True
+migrate = False
 fake_migrate = False
 
 if SUSPEND_SERVICE:
-    raise HTTP(503, "<html><body><h3>Service is unavailable</h3></body></html>")
+    raise HTTP(503, "<html><body><h3>Service is momentarily unavailable</h3></body></html>")
 
 if is_gae:
     db=GQLDB()
     session.connect(request,response,db=db)
 else:
-    db=DAL(DBURI)
+    db=DAL(DBURI, pool_size=20)
 
 PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 
@@ -39,7 +38,7 @@ db.define_table('auth_user',
     db.Field('password','password',default='',label=T('Password'),readable=False),
     db.Field('level','text',label=T('Python knowledge level'),requires=IS_IN_SET(('principiante','intermedio','avanzado'))),
     db.Field('tutorials','list:string',label=T('Tutorials'),readable=False,writable=False),
-    #db.Field('dni','integer'),
+    db.Field('dni','integer'),
     db.Field('certificate','boolean',default=False,label=T('I want a certificate of attendance'),readable=False,writable=False),
     db.Field('address',length=255,label=T('Mailing Address'),default=''),
     db.Field('city',label=T('City'),default=''),
@@ -53,10 +52,13 @@ db.define_table('auth_user',
     db.Field('personal_home_page',length=128,label=T('Personal Home Page'),default=''),
     db.Field('company_name',label=T('Entity Name'),default=''),
     db.Field('company_home_page',length=128,label=T('Entity Home Page'),default=''),
+    db.Field('badge_line1',label=T('Badge Line 1'),default='',readable=False,writable=False),
+    db.Field('badge_line2',label=T('Badge Line 2'),default='',readable=False,writable=False),
+    db.Field('sponsor_id',"reference sponsor",label=T('Sponsor'),readable=False,writable=False),    
     db.Field('t_shirt_size',label=T('T-shirt Size')),
     db.Field('attendee_type',label=T('Registration Type'),default=ATTENDEE_TYPES[0][0],readable=False,writable=False),
     db.Field('discount_coupon',length=64,label=T('Discount Coupon'), readable=False,writable=False),
-    db.Field('donation','double',default=0.0,label=T('Donation to PSF'),readable=False,writable=False),
+    db.Field('donation','double',default=0.0,label=T('Donation to PyAr'),readable=False,writable=False),
     db.Field('amount_billed','double',default=0.0,readable=False,writable=False),
     db.Field('amount_added','double',default=0.0,readable=False,writable=False),
     db.Field('amount_subtracted','double',default=0.0,readable=False,writable=False),
@@ -84,7 +86,6 @@ db.define_table('auth_user',
     format="%(last_name)s, %(first_name)s (%(id)s)",
     migrate=migrate, fake_migrate=fake_migrate)
 
-
 # web2py planet model
 
 db.define_table("feed",
@@ -96,7 +97,7 @@ db.define_table("feed",
     Field("general", "boolean", comment=T("Many categories (needs filters)"), label=T("general")),
     migrate=migrate, fake_migrate=fake_migrate)
 
-PLANET_FEEDS_MAX = 4
+PLANET_FEEDS_MAX = 12
 
 # end of web2py planet model
 
@@ -108,7 +109,7 @@ db.auth_user.email.comment=T('(required)')
 db.auth_user.password.comment=not JANRAIN and T('(required)') or T('(optional)')
 db.auth_user.resume.widget=lambda field,value: SQLFORM.widgets.text.widget(field,value,_cols="10",_rows="8")
 db.auth_user.photo.comment=T('Your picture (100px)')
-#db.auth_user.dni.comment=T('(required if you need a certificate)')
+db.auth_user.dni.comment=T('(required if you need a certificate)')
 #db.auth_user.certificate.comment=XML(A(str(T('El Costo de Certificado es $x.-')) + '[2]',_href='#footnote2'))
 db.auth_user.t_shirt_size.requires=IS_IN_SET(T_SHIRT_SIZES,T_SHIRT_SIZES_LABELS)
 db.auth_user.t_shirt_size.comment=XML(A(str(T('cost TBD')) + ' [2]',_href='#footnote2'))
@@ -130,6 +131,11 @@ db.auth_user.cv.comment=XML(A(str(T('Job Fair')) + ' [3]',_href='#footnote3'))
 db.auth_user.first_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 db.auth_user.last_name.requires=[IS_LENGTH(128),IS_NOT_EMPTY()]
 
+## Virtual fields:
+import md5
+# security hash can be used to validate user_id in public url (ie. schedule bookmark)
+db.auth_user.security_hash = Field.Virtual(lambda row:  "created_by_ip" in row.auth_user and md5.new("%s%s" % (row.auth_user.created_by_ip, row.auth_user.created_on)).hexdigest())
+
 auth=Auth(globals(),db)                      # authentication/authorization
 
 db.auth_user.password.requires=[CRYPT()]
@@ -138,9 +144,7 @@ if not JANRAIN:
 
 auth.settings.table_user=db.auth_user
 auth.settings.cas_domains = None        # disable CAS
-
-auth.define_tables(username=False)
-
+auth.define_tables(username=False, migrate=migrate)
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
 auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
@@ -165,23 +169,11 @@ if EMAIL_SERVER:
     auth.messages.verify_email_subject = EMAIL_VERIFY_SUBJECT
     auth.messages.verify_email = EMAIL_VERIFY_BODY
     
-if RECAPTCHA_PUBLIC_KEY:
-    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
-auth.define_tables()
+##if RECAPTCHA_PUBLIC_KEY:
+##    auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
+auth.define_tables(migrate=migrate, fake_migrate=fake_migrate)
 
 db.auth_membership.user_id.represent=lambda v: "%(last_name)s, %(first_name)s (%(id)s)" % db.auth_user[v]
-
-def require_address(person=None):
-    try:
-        if (request.vars.donation_to_PSF \
-           and float(request.vars.donation_to_PSF)!=0.0)\
-           or (person and person.donation_to_PSF):
-            db.auth_user.address1.requires.append(IS_NOT_EMPTY())
-            db.auth_user.city.requires.append(IS_NOT_EMPTY())
-            db.auth_user.state.requires.append(IS_NOT_EMPTY())
-            db.auth_user.zip_code.requires.append(IS_NOT_EMPTY())
-    except: pass
-require_address()
 
 db.auth_user.email.requires=[IS_LENGTH(128),IS_EMAIL(),IS_NOT_IN_DB(db,'auth_user.email')]
 db.auth_user.personal_home_page.requires=[IS_LENGTH(128),IS_NULL_OR(IS_URL())]
@@ -195,8 +187,8 @@ db.auth_user.reviewer.writable=db.auth_user.reviewer.readable=auth.has_membershi
 db.auth_user.speaker.writable=db.auth_user.speaker.readable=auth.has_membership('manager')
 
 # Enable tutorial selection after proposal deadline
-db.auth_user.tutorials.writable = db.auth_user.tutorials.readable = TODAY_DATE>PROPOSALS_DEADLINE_DATE
-db.auth_user.tutorials.label = "Charlas Preferidas"
+##db.auth_user.tutorials.writable = db.auth_user.tutorials.readable = TODAY_DATE>PROPOSALS_DEADLINE_DATE
+##db.auth_user.tutorials.label = "Charlas Preferidas"
 
 # Enable simplified registration (no password asked)
 if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.controller=='user' and request.function=='register':
@@ -205,11 +197,26 @@ if SIMPLIFIED_REGISTRATION and TODAY_DATE>REVIEW_DEADLINE_DATE and request.contr
     ##db.auth_user.confirmed.default = False
 else:
     db.auth_user.confirmed.default = False
+    db.auth_user.password.comment = "(nueva para este sitio)"
     ##db.auth_user.confirmed.readable = True
     ##db.auth_user.confirmed.writable = True
     ##db.auth_user.address.requires = IS_NOT_EMPTY()
 
 db.auth_user.confirmed.label = T("Confirm attendance")
+
+# badge:
+if True:
+    db.auth_user.badge_line1.readable = True
+    db.auth_user.badge_line2.readable = True
+    db.auth_user.badge_line1.writable = True
+    db.auth_user.badge_line2.writable = True
+    db.auth_user.sponsor_id.readable = True
+    db.auth_user.sponsor_id.writable = True
+
+    db.auth_user.badge_line1.comment = T("(i.e. position)")
+    db.auth_user.badge_line2.comment = T("(ie. interests)")
+    db.auth_user.sponsor_id.comment = T("(logo for badge)")
+
 
 # conference options
 db.define_table("option",

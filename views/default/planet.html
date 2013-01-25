@@ -6,9 +6,9 @@
 
 <ul>
 {{ # show a couple of feeds }}
-  {{ for i, item in enumerate(rss.items): }}
+  {{ for i, item in enumerate(rss): }}
     {{ if i < PLANET_FEEDS_MAX: }}
-        {{ =LI(H3(item.title), P(T("by"), " ", item.author),  P(T("Posted"), " ", item.pubDate), DIV(XML(item.description))) }}
+        {{ =LI(H3(item['title']), P(T("by"), " ", item['author']),  P(T("Posted"), " ", item['pubDate']), DIV(XML(item['description']))) }}
     {{ else: }}
       {{ break }}
     {{ pass }}

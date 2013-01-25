@@ -2,8 +2,17 @@
 
 <div class="frame">
 <h2>{{=T('Companies represented')}}</h2>
-{{if not session.manager:}}<i>{{=T('Below is a partial list of companies represented at the conference, who wished to make their attendance public.  The list is sorted by company name.')}}</i>{{else:}}<i>{{=T('Below is a complete list of companies representede at the conference.  Some companies do not wish to make their attendance publie.  This list is accessible by managers only.')}}</i>{{pass}}<br/><br/>
+{{if not session.manager:}}<i>{{=T('Below is a partial list of companies represented at the conference, who wished to make their attendance public.  The list is sorted by company name.')}}</i>{{else:}}<i>{{=T(' Below is a complete list of companies representede at the conference.  Some companies do not wish to make their attendance publie.  This list is accessible by managers only.')}}</i>{{pass}}<br/><br/>
 <table class="appear">
 <tr><th>Company</th></tr>
+{{company_name=None}}
+{{for row in rows:}}
+<tr>
+{{if row.company_name!=company_name:}}
+<td>{{=A(row.company_name,_href=row.company_home_page)}}</td>
+{{company_name=row.company_name}}
+{{pass}}
+</tr>
+{{pass}}
 </table>
 </div>

@@ -9,7 +9,7 @@ T.force(session.lang or "es")
 # for maintenance
 
 SUSPEND_SERVICE = False
-ALLOW_VOTE = False
+ALLOW_VOTE = True
 
 ######################################
 ### PARAMETERS
@@ -28,7 +28,7 @@ T.current_languages=['es','es-ar','es-es']
 # If Developer Test, turn off email verificaiton and recaptcha checks,
 #  db-pooling, use GCO sandbox, etc.:
 # DEV_TEST=True   # settings suitable for development work
-DEV_TEST=True# Deployed settings
+DEV_TEST=True # Deployed settings
 
 if DEV_TEST:
     DBURI='sqlite://development.db'
@@ -37,15 +37,11 @@ if DEV_TEST:
     if request.vars.force_language: session.language=request.vars.force_language
     if session.language: T.force(session.language)
 else:
-    # set dburi in 0_private.py
-    DBURI = None
+    # DBURI set in 0_private.py
+    DBURI=None
+    DBPOOLS=0
 
 TWITTER_HASH = "pyconar"
-
-# PLUGIN_DINEROMAIL
-PLUGIN_DINEROMAIL_ACCOUNT = None
-PLUGIN_DINEROMAIL_PASSWORD = None
-PLUGIN_DINEROMAIL_COUNTRY = "argentina"
 
 response.title=T('web2conf')
 response.subtitle=''
@@ -81,36 +77,37 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
-PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,12,0,0,0)
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,19,23,59,59)
 REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
-EARLYBIRD_DATE=datetime.datetime(2021,2,22,6,0,0)
-PRECONF_DATE=datetime.datetime(2012,3,19,23,59,0)
-FACUTOFF_DATE=datetime.datetime(2012,7,31,23,59,0)
-REGCLOSE_DATE=datetime.datetime(2012,11,2,23,59,59)
+EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
+PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
+FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
+REGCLOSE_DATE=datetime.datetime(2012,11,18,23,59,59)
+CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
 ### fix this ...
-if TODAY_DATE<EARLYBIRD_DATE:  ### early registration!
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-elif TODAY_DATE<PRECONF_DATE:  ### pre-conference registration!:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-else:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
-if session.manager:
-   ATTENDEE_TYPES=(
-     ('gratis',T('Gratuito, $0')),
-   )
+
+ATTENDEE_TYPES=(
+ ('gratis',T('Gratuito, $0')),
+)
+
+# 
 ATTENDEE_TYPE_COST=dict(
-     gratis=0.0,
+     professional=dict(general=250, preconf=195, earlybird=175, speaker=125),
+     enthusiast=dict(general=150, preconf=130, earlybird=115,  speaker=85),
+     novice=dict(general=85, preconf=75, earlybird=65, speaker=75),
+     gratis=dict(general=0, preconf=0, earlybird=0, speaker=0),
    )
-ATTENDEE_TYPE_COST[None]=0.0
+ATTENDEE_TYPE_COST[None]=dict(general=0, preconf=0, earlybird=0, speaker=0)
+
+ATTENDEE_TYPE_TEXT=dict(
+    professional="t-shirt, catering, closing party, pro listing (micro-sponsor: logo in badge and web site), and other extra goodies",
+    enthusiast="t-shirt, catering and other extra goodies",
+    novice="t-shirt",
+    gratis="badge, certificate, program guide, community magazine and special benefits (subject to availability)",
+    )
 
 TUTORIALS_LIST=(
 )
@@ -123,13 +120,13 @@ COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
 # default activities
-ACTIVITY_TYPES= ('keynote', 'panel', 'plenary', 
-                 'talk', 'extreme talk', 'poster', 
+ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
+                 'talk', 'extreme talk', 'poster',
                  'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
                  'social', 'break', 'lightning talk',
-                 'sprint', 'paper', 'conference break',
-                 'conference wide')
+                 'sprint', 'paper', 
+                 'special')
 
 ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'lenguaje','fomento','core','educación',
@@ -138,14 +135,30 @@ ACTIVITY_CATEGORIES=sorted(('py3k','gui','web','cli','herramientas',
                              'testing'))
 
 # override other activities
-ACTIVITY_COMMON = ["keynote", "lightning talk", "conference break", "conference wide"]
+ACTIVITY_COMMON = ["plenary", "lightning talk", "conference break",  "break", "social"]
 ACTIVITY_VOTEABLE = ['keynote', 'talk', 'extreme talk', 'tutorial', 'workshop']
 ACTIVITY_REVIEWABLE = ACTIVITY_VOTEABLE + ['poster']
- 
+
 ACTIVITY_LEVELS=("Beginner","Intermediate","Advanced")
 ACTIVITY_TRACKS=("General", "Science", "Student Works", "Extreme")
 ACTIVITY_DURATION={'talk': 40, 'extreme talk': 30, 'tutorial': 120, 'workshop': 0, 'poster': 0, 'project': 0, 'panel': 45, 'plenary': 60, 'keynote': 60}
-ACTIVITY_ROOMS={1: "Auditorio", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Aula D", 6: "Sala Internet"}
+# TODO: create a room table (id, name, venue)!
+ACTIVITY_ROOMS={1: "Auditorio UNQ", 2: "Aula A", 3: "Aula B", 4: "Aula C", 5: "Auditorio UrbanStation", 6: "Auditorio EducacionIT", 7: "Sala Reunión", 8: "Sala Reunión", 9: "Sala Reunión", 10: "Sala Reunión", 11: "Auditorio US21", 0: "-"}
+unq = "Universidad Nacional de Quilmes: Roque Saenz Peña 352, Bernal, Buenos Aires, Argentina"
+urban = "Urban Station (Sucursal Downtown): Maipú 547, Capital Federal, Argentina"
+educacionit = "Educacion IT: Lavalle 648 Piso 8, Capital Federal, Argentina"
+us21 = "Universidad Siglo 21: Av. Córdoba 1551, Capital Federal, Argentina"
+ACTIVITY_ROOMS_ADDRESS={1: unq, 2: unq, 3: unq, 4: unq, 5: urban, 6: educacionit, 7: urban, 8: urban, 9: urban, 10: urban, 11: us21, 0: "-"}
+del unq, urban, educacionit
+# Estimate room sizes (actual size*attendance factor: 0.30 (talks), *1 for workshops, 0.60 for sprints (shared))
+ACTIVITY_ROOMS_EST_SIZES={1: 40, 2: 40, 3: 40, 4: 40, 5: 38, 6: 60, 7: 8, 8: 8, 9: 8, 10: 8, 11: 40, 0: "-"}
+ACTIVITY_VENUE=[SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), " - Ciudad de Bs. As.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), ", ",
+                     A("U. Siglo 21", _href="http://www.pgday.com.ar/buenosaires2012/venue"), " - C.A.B.A.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), " - Ciudad de Bs. As.")] + \
+               [SPAN(A("UrbanStation \"Downtown\"", _href="http://ar.pycon.org/2012/venue"), ", ",
+                     A("EducaciónIT", _href="http://ar.pycon.org/2012/venue"), " - C.A.B.A.")] + \
+               [SPAN(A("Universidad Nacional de Quilmes", _href="http://ar.pycon.org/2012/venue"), " - Bernal")]*2 + [""]
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
@@ -155,7 +168,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'tutorial': datetime.datetime(2012,6,30,23,59,59),
     'keynote': datetime.datetime(2012,9,12,0,0,0),
     'plenary': datetime.datetime(2012,9,12,0,0,0),
-    'poster': datetime.datetime(2012,9,12,0,0,0),
+    'poster': datetime.datetime(2012,10,19,23,59,59),
     'paper': datetime.datetime(2012,9,12,0,0,0),
     'project': datetime.datetime(2012,10,12,0,0,0),
     'stand': datetime.datetime(2012,10,12,0,0,0),
@@ -163,7 +176,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     }
 
 
-SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "")
+SPONSOR_LEVELS=("Organizer", "Sponsor Oro", "Sponsor Plata", "Sponsor Bronce", "Mecenas", "Agradecimiento Especial", "Medios / Auspicios", "Adherente")
 
 # verify by email, unless running a developer test:
 EMAIL_VERIFICATION= True #not DEV_TEST
@@ -189,7 +202,7 @@ JANRAIN = False
 ENABLE_TALKS=True
 ENABLE_EXPENSES = False
 ENABLE_FINANCIAL_AID = True
-ENABLE_PAYMENTS = False
+ENABLE_PAYMENTS = True
 
 if True and DEV_TEST:    # for local development
     HOST='localhost:8000'
@@ -205,7 +218,7 @@ TRUETYPE_PATH='/usr/share/fonts/truetype/freefont'
 GSFONTS_PATH='/usr/share/fonts/type1/gsfonts/'
 
 EMAIL_VERIFY_SUBJECT=T("%s Registration Confirmation") % response.title
-EMAIL_VERIFY_BODY=T("""                                              
+EMAIL_VERIFY_BODY=T("""
 Dear Attendee,
 
 To proceed with your registration and verify your email, click on the following link:
@@ -224,6 +237,14 @@ CONFERENCE_URL=None
 CONFERENCE_COORDS=-20.2597103,-61.4510078
 #-31.2597103,-61.4510078
 
-COUNTRIES=['United States', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', "C&ocirc;te d'Ivoire", 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'East Timor', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'North Korea','South Korea', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macedonia', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia and Montenegro', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Swaziland', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe']
+from misc_utils import COUNTRIES, FLAGS
 
-FLAGS={'United States': 'us.png', 'Argentina': 'ar.png', 'Australia': 'au.png', 'Brazil': 'br.png', 'Chile': 'cl.png', 'Denmark': 'dk.png', 'Peru': 'pe.png', 'Canada': 'ca.png', 'Spain': 'es.png'}
+# caching decorator:
+
+def caching(fn):
+    "Special cache decorator (do not cache if user is logged in)"
+    if request.vars or request.args or response.flash or session.flash or auth.is_logged_in():
+        return fn
+    else:
+        session.forget()    # only if no session.flash (allow to clean it!)
+        return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)

@@ -1,7 +1,7 @@
 # coding: utf8
 # try something like
-def index(): 
-    rows = db((db.sponsor.text!="")&(db.sponsor.active==True)).select()
+def index():
+    rows = db((db.sponsor.text!="")&(db.sponsor.active==True)&(db.sponsor.level!=SPONSOR_LEVELS[-3])).select()
     if rows:
         return dict(sponsors_detail=rows)
     else:
@@ -19,6 +19,7 @@ def sign_up():
     else:
         sponsor = None
     db.sponsor.number.default = db(db.sponsor.id>0).count() + 1
+    db.sponsor.level.default = SPONSOR_LEVELS[-3]
     form = SQLFORM(db.sponsor, sponsor)
     if form.accepts(request.vars, session):
         session.flash = T("Sponsor sign-up form successfully processed")
@@ -28,7 +29,7 @@ def sign_up():
     else:
         response.flash = T("Complete the Sponsor form")
     return dict(form=form)
-        
+
 def edit():
     if auth.has_membership(role="manager"):
         q = db.sponsor.id>0

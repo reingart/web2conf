@@ -10,19 +10,48 @@
 <th>Amount</th>
 <th>Method</th>
 <th>Status</th>
-<th>Order Id</th>
+<th>Rate</th>
+<th>T-Shirt</th>
 </tr>
+{{qty=0}}
+{{total=0}}
+{{sponsors=0}}
+{{tshirts=dict() }}
+{{rates=dict()}}
 {{for p in payments:}}
 <tr>
+{{if request.args and request.args[0]=='paid' and (p.payment.status.lower() not in ('done', 'credited') or p.payment.rate in ('gratis', 'test', None)): continue}}
+{{qty+=1}}
+{{sponsors+= p.payment.amount==0 and 1 or 0}}
+{{total+=p.payment.amount}}
+{{tshirts[p.auth_user.t_shirt_size] = tshirts.get(p.auth_user.t_shirt_size, 0) + 1}}
+{{rates[p.payment.rate] = rates.get(p.payment.rate, 0) + 1}}
 <td>{{=p.payment.id}}</td>
 <td>{{=p.payment.created_on.strftime('%d-%b-%Y')}}</td>
-<td>{{=A(p.t2_person.name,_href=URL(r=request,f='impersonate',args=p.t2_person.id))}}</td>
+<td>{{=A("%s, %s" % (p.auth_user.first_name, p.auth_user.last_name),_href=URL(r=request,f='impersonate',args=p.auth_user.id))}}
+{{if p.coupon.code:}}
+{{=("%s %s") % ( p.coupon.description, p.coupon.code,)}}
+{{pass}}</td>
 <td style="text-align:right">${{='%.2f' % p.payment.amount}}</td>
 <td>{{=p.payment.method}}</td>
-<td style="color: {{='green' if p.payment.status=='CHARGED' else 'red' if p.payment.status.find('CANCELLED')>=0 or p.payment.status.find('DECLINED')>=0 else 'yellow'}}">{{=p.payment.status}}</td>
-<td>{{=p.payment.order_id}}</td>
+<td style="color: {{='green' if p.payment.status.lower() in ('credited', 'done') else 'red' if p.payment.status.lower()=='cancelled' else 'yellow'}}">{{=p.payment.status}}</td>
+<td>{{=p.payment.rate}}</td>
+<td>{{=p.auth_user.t_shirt_size}}</td>
 </tr>
-<tr><td></td><td colspan="6">{{=p.payment.invoice}}</td></tr>
 {{pass}}
 </table>
+<h4>Total: $ {{=total}} </h4>
+<h4>Qty: {{=qty}} ({{=sponsors}} sponsors)</h4>
+<h4>T-Shirt sizes:</h4>
+<ul>
+{{for k, v in tshirts.items():}}
+<li>{{="%s: %s" % (k, v)}}
+{{pass}}
+</ul>
+<h4>Rates:</h4>
+<ul>
+{{for k, v in rates.items():}}
+<li>{{="%s: %s" % (k, v)}}
+{{pass}}
+</ul>
 </div>

@@ -4,11 +4,14 @@
 <div class="frame">
 <h1>{{=T('Conference Participants')}}</h1>
 <table>
+{{if pd>30:}}
 <tr><td width="10px"/><td>
 {{=T('%5d Pending Registrations',tot-pd)}}
 </td></tr><tr><td width="10px"/><td>
 {{=T('%5d Completed Registrations',pd)}}
-</td></tr><tr><td width="10px"/><td>
+</td></tr>
+{{pass}}
+<tr><td width="10px"/><td>
 {{=T('%5d Total Paid and Pending Registrations',tot)}}
 </td></tr>
 </table>
@@ -23,7 +26,6 @@
 {{for row in rows:}}
 <tr>
 <td>{{=A(row.first_name+' '+row.last_name,_href=row.personal_home_page)}}</td><td>{{=A(row.company_name,_href=row.company_home_page)}}</td>
-{{if session.manager:}}<td><a href="mailto:{{=row.email}}">{{=row.email}}</a></td>{{pass}}
 </tr>
 {{pass}}
 </table>

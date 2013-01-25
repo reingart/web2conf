@@ -1,0 +1,33 @@
+{{extend 'layout.html'}}
+<div class="frame">
+<h1>{{=T('Badge')}}</h1>
+{{if person:}}
+<h2 id="{{=person.id}}">{{="%s %s" % (person.first_name, person.last_name)}}<a class="headerlink" href="#{{=person.id}}" title="Permanent link">¶</a></h2>
+<div class="wiki">
+{{if person.photo:}}
+<div style="position: relative">
+{{=IMG(_alt=person.last_name, _src=URL(r=request,c='default',f='fast_download', args=person.photo),  _width="100px",_height="100px", _style="margin-left: 10px; margin-right: 10px; margin-top: 3px; margin-bottom: 10px; float: left; ")}}
+{{=IMG(_src=URL(c="static", f="img", args=[FLAGS.get(person.country)]), _alt=person.country, 
+       _style="position: absolute; top: 90px; left: 92px; z-index: 1;")}}
+</div>
+{{pass}}
+{{if person.personal_home_page:}}
+{{=T('Personal Home Page')}}: {{=A(person.personal_home_page,_href=person.personal_home_page)}}<br/>
+{{pass}}
+{{if person.company_name:}}
+{{=T("Company")}}: {{=A(person.company_name,_href=person.company_home_page)}}<br/>
+{{pass}}
+{{if person.twitter_username:}}
+{{=DIV(IMG(_src=URL(c='static', f="media/twitter22px.png"), _style='border: none; vertical-align:middle;'), " ", 
+   A("@%s" % person.twitter_username, _href="https://twitter.com/%s" % person.twitter_username, _style="text-decoration: none "))}}
+{{pass}}
+{{if person.email:}}
+{{=DIV(A(person.email, _href="mailto:%s" % person.email, _style="text-decoration: none "))}}
+{{pass}}
+<br/>
+{{if person.resume:}}
+<div class="wiki">{{=MARKMIN(person.resume, sep="br")}}</div><br/>
+{{pass}}
+</div>
+{{pass}}
+</div>
