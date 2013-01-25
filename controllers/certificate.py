@@ -18,6 +18,7 @@ def speakers():
 def attendees():
     template_id = int(request.args[0])
     q = db.auth_user.speaker==False
+    q &= db.auth_user.id > int(request.args[1])
     q &= db.auth_user.attendee_type == "gratis"
     speakers = db(q).select(orderby=db.auth_user.id)
     return render_pdf(speakers, template_id, "Participante", "A")
@@ -27,6 +28,7 @@ def bono():
     template_id = int(request.args[0])
     q = db.auth_user.speaker==False
     q &= db.auth_user.attendee_type != "gratis"
+    q &= db.auth_user.id > int(request.args[1])
     speakers = db(q).select(orderby=db.auth_user.id)
     return render_pdf(speakers, template_id, "Participante", "B")
     
