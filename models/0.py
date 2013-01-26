@@ -77,13 +77,13 @@ T_SHIRT_SIZES_LABELS=(T('no, thanks'),    T("small"),T("medium"),T("large"),T("x
 # NOTE: we add 6 hours since our server is EST, and this will cover Hawaii
 #  will want to have these times be session time local in next rev.
 TODAY_DATE=datetime.datetime.today()
-PROPOSALS_DEADLINE_DATE=datetime.datetime(2012,10,19,23,59,59)
-REVIEW_DEADLINE_DATE=datetime.datetime(2012,7,29,23,59,59)
-EARLYBIRD_DATE=datetime.datetime(2012,10,12,23,59,0)
-PRECONF_DATE=datetime.datetime(2012,11,2,23,59,0)
-FACUTOFF_DATE=datetime.datetime(2012,9,30,23,59,0)
-REGCLOSE_DATE=datetime.datetime(2012,11,18,23,59,59)
-CONFERENCE_DATE=datetime.datetime(2012,11,12,8,00,00)
+PROPOSALS_DEADLINE_DATE=datetime.datetime(2013,10,19,23,59,59)
+REVIEW_DEADLINE_DATE=datetime.datetime(2013,7,29,23,59,59)
+EARLYBIRD_DATE=datetime.datetime(2013,10,12,23,59,0)
+PRECONF_DATE=datetime.datetime(2013,11,2,23,59,0)
+FACUTOFF_DATE=datetime.datetime(2013,9,30,23,59,0)
+REGCLOSE_DATE=datetime.datetime(2013,11,18,23,59,59)
+CONFERENCE_DATE=datetime.datetime(2013,11,12,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 

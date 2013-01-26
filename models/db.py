@@ -2,7 +2,7 @@ from gluon.tools import *
 import uuid, datetime, re, os, time, stat
 now=datetime.datetime.now()
 
-migrate = False
+migrate = DEV_TEST
 fake_migrate = False
 
 if SUSPEND_SERVICE:
