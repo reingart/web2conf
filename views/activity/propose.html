@@ -1,10 +1,12 @@
 {{extend 'layout.html'}}
 <script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.js')}}"></script>
-<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','jquery.wysiwyg.css')}}" />
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','wysihtml5-0.3.0_rc2.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','bootstrap-wysihtml5-0.0.2.min.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','bootstrap-wysihtml5-0.0.2.css')}}" />
 <script type="text/javascript">
 $(function()
   {
-      $('#wysiwyg').wysiwyg();
+      $('#wysiwyg').wysihtml5();
   });
 </script>
 

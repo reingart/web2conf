@@ -10,7 +10,7 @@ db.define_table('activity',
     db.Field('type','text',label=T("Type")),
     db.Field('code', readable=False, writable=False,),
     db.Field('duration','integer',label=T("Duration in minutes")), # era 45 min
-    db.Field('request_time_extension', 'boolean', default=False, label=T("Time extension"), comment=T("(explain why)")),
+    db.Field('request_time_extension', 'boolean', readable=False, writable=False, default=False, label=T("Time extension"), comment=T("(explain why)")),
     db.Field('cc',label=T("cc"), length=512, default="", readable=False, writable=False),
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),

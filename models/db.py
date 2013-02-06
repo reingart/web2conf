@@ -23,7 +23,9 @@ PAST=datetime.datetime.today()-datetime.timedelta(minutes=1)
 #### end cleanup sessions
 
 def wysiwyg(field,value):
-    return DIV(field.name,TEXTAREA(_name=field.name, _cols="60", value=value, _id="wysiwyg"))
+    return DIV(field.name,TEXTAREA(_name=field.name, _cols="60", value=value, 
+                                   _id="wysiwyg",
+                                   _style="width: 810px; height: 200px;"))
 
 
 ######################################
