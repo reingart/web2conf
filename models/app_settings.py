@@ -218,17 +218,17 @@ else:
 
 HOTELS=('unknown','Hyatt Regency','Crowne Plaza','other','none')
 
-EMAIL_VERIFY_SUBJECT=T("%s Registration Confirmation") % response.title
-EMAIL_VERIFY_BODY=T("""
+EMAIL_VERIFY_SUBJECT=str(T("%s Registration Confirmation") % response.title)
+EMAIL_VERIFY_BODY=str(T("""
 Dear Attendee,\n
 To proceed with your registration and verify your email, click on the following link:\n
 %s\n--\n%s\n""") % (
  "http://%s%s/%%(key)s" % (request.env.http_host, URL(r=request,f='verify')), 
- response.title)
+ response.title))
 
 
-PASSWORD_RETRIEVE_SUBJECT=T("%s Registration Password") % response.title
-PASSWORD_RETRIEVE_BODY=T("Your new password is %(password)s")
+PASSWORD_RETRIEVE_SUBJECT=str(T("%s Registration Password") % response.title)
+PASSWORD_RETRIEVE_BODY=str(T("Your new password is %(password)s"))
 INVOICE_HEADER = "This is a Conference Invoice!!!"
 
 CONFERENCE_URL=None
