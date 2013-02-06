@@ -258,7 +258,10 @@ def cancel_payment2():
 
 @auth.requires_membership(role='manager')
 def control_panel():
-    options = db(db.option).select()
+    response.flash = "this feature is currently under construction"
+    # OPTIONS were removed
+    # an easier method to edit app_settings should be useful
+    options = []
     return dict(options=options)
 
 
