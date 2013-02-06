@@ -109,7 +109,8 @@ def plugin_flatpage():
         form = FORM(TABLE(
                    TR(T("Title"), INPUT(_type="text", _name="title", value=title)),
                    TR(T("Subtitle"), INPUT(_type="text", _name="subtitle", value=subtitle)),
-                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id='textarea' not in request.vars and  "wysiwyg" or "")), 
+                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id='textarea' not in request.vars and  "wysiwyg" or "",
+                                          _style="width: 810px; height: 200px;")), 
                    TR(T("Format"), SELECT(
                           [OPTION(v, _value=k) for (k, v) in db.plugin_flatpage.format.requires.options()], 
                           value=format, _name="format", requires=db.plugin_flatpage.format.requires,
