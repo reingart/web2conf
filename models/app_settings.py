@@ -187,6 +187,11 @@ EMAIL_SERVER='localhost:25' #or Configure!
 EMAIL_AUTH=None # or 'username:password'
 EMAIL_SENDER='pyconar2012@gmail.com'
 
+# on production, mail should be sent by a cron job or similar
+# (really, avoid timeout issues and problems like google spam filtering)
+MAIL_QUEUE = not DEV_TEST
+
+
 # for FA applications / communication
 FA_EMAIL_UPDATES=True
 FA_EMAIL_TO=EMAIL_SENDER

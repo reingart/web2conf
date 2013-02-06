@@ -1,7 +1,5 @@
 # coding: utf8
 
-MAIL_QUEUE = True
-
 #scheduler = Scheduler(db)
 
 # background mailer, based on:
