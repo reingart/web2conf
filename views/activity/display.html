@@ -3,17 +3,19 @@
 <div class="frame">
 <h2>{{=T('Activity Proposal')}}</h2>
 {{if auth.has_membership(role='manager') or auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
-[{{=A(T('edit'),_href=URL(r=request,f='update',args=activity_id))}}]
-[{{=A(T('add author'),_href=URL(r=request,f='add_author',args=activity_id))}}]
-[{{=A(T('attach'),_href=URL(r=request,f='attach',args=activity_id))}}]
-[{{=A(T('comment'),_href=URL(r=request,f='comment',args=activity_id))}}]
+<div class="btn-group">
+[{{=A(T('edit'),_href=URL(r=request,f='update',args=activity_id), _class="btn")}}]
+[{{=A(T('add author'),_href=URL(r=request,f='add_author',args=activity_id),_class="btn")}}]
+[{{=A(T('attach'),_href=URL(r=request,f='attach',args=activity_id),_class="btn")}}]
+[{{=A(T('comment'),_href=URL(r=request,f='comment',args=activity_id),_class="btn")}}]
 {{if not activity.confirmed:}}
-[{{=A(T('confirm'),_href=URL(r=request,f='confirm',args=activity_id))}}]
-{{pass}}
+[{{=A(T('confirm'),_href=URL(r=request,f='confirm',args=activity_id),_class="btn")}}]
+{{pass}} 
 {{pass}}
 {{if auth.has_membership(role='reviewer') and not user_is_author(activity_id):}}
-[{{=A(T('review'),_href=URL(r=request,f='review',args=activity_id))}}]
+[{{=A(T('review'),_href=URL(r=request,f='review',args=activity_id), _class="btn")}}]
 {{pass}}
+</div>
 {{=item}}
 </div>
 

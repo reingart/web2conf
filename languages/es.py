@@ -1090,6 +1090,7 @@
 'Your activity %(activity)s has been confirmed': 'Your activity %(activity)s has been confirmed',
 'Your activity proposal %(activity)s has been recorded.\r\n\r\nThank you\r\n': 'Your activity proposal %(activity)s has been recorded.\r\n\r\nThank you\r\n',
 'Your activity proposal has been recorded. Thank you': 'Your activity proposal has been recorded. Thank you',
+'Your activity received a comment by %(user)s.': 'Your activity received a comment by %(user)s.',
 'Your balance will be updated when the check is received and cashed.': 'Su balance será actualizado cuando el cheque sea cobrado.',
 'Your conference fees': 'Sus costos de conferencia',
 'Your current balance': 'Su balance actual',
