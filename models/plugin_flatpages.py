@@ -109,7 +109,7 @@ def plugin_flatpage():
         form = FORM(TABLE(
                    TR(T("Title"), INPUT(_type="text", _name="title", value=title)),
                    TR(T("Subtitle"), INPUT(_type="text", _name="subtitle", value=subtitle)),
-                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id='textarea' not in request.vars and  "wysiwyg" or "",
+                   TR(T("Body"), TEXTAREA(_name="body", _cols="70", value=body, _id=request.vars.editor or "wysiwyg",
                                           _style="width: 810px; height: 200px;")), 
                    TR(T("Format"), SELECT(
                           [OPTION(v, _value=k) for (k, v) in db.plugin_flatpage.format.requires.options()], 
@@ -117,8 +117,11 @@ def plugin_flatpage():
                           _onchange="this.form.action.value='convert';this.form.submit();")),  
                    TR(T("View"), INPUT(_type="text", _name="view", value=view)),
                    TR("",(INPUT(_type='hidden', _name='action', _id='action', _value="save"),
+                          INPUT(_type='hidden', _name='editor', _id='editor', _value=request.vars.editor or ''),
                        INPUT(_type='button', _value=T('Preview'),
                                    _onclick="this.form.action.value='preview';this.form.submit();"),
+                       INPUT(_type='button', _value=T('Toggle Editor'),
+                                   _onclick="this.form.action.value='preview';this.form.editor.value=(this.form.editor.value!='textarea' ? 'textarea' : 'wysiwyg');this.form.submit();"),
                        INPUT(_type="submit", _value=T("Save")),
                        INPUT(_type='button', _value=T('Cancel'),
                                    _onclick="this.form.action.value='';this.form.submit();"),
