@@ -3,7 +3,8 @@
 response.menu=[]
 
 response.menu.append([T('Register'),False,URL(r=request,c='user',f='register'), [    
-        [T('Registration'),True,URL(r=request,c='conference',f='registration')],
+        [T('Registration Rates'),True,URL(r=request,c='conference',f='registration')],
+        [T('Payments'),True,URL(r=request,c='payments',f='index')],
         [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
         [T('Room Sharing'),False,URL(r=request,c='venue',f='room_sharing')],
     ]])
@@ -19,12 +20,21 @@ if CONFERENCE_URL:
     
 else:
     submenu_conf=[
-        [T('Conference'), True, URL(r=request,c='conference',f='index')],
+        [T('Conference'), True, URL(r=request,c='conference',f='index'), [
+            [T('Call for Proposals'),False,URL(r=request,c='conference',f='proposals')],
+            [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
+            [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
+            [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
+            [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
+            [T('Summit'),True,URL(r=request,c='conference',f='summit')],
+            [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
+            [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
+        ]],
         [T('Staff'),True,URL(r=request,c='conference',f='staff')],
         [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
         [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
-        [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
-        [T('Press Release'),True,URL(r=request,c='conference',f='press')],
+        #[T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
+        #T('Press Release'),True,URL(r=request,c='conference',f='press')],
         #[T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
         #[T('RSS'),True,None, menu_feeds]]]
         ]
@@ -43,28 +53,25 @@ submenu_info=[
 if ENABLE_TALKS:
    if True or PROPOSALS_DEADLINE_DATE<TODAY_DATE:
        response.menu.append([T('Schedule'), False, URL(r=request,c='schedule',f='index'), [
-                            [T('Accepted'),False,URL(r=request,c='activity',f='accepted')],
-                            [T('Speakers'),False,URL(r=request,c='activity',f='speakers')],
+                            [T('Keynote Speakers'),False,URL(r=request,c='activity',f='speakers')],
+                            [T('Speakers List'),False,URL(r=request,c='activity',f='speakers')],
+                            [T('Talks'),False,URL(r=request,c='activity',f='accepted')],
+                            [T('Tutorials'),False,URL(r=request,c='activity',f='accepted')],
+                            [T('Posters'),False,URL(r=request,c='activity',f='accepted')],
+                            [T('Projects'),False,URL(r=request,c='projects',f='index')],
                             ]])
 
    submenu_activities = []
    response.menu.append([T('Proposals'),False,URL(r=request,c='activity',f='proposed'), [        
         [T('Propose talk'),False, URL(r=request,c='activity',f='propose')],
+        [T('Voting'),False,URL(r=request,c='activity',f='vote')],
         [T('Ratings'),False,URL(r=request,c='activity',f='ratings')],
-        [LI('', _class='divider'), False, ""],
-        [T('Call for Proposals'),False,URL(r=request,c='conference',f='proposals')],
-        [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
-        [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
-        [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
-        [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
-        [T('Summit'),True,URL(r=request,c='conference',f='summit')],
-        [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
-        [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
+        [T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')],
         ]])
 
         
 response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index'), [
-    [T('Index'),False,URL(r=request,c='sponsors',f='index')],
+    [T('Sponsors List'),False,URL(r=request,c='sponsors',f='index')],
     [T('Jobs'),False,URL(r=request,c='jobs',f='index')],
     [T('Prospectus'),False,URL(r=request,c='sponsors',f='prospectus')],
     [T('Sign-up'),False,URL(r=request,c='sponsors',f='sign_up')],
