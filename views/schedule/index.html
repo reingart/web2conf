@@ -4,6 +4,9 @@
 
 <h1>{{=T('Schedule')}}</h1>
 
+<div class="alert alert-block">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+
 {{if not auth.is_logged_in():}}
 <p><b>Nota: </b>Cronograma provisorio, próximamente será actualizado con las charlas, tutoriales y otras actividades pendientes.
 <i><b>¡{{=A("Inscribite", _href=URL(c='user',f='register'))}} para más info y recibir novedades!.</b></i></p>
@@ -39,7 +42,7 @@
 <br/>
 {{=T("(subscribte to that link to get updates in your calendar application automatically)")}}
 {{pass}}
-</p>
+</div>
 
 {{for i, (day, schedule_table) in enumerate(sorted(schedule_tables.iteritems())):}}
   <h3>{{="%s %s" % (T(day.strftime("%A")), day.strftime("%d"))}} - {{=ACTIVITY_VENUE[i]}}</h3>
