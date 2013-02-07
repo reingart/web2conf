@@ -1,6 +1,6 @@
 {{extend 'layout.html'}}
 <div class="frame">
-<a href="/2012/conference/sprints/" class="btn-sponsor"><span>{{=XML(T("Learn how to<br>submit a <b>project</b>"))}}</span></a>
+<a href="/2012/conference/sprints/" class="btn btn-primary"><span>{{=XML(T("Learn how to<br>submit a <b>project</b>"))}}</span></a>
 <h1>{{=T("Sprint Projects")}}</h1>
 {{for project in projects:}}
 {{author=db(db.auth_user.id==project.created_by).select().first()}}
