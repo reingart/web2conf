@@ -156,16 +156,16 @@ ACTIVITY_VENUE=SPAN(A("Main Venue \"Downtown\"", _href=URL(c="venue")))
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
 PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
-    'talk': datetime.datetime(2012,6,30,23,59,59),
-    'extreme talk': datetime.datetime(2012,6,30,23,59,59),
-    'tutorial': datetime.datetime(2012,6,30,23,59,59),
-    'keynote': datetime.datetime(2012,9,12,0,0,0),
-    'plenary': datetime.datetime(2012,9,12,0,0,0),
-    'poster': datetime.datetime(2012,10,19,23,59,59),
-    'paper': datetime.datetime(2012,9,12,0,0,0),
-    'project': datetime.datetime(2012,10,12,0,0,0),
-    'stand': datetime.datetime(2012,10,12,0,0,0),
-    'sprint': datetime.datetime(2012,10,12,0,0,0),
+    'talk': datetime.datetime(2013,6,30,23,59,59),
+    'extreme talk': datetime.datetime(2013,6,30,23,59,59),
+    'tutorial': datetime.datetime(2013,6,30,23,59,59),
+    'keynote': datetime.datetime(2013,9,12,0,0,0),
+    'plenary': datetime.datetime(2013,9,12,0,0,0),
+    'poster': datetime.datetime(2013,10,19,23,59,59),
+    'paper': datetime.datetime(2013,9,12,0,0,0),
+    'project': datetime.datetime(2013,10,12,0,0,0),
+    'stand': datetime.datetime(2013,10,12,0,0,0),
+    'sprint': datetime.datetime(2013,10,12,0,0,0),
     }
 
 ON_PROPOSE_EMAIL = "" #email address list, separated by ";"
