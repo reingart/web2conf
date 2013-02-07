@@ -64,7 +64,7 @@
   {{for comment in comments:}}
     <LI>
     {{comment.body = MARKMIN(comment.body.replace('\n', ''))}}
-    {{=XML(T('User %(created_signature)s on %(created_on)s says: %(body)s') % comment, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
+    {{=XML(str(T('User %(created_signature)s on %(created_on)s says: %(body)s')) % comment, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
     </LI>
   {{pass}}
   </UL>
