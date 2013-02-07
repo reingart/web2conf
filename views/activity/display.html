@@ -83,9 +83,9 @@
     {{review.body = MARKMIN(review.body.replace('\n', ''))}}
 
     {{if auth.has_membership(role='manager'):}}
-    {{=XML(T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
+    {{=XML(str(T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s')) % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
     {{else:}}
-    {{=XML(T('Rating %(rating)s: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
+    {{=XML(str(T('Rating %(rating)s: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p']))}}
     {{pass}}
     </LI>
   {{pass}}
