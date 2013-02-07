@@ -4,7 +4,7 @@ response.menu=[]
 
 response.menu.append([T('Register'),False,URL(r=request,c='user',f='register'), [    
         [T('Registration Rates'),True,URL(r=request,c='conference',f='registration')],
-        [T('Payments'),True,URL(r=request,c='payments',f='index')],
+        [T('Payments'),True,URL(r=request,c='payment',f='index')],
         [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
         [T('Room Sharing'),False,URL(r=request,c='venue',f='room_sharing')],
     ]])
