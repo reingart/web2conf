@@ -72,3 +72,7 @@ function markActivity(actInput, actId){
 {{=SCRIPT("""
     $('input[type=checkbox],input[type=radio]').prettyCheckboxes();
 """)}}
+
+{{if popovers:}}
+{{=SCRIPT("""$(function () {%s});""" % ''.join(popovers))}}
+{{pass}}

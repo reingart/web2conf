@@ -17,6 +17,7 @@ def index():
                             db.activity.title,
                             db.activity.track,
                             db.activity.status,
+                            db.activity.abstract,
                             db.activity.level,
                             db.activity.type,
                             db.activity.created_by,
@@ -64,19 +65,6 @@ def index():
                           row.id) for row in rows])
     
         hidden = {'speakers': {}, 'activities': {}}
-        for activity in rows:
-            if activity.created_by not in hidden['speakers'] and len(activity.authors)>2:
-                u = PluginMModal(title=activity.authors, content="",
-                                         callback=URL('authors', args=[activity.created_by]),
-                                         close=T('close'), width=50,
-                                         height=50)
-                hidden['speakers'][activity.created_by] = u
-            if activity.id not in hidden['activities']:
-                a = PluginMModal(title=activity.title, content="",
-                                     callback=URL('content', args=[activity.id]),                                    
-                                     close=T('close'),
-                                     width=50, height=50)
-                hidden['activities'][activity.id] = a
 
         q = db.partaker.add_me==True
         if 'votes' in request.vars:
@@ -96,6 +84,7 @@ def index():
                                    lambda: timetable(), 
                                    time_expire=0)
     schedule_tables = {}
+    popovers = []
 
     if auth.user_id:
         myactivities = db(db.partaker.user_id==auth.user_id).select()
@@ -140,12 +129,17 @@ def index():
                 if activity:
                     if activity.authors and \
                        len(activity.authors.strip()) > 1:
-                        u = hidden['speakers'][activity.created_by]
-                        authors = u.link(cram(activity.authors, 25))
+                        authors = A(cram(activity.authors, 25),
+                                    _href=URL('authors', args=[activity.created_by]), 
+                                    _id="autors%s" % activity.id,
+                                    rel="popover",
+                                    **{'_data-content': "bio.....",
+                                       '_data-original-title': T("Speaker"),
+                                       '_data-trigger': 'hover',
+                                      })
                     else:
                         authors = ''
 
-                    a = hidden['activities'][activity.id]
                     activity_selected = False
                     select_activity = ""
                     label = "activity_selected_%s" % activity.id
@@ -162,7 +156,15 @@ def index():
                                                 _onclick="markActivity('activity_selected_%s', '%s');" % (activity.id, activity.id))
                     attendance = partakers.get(activity.id, "")
                     td = TD(select_activity,
-                            LABEL(_for=label),a.link(B(cram(activity.title, 50))),
+                                   LABEL(_for=label), 
+                                   A(B(cram(activity.title, 50)),
+                                     _href=URL('content', args=[activity.id]), 
+                                     _id="abstract%s" % activity.id,
+                                     rel="popover",
+                                     **{'_data-content': activity.abstract,
+                                        '_data-original-title': T("Summary"),
+                                        '_data-trigger': 'hover',
+                                       }),
                                    BR(),
                                    authors and \
                                    ACTIVITY_LEVEL_HINT[activity.level] \
@@ -186,6 +188,8 @@ def index():
                                      _id=not activity.confirmed and "unconfirmed" or "confirmed",
                                      _class="%s %s" % (activity.track,
                                                        activity.type.replace(" ", "_")))
+                    popovers.append("""$("#%s").popover();""" % ("autors%s" % activity.id))
+                    popovers.append("""$("#%s").popover();""" % ("abstract%s" % activity.id))
                     if activity.type in ACTIVITY_COMMON:
                         tr = [tr[0],]
                         td.attributes["_colspan"] = len(rooms)
@@ -214,6 +218,7 @@ def index():
 
     d = dict(activities_per_date=activities_per_date,
              levels=levels, hidden=hidden['activities'].values()+hidden['speakers'].values(),
+             popovers=popovers,
              schedule_tables=schedule_tables)
     return response.render(d)
 
