@@ -34,15 +34,25 @@
         <div class="tab-pane" id="tab2">
             <h2>{{=T('Authors')}}</h2>
             {{if authors:}}
-              <UL>
               {{for author in authors:}}
-                <LI>
-            {{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}} ({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
-            {{=I(A(("full bio..."), _href=URL(r=request,f='speakers',args=author.id), _target='new'))}}
-            {{=MARKMIN(author.resume)}}
-                </LI>
+                <div class="media">
+                  <a class="pull-left" href="#">
+                        {{if author.photo:}}
+                            <div style="position: relative">
+                            {{=IMG(_alt=author.last_name, _src=URL(r=request,c='default',f='fast_download', args=author.photo),  _width="100px",_height="100px", _style="margin-left: 10px; margin-right: 10px; margin-top: 3px; margin-bottom: 10px; float: left; ")}}
+                            {{=IMG(_src=URL(c="static", f="img", args=[FLAGS.get(author.country)]), _alt=author.country, 
+                                   _style="position: absolute; top: 90px; left: 92px; z-index: 1;")}}
+                            </div>
+                        {{pass}}
+                  </a>
+                  <div class="media-body">
+                    <h4 class="media-heading">{{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}}</h4>
+                    	({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
+                    	{{#=I(A(("full bio..."), _href=URL(r=request,f='speakers',args=author.id), _target='new'))}}
+                    	{{=MARKMIN(author.resume)}}
+                  </div>
+                </div>
               {{pass}}
-              </UL>
             {{pass}}
         </div>
 
