@@ -149,7 +149,7 @@ auth.settings.cas_domains = None        # disable CAS
 auth.define_tables(username=False, migrate=migrate)
 auth.settings.controller='user'
 auth.settings.login_url=URL(r=request,c='user',f='login')
-auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
+#auth.settings.on_failed_authorization=URL(r=request,c='user',f='login')
 auth.settings.logout_next=URL(r=request,c='default',f='index')
 auth.settings.register_next=URL(r=request,c='default',f='index')
 auth.settings.verify_email_next=URL(r=request,c='default',f='index')
@@ -158,8 +158,9 @@ auth.settings.retrieve_password_next=URL(r=request,c='user',f='login')
 auth.settings.change_password_next=URL(r=request,c='default',f='index')
 auth.settings.logged_url=URL(r=request,c='user',f='profile')
 auth.settings.create_user_groups = False
-auth.settings.actions_disabled = ['register', 'change_password','request_reset_password']
+#sauth.settings.actions_disabled = ['register', 'change_password','request_reset_password']
 auth.settings.reset_password_requires_verification = True
+
 
 if EMAIL_SERVER:
     mail=Mail()                                  # mailer
