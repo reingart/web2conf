@@ -169,14 +169,14 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     }
 
 ON_PROPOSE_EMAIL = "" #email address list, separated by ";"
-PROPOSE_NOTIFY_TEXT = T("Your activity proposal has been recorded. Thank you")
-PROPOSE_NOTIFY_SUBJECT = T("New activity proposal")
-COMMENT_NOTIFY_TEXT = T("Your activity received a comment by %(user)s.")
-COMMENT_NOTIFY_SUBJECT = T("Activity comment")
-REVIEW_NOTIFY_TEXT = T("A review of your activity has been created or updated by %(user)s.")
-REVIEW_NOTIFY_SUBJECT = T("Activity review")
-CONFIRM_NOTIFY_TEXT = T("Your activity %(activity)s has been confirmed")
-CONFIRM_NOTIFY_SUBJECT = T("Activity confirmed")
+PROPOSE_NOTIFY_TEXT = str(T("Your activity proposal has been recorded. Thank you"))
+PROPOSE_NOTIFY_SUBJECT = str(T("New activity proposal"))
+COMMENT_NOTIFY_TEXT = str(T("Your activity received a comment by %(user)s."))
+COMMENT_NOTIFY_SUBJECT = str(T("Activity comment"))
+REVIEW_NOTIFY_TEXT = str(T("A review of your activity has been created or updated by %(user)s."))
+REVIEW_NOTIFY_SUBJECT = str(T("Activity review"))
+CONFIRM_NOTIFY_TEXT = str(T("Your activity %(activity)s has been confirmed"))
+CONFIRM_NOTIFY_SUBJECT = str(T("Activity confirmed"))
 
 
 SPONSOR_LEVELS=("Organizer", "Gold", "Silver", "Bronx", "Specials Thanks", "Media", "Adherent")
