@@ -1,8 +1,5 @@
 {{extend 'layout.html'}}
-
-<div class="frame">
-<h2>{{=T('Activity Proposal')}}</h2>
-{{if auth.has_membership(role='manager') or auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
+<div class="btn-toolbar">
 <div class="btn-group">
 [{{=A(T('edit'),_href=URL(r=request,f='update',args=activity_id), _class="btn")}}]
 [{{=A(T('add author'),_href=URL(r=request,f='add_author',args=activity_id),_class="btn")}}]
@@ -16,82 +13,89 @@
 [{{=A(T('review'),_href=URL(r=request,f='review',args=activity_id), _class="btn")}}]
 {{pass}}
 </div>
-{{=item}}
 </div>
+<div class="tabbable">
+ 
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">{{=T('Proposal')}}</a></li>
+        <li><a href="#tab2" data-toggle="tab">{{=T('Speakers')}}</a></li>
+        <li><a href="#tab3" data-toggle="tab">{{=T('Attachments')}}</a></li>
+        <li><a href="#tab4" data-toggle="tab">{{=T('Comments')}}</a></li>
+        <li><a href="#tab5" data-toggle="tab">{{=T('Reviews')}}</a></li>
+    </ul>
 
-<div style="clear: both;">&nbsp;</div>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab1">    
+            <h2>{{=T('Activity Proposal')}}</h2>
+            {{if auth.has_membership(role='manager') or auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
+            {{=item}}
+            {{pass}}
+        </div>
+        <div class="tab-pane" id="tab2">
+            <h2>{{=T('Authors')}}</h2>
+            {{if authors:}}
+              <UL>
+              {{for author in authors:}}
+                <LI>
+            {{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}} ({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
+            {{=I(A(("full bio..."), _href=URL(r=request,f='speakers',args=author.id), _target='new'))}}
+            {{=MARKMIN(author.resume)}}
+                </LI>
+              {{pass}}
+              </UL>
+            {{pass}}
+        </div>
 
-<div class="frame">
-<h2>{{=T('Authors')}}</h2>
-{{if authors:}}
-  <UL>
-  {{for author in authors:}}
-    <LI>
-{{=A("%s, %s" % (author.last_name, author.first_name),_href=author.personal_home_page, _target='new')}} ({{=A(author.company_name,_href=author.company_home_page, _target='new')}})
-{{=I(A(("full bio..."), _href=URL(r=request,f='speakers',args=author.id), _target='new'))}}
-{{=MARKMIN(author.resume)}}
-    </LI>
-  {{pass}}
-  </UL>
-{{pass}}
+        <div class="tab-pane" id="tab3">
+            <h2>{{=T('Attachments')}}</h2>
+            {{if attachments is not None:}}
+              <UL>
+              {{for attach in attachments:}}
+                <LI>
+            {{=A(attach.filename or T('noname'),_href=URL(r=request,f='download',args=attach.file,vars={'filename':attach.filename}))}}:
+            {{=attach.description}}
+            {{if auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
+            ({{=A(T('edit'),_href=URL(r=request,f='attach',args=(activity_id,attach.id)))}})
+            {{pass}}
+                </LI>
+              {{pass}}
+              </UL>
+            {{pass}}
+        </div>
+
+        <div class="tab-pane" id="tab4">
+            <h2>{{=T('Comments')}}</h2>
+            {{if comments is not None:}}
+              <UL>
+              {{for comment in comments:}}
+                <LI>
+                {{comment.body = MARKMIN(comment.body.replace('\n', ''))}}
+                {{=XML(str(T('User %(created_signature)s on %(created_on)s says: %(body)s')) % comment, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
+                </LI>
+              {{pass}}
+              </UL>
+            {{pass}}
+        </div>
+
+        <div class="tab-pane" id="tab5">
+            {{if auth.has_membership(role='manager') or ( auth.has_membership(role='reviewer') and not user_is_author(activity_id)) or TODAY_DATE>REVIEW_DEADLINE_DATE:}}
+            <h2>{{=T('Reviews')}}</h2>
+            {{if reviews is not None:}}
+              <UL>
+              {{for review in reviews:}}
+                <LI>
+                {{review.body = MARKMIN(review.body.replace('\n', ''))}}
+
+                {{if auth.has_membership(role='manager'):}}
+                {{=XML(str(T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s')) % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
+                {{else:}}
+                {{=XML(str(T('Rating %(rating)s: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p']))}}
+                {{pass}}
+                </LI>
+              {{pass}}
+              </UL>
+            {{pass}}
+            {{pass}}
+        </div>
+    </div>
 </div>
-
-<div style="clear: both;">&nbsp;</div>
-
-<div class="frame">
-<h2>{{=T('Attachments')}}</h2>
-{{if attachments is not None:}}
-  <UL>
-  {{for attach in attachments:}}
-    <LI>
-{{=A(attach.filename or T('noname'),_href=URL(r=request,f='download',args=attach.file,vars={'filename':attach.filename}))}}:
-{{=attach.description}}
-{{if auth.has_membership(role='reviewer') or user_is_author(activity_id):}}
-({{=A(T('edit'),_href=URL(r=request,f='attach',args=(activity_id,attach.id)))}})
-{{pass}}
-    </LI>
-  {{pass}}
-  </UL>
-{{pass}}
-</div>
-
-<div style="clear: both;">&nbsp;</div>
-
-<div class="frame">
-<h2>{{=T('Comments')}}</h2>
-{{if comments is not None:}}
-  <UL>
-  {{for comment in comments:}}
-    <LI>
-    {{comment.body = MARKMIN(comment.body.replace('\n', ''))}}
-    {{=XML(str(T('User %(created_signature)s on %(created_on)s says: %(body)s')) % comment, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
-    </LI>
-  {{pass}}
-  </UL>
-{{pass}}
-</div>
-
-<div style="clear: both;">&nbsp;</div>
-
-{{if auth.has_membership(role='manager') or ( auth.has_membership(role='reviewer') and not user_is_author(activity_id)) or TODAY_DATE>REVIEW_DEADLINE_DATE:}}
-<div class="frame">
-<h2>{{=T('Reviews')}}</h2>
-{{if reviews is not None:}}
-  <UL>
-  {{for review in reviews:}}
-    <LI>
-    {{review.body = MARKMIN(review.body.replace('\n', ''))}}
-
-    {{if auth.has_membership(role='manager'):}}
-    {{=XML(str(T('Rating %(rating)s from user %(created_signature)s on %(created_on)s, says: %(body)s')) % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p'])}}
-    {{else:}}
-    {{=XML(str(T('Rating %(rating)s: %(body)s') % review, sanitize=True, permitted_tags=['a', 'b', 'i', 'br', 'p']))}}
-    {{pass}}
-    </LI>
-  {{pass}}
-  </UL>
-{{pass}}
-</div>
-{{pass}}
-
-<div style="clear: both;">&nbsp;</div>

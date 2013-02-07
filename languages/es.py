@@ -782,6 +782,7 @@
 'Profile': 'Perfil',
 'project': 'project',
 'Projects': 'Proyectos',
+'Proposal': 'Proposal',
 'Proposals': 'Proposals',
 'Propose talk': 'Proponer charla',
 'Proposed': 'Proposed',
