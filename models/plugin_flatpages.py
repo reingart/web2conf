@@ -121,7 +121,7 @@ def plugin_flatpage():
                        INPUT(_type='button', _value=T('Preview'),
                                    _onclick="this.form.action.value='preview';this.form.submit();"),
                        INPUT(_type='button', _value=T('Toggle Editor'),
-                                   _onclick="this.form.action.value='preview';this.form.editor.value=(this.form.editor.value!='textarea' ? 'textarea' : 'wysiwyg');this.form.submit();"),
+                                   _onclick="this.form.action.value='edit';this.form.editor.value=(this.form.editor.value!='textarea' ? 'textarea' : 'wysiwyg');this.form.submit();"),
                        INPUT(_type="submit", _value=T("Save")),
                        INPUT(_type='button', _value=T('Cancel'),
                                    _onclick="this.form.action.value='';this.form.submit();"),
