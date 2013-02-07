@@ -405,28 +405,4 @@ def email_author(form):
         db.commit()   # just in case, save the changes to the db if email fails
         notify(subject, text, to=to, cc=cc)
 
-@auth.requires_membership("manager")
-def challenged():
-    """ Retrieve votes not corresponding to
-    listed activities (name conflicts) and
-    store the results as a static file
-    """
-    response.generic_patterns = ["*",]
-    d_challenged = dict()
-    t_challenged = TBODY()
-    for voter in db(db.auth_user).select():
-        if not voter.tutorials in (None, ""):
-            for tt in voter.tutorials:
-                act = db(db.activity.title == tt).select().first()
-                if act is None:
-                    # agregar a dict por nombre
-                    if not tt in d_challenged:
-                        d_challenged[tt] = 0
-                    d_challenged[tt] += 1
-                    t_challenged.append(TR(TD(voter.id), TD("%s %s" % (voter.first_name, voter.last_name)), TD(tt)))
-    results = UL()
-    for k, v in d_challenged.iteritems():
-        results.append(LI("%s: %s" % (k, v)))
-    return dict(message=H3(T("List of mismatching activity names voted")),
-                challenged=results,
-                votes=TABLE(THEAD(TR(TH(T("user")), TH(T("name")), TH("voted for"))), t_challenged))
+
