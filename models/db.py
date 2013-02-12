@@ -160,6 +160,8 @@ auth.settings.logged_url=URL(r=request,c='user',f='profile')
 auth.settings.create_user_groups = False
 #sauth.settings.actions_disabled = ['register', 'change_password','request_reset_password']
 auth.settings.reset_password_requires_verification = True
+auth.settings.formstyle = "bootstrap"
+auth.settings.label_separator = ""
 
 
 if EMAIL_SERVER:

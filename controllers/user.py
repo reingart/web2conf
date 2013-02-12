@@ -76,13 +76,20 @@ def create_rpx_login_form(c="user", f="login", embed=False):
 def login():
     from gluon.contrib.login_methods.extended_login_form import ExtendedLoginForm
 
-    alt_login_form, signals = create_rpx_login_form()
-            
-    if alt_login_form:
-        extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
-        auth.settings.login_form = extended_login_form
-    return dict(form=auth.login(#next=URL(r=request,c='user',f='profile'),
-                                ))
+    # create the social networks single-signon form:
+    alt_login_form, signals = create_rpx_login_form(embed=True)
+
+    # clean comments and create the basic login form:
+    db.auth_user.email.comment = ""
+    db.auth_user.password.comment = ""
+    login_form = auth.login()  #next=URL(r=request,c='user',f='profile'),
+    # customize form style
+    login_form['_class'] = "form-signin"
+    
+    #if alt_login_form:
+    #    extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
+    #    auth.settings.login_form = extended_login_form
+    return dict(form=login_form, alt_login_form=alt_login_form.login_form())
 
 def janrain():
     alt_login_form, signals = create_rpx_login_form()
