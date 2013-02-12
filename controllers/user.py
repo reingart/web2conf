@@ -102,10 +102,7 @@ def verify():
     return auth.verify_email(next=URL(r=request,f='login'))
 
 def register():
-    response.files.append(URL(r=request,c='static',f='js/jquery.validate.js'))
-    response.files.append(URL(r=request,c='static',f='js/jquery.validate.bootstrap.js'))
-
-    
+        
     # request captcha only in the registration form:
     if RECAPTCHA_PUBLIC_KEY:
         auth.settings.captcha=Recaptcha(request, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY)
@@ -127,27 +124,9 @@ def register():
     form=auth.register(next=URL(r=request,c='default',f='index'),
                        onaccept=update_person)
 
-    form['_id'] = "registration"
-    # add client-side validations (search
-    for tag in form.elements('input, select, textarea'):
-        if tag['_name']:
-            field = getattr(db.auth_user, tag['_name'], None)
-            # check if the field allows empty values:
-            if field and field.requires:
-                validators = field.requires if isinstance(field.requires, (list, tuple)) else [field.requires]
-                for validator in validators:
-                    (value, errors) = validator("")
-                    if errors:
-                        tag["_class"] = "required"
+    # add client-side validations
+    client_side_validate(form, db.auth_user)
 
-    # customize submit butto (forcing client side validation)
-    submit = form.element('input[type=submit]')
-    submit["_class"] = "btn btn-primary"
-    submit["_onsubmit"] = """$("form").valid()"""
-
-    #form = DIV(auth())
-    ##if alt_login_form:
-    ##    form.components.append(alt_login_form.login_form())
     return dict(form=form, alt_login_form=alt_login_form.login_form())
 
 def change_password():
@@ -175,6 +154,8 @@ def profile():
                      onaccept=update_person,
                      deletable=False,
                      next='profile')
+    # add client-side validations
+    client_side_validate(form, db.auth_user)
     return dict(form=form)
 
 

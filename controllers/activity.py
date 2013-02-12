@@ -206,10 +206,14 @@ def propose():
            form.errors.type = T('%s submission closed on %s') % (activity_type, deadline)
            
     validate = lambda form: db.author.insert(user_id=auth.user_id,activity_id=form.vars.id)
-    return dict(form=crud.create(db.activity, 
-                                 next='display/[id]', 
-                                 onvalidation=my_form_processing,
-                                 onaccept=[insert_author, email_author]))
+
+    form = crud.create(db.activity, next='display/[id]', # formstyle="bootstrap",
+                       onvalidation=my_form_processing,
+                       onaccept=[insert_author, email_author])
+    # add client-side validations
+    client_side_validate(form, db.activity)
+
+    return dict(form=form)
 
 @auth.requires(auth.has_membership(role='manager') or (user_is_author() and TODAY_DATE<PROPOSALS_DEADLINE_DATE))
 def update():
