@@ -1,14 +1,17 @@
 {{extend 'layout.html'}}
 
-<script>
-$(document).ready(function(){
-$('TR TD:first').attr('width','150px');
-});
-</script>
-
 <div class="frame">
+
 <h1>{{=T('Registration Form')}}</h1>
 {{if TODAY_DATE<REGCLOSE_DATE:}}
+<div class="alert alert-info">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <h3 class="form-signin">{{=T('Create a new account using social networks single sign-on')}}</h3>
+    {{=alt_login_form}}
+</div>
+
+<h3 class="form-signin">{{=T('Create a traditional account using email/password')}}</h3>
+
 {{=form}}
 <p><b>Notas:</b></p>
 <p id="footnote1"><b>[1]</b> Esta información podrá ser provista a los auspiciantes (desmarcar "Incluir en Lista de Participantes" o "Contactos con Auspiciantes" si no desea que sus datos sean publicados y/o provistos a auspiciantes).

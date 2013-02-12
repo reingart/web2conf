@@ -104,7 +104,7 @@ def verify():
 def register():
     response.files.append(URL(r=request,c='static',f='js/jquery.validate.js'))
     response.files.append(URL(r=request,c='static',f='js/jquery.validate.bootstrap.js'))
-    
+
     
     # request captcha only in the registration form:
     if RECAPTCHA_PUBLIC_KEY:
@@ -114,7 +114,7 @@ def register():
     
     # don't show janrain if user is filling the form manually:
     if not request.vars:
-        alt_login_form, signals = create_rpx_login_form(f="janrain")
+        alt_login_form, signals = create_rpx_login_form(f="janrain", embed=True)
     else:
         alt_login_form = signals = None
         
@@ -146,9 +146,9 @@ def register():
     submit["_onsubmit"] = """$("form").valid()"""
 
     #form = DIV(auth())
-    if alt_login_form:
-        form.components.append(alt_login_form.login_form())
-    return dict(form=form)
+    ##if alt_login_form:
+    ##    form.components.append(alt_login_form.login_form())
+    return dict(form=form, alt_login_form=alt_login_form.login_form())
 
 def change_password():
     redirect(URL(f="password"))
