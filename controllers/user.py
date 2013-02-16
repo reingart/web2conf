@@ -57,7 +57,7 @@ def index():
         f = 'password'
     redirect(URL(f=f, args=args))
 
-def create_rpx_login_form(c="user", f="login", embed=False):
+def create_rpx_login_form(c="user", f="janrain", embed=False):
     if JANRAIN:
         from gluon.contrib.login_methods.rpx_account import RPXAccount
         return RPXAccount(request,
