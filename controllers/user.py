@@ -89,7 +89,7 @@ def login():
     #if alt_login_form:
     #    extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
     #    auth.settings.login_form = extended_login_form
-    return dict(form=login_form, alt_login_form=alt_login_form.login_form())
+    return dict(form=login_form, alt_login_form=alt_login_form.login_form() if alt_login_form else None)
 
 def janrain():
     alt_login_form, signals = create_rpx_login_form()
@@ -127,7 +127,7 @@ def register():
     # add client-side validations
     client_side_validate(form, db.auth_user)
 
-    return dict(form=form, alt_login_form=alt_login_form.login_form())
+    return dict(form=form, alt_login_form=alt_login_form.login_form() if alt_login_form else None)
 
 def change_password():
     redirect(URL(f="password"))

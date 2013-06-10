@@ -4,11 +4,13 @@
 
 <h1>{{=T('Registration Form')}}</h1>
 {{if TODAY_DATE<REGCLOSE_DATE:}}
-<div class="alert alert-info">
-    <button type="button" class="close" data-dismiss="alert">×</button>
-    <h3 class="form-signin">{{=T('Create a new account using social networks single sign-on')}}</h3>
-    {{=alt_login_form}}
-</div>
+    {{if alt_login_form:}}
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <h3 class="form-signin">{{=T('Create a new account using social networks single sign-on')}}</h3>
+        {{=alt_login_form}}
+    </div>
+    {{pass}}
 
 <h3 class="form-signin">{{=T('Create a traditional account using email/password')}}</h3>
 
