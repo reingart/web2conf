@@ -24,9 +24,15 @@
         			{{for activity in activities_filtered:}}
                         {{review = reviews.get(activity.id)}}
                         {{author = authors.get(activity.created_by)}}
+                        {{try:}}
+                          {{flag = URL(c='static', f='img', args=FLAGS[author.country])}}
+                        {{except KeyError:}}
+                          <!-- No flag found for {{=author.country}}-->
+                          {{flag = ""}}
+                        {{pass}}
                         {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
                               " (", activity.authors, " ", 
-                              IMG(_alt=author.country, _src=URL(c='static', f='img', args=FLAGS[author.country])), ") ",
+                              IMG(_alt=T("from %s") % author.country, _src=flag), ") ",
                               review and I(DIV(" %s " % T("review:"),
                                   A(review.rating, 
                                    _href=URL(r=request,f='review',args=activity.id), 
