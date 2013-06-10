@@ -85,7 +85,7 @@ EARLYBIRD_DATE=datetime.datetime(2013,10,12,23,59,0)
 PRECONF_DATE=datetime.datetime(2013,11,2,23,59,0)
 FACUTOFF_DATE=datetime.datetime(2013,9,30,23,59,0)
 REGCLOSE_DATE=datetime.datetime(2013,11,18,23,59,59)
-CONFERENCE_DATE=datetime.datetime(2013,11,12,8,00,00)
+CONFERENCE_DATE=datetime.datetime(2013,10,24,8,00,00)
 
 SIMPLIFIED_REGISTRATION=False # don't ask password on registration
 
