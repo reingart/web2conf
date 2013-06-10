@@ -1,95 +1,29 @@
 # -*- coding: utf-8 -*-
 
-response.menu=[]
+response.menu=[
+    [T('Home'),False, URL(c='default', f='index'), []],
+    [T('Register'),False,URL(r=request,c='user',f='register'), []],
+    ] 
 
-response.menu.append([T('Register'),False,URL(r=request,c='user',f='register'), [    
-        [T('Registration Rates'),True,URL(r=request,c='conference',f='registration')],
-        [T('Payments'),True,URL(r=request,c='payment',f='index')],
-        [T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
-        [T('Room Sharing'),False,URL(r=request,c='venue',f='room_sharing')],
-    ]])
+if ENABLE_TALKS:
+   response.menu.append([T('Schedule'), False, URL(r=request,c='schedule',f='index')])
+   response.menu.append([T('Proposals'),False,URL(r=request,c='activity',f='index'), [        
+        [T('Propose talk'),False, URL(r=request,c='activity',f='propose')],
+        [T('Voting'),False,URL(r=request,c='activity',f='vote')],
+        [T('Ratings'),False,URL(r=request,c='activity',f='ratings')],
+        [T('Index'),False,URL(r=request,c='activity',f='index')],
+        ]])
 
-
-# Add feed items for the menu
-menu_feeds = []
-for mf in db(db.feed).select():
-    menu_feeds.append([mf.name, True, mf.url])
-
-if CONFERENCE_URL:
-    response.menu.append([T('Conference'),False,CONFERENCE_URL])
-    
-else:
-    submenu_conf=[
-        [T('Conference'), True, URL(r=request,c='conference',f='index'), [
-            [T('Call for Proposals'),False,URL(r=request,c='conference',f='proposals')],
-            [T('Lightning Talks'),True,URL(r=request,c='conference',f='lightning')],
-            [T('Open Spaces'),True,URL(r=request,c='conference',f='openspace')],
-            [T('Tutorials'),True,URL(r=request,c='conference',f='tutorials')],
-            [T('Sprints'),True,URL(r=request,c='conference',f='sprints')],
-            [T('Summit'),True,URL(r=request,c='conference',f='summit')],
-            [T('Scientific Track'),True,URL(r=request,c='conference',f='science')],
-            [T('Student works contest'),True,URL(r=request,c='conference',f='contest')],
-        ]],
-        [T('Staff'),True,URL(r=request,c='conference',f='staff')],
-        [T('Publicize'),True,URL(r=request,c='conference',f='publicize')],
-        [T('Volunteer'),True,URL(r=request,c='conference',f='volunteer')],
-        #[T('Financial Aid'),True,URL(r=request,c='fa',f='index')],
-        #T('Press Release'),True,URL(r=request,c='conference',f='press')],
-        #[T('Blog'),True, None, [[T('Articles'),True,URL(r=request,c='default',f='planet')], \
-        #[T('RSS'),True,None, menu_feeds]]]
-        ]
-                             
-    response.menu.append([T('About'),False,URL(r=request, \
-    c='conference',f='about'),submenu_conf])
-  
-
-submenu_info=[
+if auth.is_logged_in():
+    submenu_info=[
         [T('Companies'),False,URL(r=request,c='stats',f='companies')],
         [T('Attendees'),False,URL(r=request,c='stats',f='attendees')],
         [T('Charts'),False,URL(r=request,c='stats',f='charts')],
         [T('Brief'),False,URL(r=request,c='stats',f='brief')],
         [T('Maps'),False,URL(r=request,c='stats',f='maps')],
-]
-if ENABLE_TALKS:
-   if True or PROPOSALS_DEADLINE_DATE<TODAY_DATE:
-       response.menu.append([T('Schedule'), False, URL(r=request,c='schedule',f='index'), [
-                            [T('Keynote Speakers'),False,URL(r=request,c='activity',f='speakers')],
-                            [T('Speakers List'),False,URL(r=request,c='activity',f='speakers')],
-                            [T('Talks'),False,URL(r=request,c='activity',f='accepted')],
-                            [T('Tutorials'),False,URL(r=request,c='activity',f='accepted')],
-                            [T('Posters'),False,URL(r=request,c='activity',f='accepted')],
-                            [T('Projects'),False,URL(r=request,c='projects',f='index')],
-                            ]])
+    ]
+    response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
-   submenu_activities = []
-   response.menu.append([T('Proposals'),False,URL(r=request,c='activity',f='proposed'), [        
-        [T('Propose talk'),False, URL(r=request,c='activity',f='propose')],
-        [T('Voting'),False,URL(r=request,c='activity',f='vote')],
-        [T('Ratings'),False,URL(r=request,c='activity',f='ratings')],
-        [T('Proposed Activities'),False,URL(r=request,c='activity',f='proposed')],
-        ]])
-
-        
-response.menu.append([T('Sponsors'),False,URL(r=request,c='sponsors',f='index'), [
-    [T('Sponsors List'),False,URL(r=request,c='sponsors',f='index')],
-    [T('Jobs'),False,URL(r=request,c='jobs',f='index')],
-    [T('Prospectus'),False,URL(r=request,c='sponsors',f='prospectus')],
-    [T('Sign-up'),False,URL(r=request,c='sponsors',f='sign_up')],
-    ]])
-if auth.user:
-    response.menu[-1][3].append([T('Edit'),False,URL(r=request,c='sponsors',f='edit')])
-##response.menu.append([T('Projects'),False,URL(r=request,c='projects',f='index')])
-
-response.menu.append([T('Venue'),False,URL(r=request,c='venue',f='index'), [
-    [T('Location'),False,URL(r=request,c='venue',f='index')],
-    [T('Maps'),False,URL(r=request,c='venue',f='maps')],
-    [T('City Tour'),False,URL(r=request,c='venue',f='city_tour')],
-    [T('Traveling'),False,URL(r=request,c='venue',f='traveling')],
-    [T('Accomodation'),False,URL(r=request,c='venue',f='accomodation')],
-    [T('Restaurants'),False,URL(r=request,c='venue',f='restaurants')],
-    ]])
-
-response.menu.append([T('Stats'),False,URL(r=request,c='stats',f='index'),submenu_info])
 
 #############################################
 # Insert Manage sub-menu item

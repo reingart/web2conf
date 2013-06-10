@@ -548,6 +548,7 @@
 'Hobbyist (early), $250': 'Aficionado (temprano), $250',
 'Hobbyist (on site), $450': 'Aficionado (en el sitio), $450',
 'Hobbyist (regular), $350': 'Aficionado (regular), $350',
+'Home': 'Inicio',
 'Hotel where Staying': 'Hotel donde se hospeda',
 "How to Pay somebody else's fees": 'Como pagar los costos de otro',
 'How to Register somebody else and pay their fees': 'Como registrar a otro y pagar sus costos',
