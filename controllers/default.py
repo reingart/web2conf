@@ -10,7 +10,8 @@ def index():
                                    time_expire=60*5)
     days = (CONFERENCE_DATE.date() - TODAY_DATE.date()).days
     response.days_left = days if days > 0 else 0
-    return response.render(plugin_flatpage()) 
+    return {'form': None, 'body': None}
+    #return response.render(plugin_flatpage()) 
     
 @caching
 def about():
@@ -71,7 +72,7 @@ def twitter():
             # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
             try: 
                 tweets = cache.disk(request.env.path_info + ".tweets", 
-                                               lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%s" % TWITTER_HASH).read(), 
+                                               lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%%40%s" % TWITTER_HASH).read(), 
                                                time_expire=60*15)
             except:
                import os
@@ -242,14 +243,16 @@ def planet():
     else:
         f = open(path, "r+")
         rss = None
-    portalocker.lock(f, portalocker.LOCK_EX)
-    if not rss:
-        rss = pickle.load(f)
-    else:
-        f.seek(0)
-        pickle.dump(rss, f)
-    portalocker.unlock(f)
-    f.close()
+    try:
+        portalocker.lock(f, portalocker.LOCK_EX)
+        if not rss:
+            rss = pickle.load(f)
+        else:
+            f.seek(0)
+            pickle.dump(rss, f)
+    finally:
+        portalocker.unlock(f)
+        f.close()
 
     # .rss requests
     if request.extension == "rss":
