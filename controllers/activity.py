@@ -8,7 +8,7 @@ if not request.function in ('accepted', 'propossed', 'ratings', 'vote'):
     crud.settings.controller='activity'
 
 @auth.requires_login()
-def proposed():
+def index():
     activities=db(db.activity.id>0).select(orderby=~db.activity.modified_on)
     rows = db(db.review.created_by==auth.user.id).select()
     reviews = dict([(row.activity_id, row) for row in rows])
