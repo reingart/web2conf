@@ -1,0 +1,9 @@
+{{extend 'layout.html'}}
+{{=H3("Incoming")}}
+{{for email in emails:}}
+  {{=HR()}}
+  {{=H5(A(email.subject, _href=URL(c="mailing", f="read", args=["message", email.id])))}}
+  From: {{=email.sender}}{{=BR()}}
+{{=str(email.content)[:100] + "..."}}
+{{pass}}
+

@@ -1,0 +1,62 @@
+{{extend 'layout.html'}}
+{{if form and format=='HTML':}}
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','wysihtml5-0.3.0_rc2.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL(request.application,'static/plugin_flatpages','bootstrap-wysihtml5-0.0.2.min.js')}}"></script>
+<link rel="stylesheet" media="screen,projection" type="text/css" href="{{=URL(request.application,'static/plugin_flatpages','bootstrap-wysihtml5-0.0.2.css')}}" />
+<script type="text/javascript">
+$(function()
+  {
+      $('#wysiwyg').wysihtml5();
+  });
+</script>
+{{pass}}
+
+<div class="alert">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h3>{{=T("%s days left") % (response.days_left,)}} 
+    {{=A(T("%s registrations so far") % (response.reg_count,), _href=URL(c='stats', f='attendees'), _style='text-decoration: none;')}}<br/>
+    <!--i>{{=A(T("full schedule (reserve your seat!)"), _href=URL(c='schedule', f='index'), _style='text-decoration: none;')}}</i></h3-->
+</div>
+
+<div class="jumbotron">
+    <h1>¡Python en Rosario! 24 y 25 de Octubre, super awesome!</h1>
+    <p class="lead">Python es un lenguaje dinámico comparable con Java, .NET, PHP y Ruby
+mucho más intuitivo y fácil de aprender, alentando la colaboración.
+Disfruta programar tan rápido como piensas, de forma clara y expresiva.
+Ven y conoce porqué Google, Yahoo, Disney, Cisco, LucasFilm, Red Hat,
+Pixar, VMware, Canonical (Ubuntu), NASA, YouTube y varias empresas
+nacionales, universidades locales, docentes e investigadores usan Python!</p>
+    <a class="btn btn-large btn-success" href="{{=URL(c="user", f="register")}}">Inscribite hoy!</a>
+</div>
+
+
+<div style="padding: 5px"></div>
+
+{{if body:}}
+<div class="hero-unit">
+{{=body}}
+</div>
+{{pass}}
+
+{{if form:}}
+  {{=form}}
+{{pass}}
+
+<div class="row-fluid">
+    <div class="span6">
+        {{# the custom twitter timeline is broken }}
+        {{if True or TWITTER_HASH:}}
+            <!-- <h3><img src={{=URL(c="static", f="img/twitter.png")}} alt="twitter"/> {{=T("%s Recent Tweets"%TWITTER_HASH)}} &nbsp;
+            <a href="https://twitter.com/pyconar" class="twitter-follow-button" data-show-count="false" data-lang="es">Seguir a @pyconar</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></h3> -->
+                {{# LOAD(c="default", f="twitter.load", ajax=True) }}
+        {{pass}}
+		  <a class="twitter-timeline"  href="https://twitter.com/pyconar"  data-widget-id="347683218054586368">Tweets de @pyconar</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </div>
+    <div class="span6">
+        <div id="news">
+          {{=LOAD(c="default", f="planet.load", ajax=True) }}
+        </div>
+    </div>
+</div>
+

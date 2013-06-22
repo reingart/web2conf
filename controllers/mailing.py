@@ -176,3 +176,21 @@ def attendees():
         response.flash = "Complete el form!"
         
     return dict(form=form, result=mail.result, ret=ret, total=len(ret))
+
+@auth.requires_membership("manager")
+def read():
+    imapdb = DAL(IMAP_URI, pool_size=1)
+    imapdb.define_tables()
+    message = imapdb(imapdb.INBOX.id==request.args[1]).select().first()
+    return dict(message=message)
+
+@auth.requires_membership("manager")
+def incoming():
+    imapdb = DAL(IMAP_URI, pool_size=1)
+    imapdb.define_tables()
+    # get yesterday
+    import datetime
+    yesterday = request.now.date() - datetime.timedelta(1)
+    emails = imapdb(imapdb.INBOX.created >= yesterday).select()
+    return dict(emails=emails)
+

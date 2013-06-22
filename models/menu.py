@@ -31,6 +31,7 @@ if auth.is_logged_in():
 
 if auth.has_membership(role='manager'):
     submenu=[
+        [T('Inbox'),False,URL("mailing", "incoming"), []],
         [T('Settings'),False,URL("manage", "control_panel"), []],
         [T('CRUD'),False,URL(r=request,c='manage',f='_crud'), []],
         [T('Events'),False,URL("manage", "events"), []],        
@@ -78,3 +79,4 @@ right_sidebar_enabled = True
 #randomize sponsors...
 ##import random
 ##random.shuffle(response.sponsors[str(SPONSOR_LEVELS[1])])
+

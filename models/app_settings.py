@@ -9,7 +9,8 @@ T.force(session.lang or "es")
 # for maintenance
 
 SUSPEND_SERVICE = False
-ALLOW_VOTE = True
+# True for accepting user activity votes
+ALLOW_VOTE = False
 
 ######################################
 ### PARAMETERS
@@ -168,16 +169,20 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'sprint': datetime.datetime(2013,10,12,0,0,0),
     }
 
-ON_PROPOSE_EMAIL = "" #email address list, separated by ";"
-PROPOSE_NOTIFY_TEXT = str(T("Your activity proposal has been recorded. Thank you"))
-PROPOSE_NOTIFY_SUBJECT = str(T("New activity proposal"))
-COMMENT_NOTIFY_TEXT = str(T("Your activity received a comment by %(user)s."))
-COMMENT_NOTIFY_SUBJECT = str(T("Activity comment"))
-REVIEW_NOTIFY_TEXT = str(T("A review of your activity has been created or updated by %(user)s."))
-REVIEW_NOTIFY_SUBJECT = str(T("Activity review"))
-CONFIRM_NOTIFY_TEXT = str(T("Your activity %(activity)s has been confirmed"))
-CONFIRM_NOTIFY_SUBJECT = str(T("Activity confirmed"))
-
+ON_PROPOSE_EMAIL = "edvm@fedoraproject.org;spametki@gmail.com" #email address list, separated by ";"
+PROPOSE_NOTIFY_TEXT = str(T("""Your activity proposal %(activity)s has been recorded.
+You can access the current activity information at %(link)s
+Thank you"""))
+PROPOSE_NOTIFY_SUBJECT = str(T("New activity proposal %(activity)s"))
+COMMENT_NOTIFY_TEXT = str(T("""Your activity %(activity)s received a comment by %(user)s:
+%(comment)s
+"""))
+COMMENT_NOTIFY_SUBJECT = str(T("The activity %(activity)s received a comment"))
+REVIEW_NOTIFY_TEXT = str(T("A review of your activity %(activity)s has been created or updated by %(user)s."))
+REVIEW_NOTIFY_SUBJECT = str(T("Activity %(activity)s review"))
+CONFIRM_NOTIFY_TEXT = str(T("""Your activity %(activity)s has been confirmed.
+You can access the current activity information at %(link)s"""))
+CONFIRM_NOTIFY_SUBJECT = str(T("The activity %(activity)s was confirmed"))
 
 SPONSOR_LEVELS=("Organizer", "Gold", "Silver", "Bronx", "Specials Thanks", "Media", "Adherent")
 
@@ -185,7 +190,7 @@ SPONSOR_LEVELS=("Organizer", "Gold", "Silver", "Bronx", "Specials Thanks", "Medi
 EMAIL_VERIFICATION= not DEV_TEST
 EMAIL_SERVER='localhost:25' #or Configure!
 EMAIL_AUTH=None # or 'username:password'
-EMAIL_SENDER='pyconar2012@gmail.com'
+EMAIL_SENDER='pyconar2013@gmail.com'
 
 # on production, mail should be sent by a cron job or similar
 # (really, avoid timeout issues and problems like google spam filtering)
@@ -231,6 +236,7 @@ To proceed with your registration and verify your email, click on the following 
  "http://%s%s/%%(key)s" % (request.env.http_host, URL(r=request,f='verify')), 
  response.title))
 
+IMAP_URI = None
 
 PASSWORD_RETRIEVE_SUBJECT=str(T("%s Registration Password") % response.title)
 PASSWORD_RETRIEVE_BODY=str(T("Your new password is %(password)s"))
@@ -250,3 +256,4 @@ def caching(fn):
     else:
         session.forget()    # only if no session.flash (allow to clean it!)
         return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)
+

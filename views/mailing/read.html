@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+{{=A(T("Back to inbox"), _href=URL(c="mailing", f="incoming"))}}
+{{if message:}}
+{{=H3(T("Message"))}}
+{{=UL(LI(T("From"), ": ", message.sender), LI(T("Subject"), ": ", message.subject), LI(T("Date"), ": ", str(message.created)))}}
+{{=HR()}}
+{{=XML(message.content)}}
+{{else:}}
+{{=T("No message found")}}
+{{pass}}
