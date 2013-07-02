@@ -11,7 +11,7 @@
         {{for track in ACTIVITY_TRACKS:}}
             {{activities_filtered = [act for act in activities if act.type == activity_type and act.track==track]}}
             {{if activities_filtered:}}
-              {{group_id = "%s_%s" % (activity_type, track)}}
+              {{group_id = "%s_%s" % (activity_type.replace(" ", "_"), track)}}
               {{first = 'in' if first is None else ''}}
               <div class="accordion-group">
                 <div class="accordion-heading">

@@ -53,6 +53,7 @@ db.activity.type.default=None
 db.activity.level.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_LEVELS])
 db.activity.level.default=ACTIVITY_LEVELS[0]
 db.activity.track.requires=IS_IN_SET([(k, T(k)) for k in ACTIVITY_TRACKS])
+db.activity.track.default=ACTIVITY_TRACKS[0]
 db.activity.abstract.requires=IS_NOT_EMPTY()
 db.activity.abstract.represent=lambda x: MARKMIN(x, sep="br")
 db.activity.abstract.comment= SPAN(T("WIKI format: "), A('MARKMIN', _target='_blank',
