@@ -126,7 +126,7 @@
                   {{if response.sponsors.get(sponsor_level):}}
                      <h3>{{=T(sponsor_level)}}</h3>
                      <ul class="thumbnails">
-                     {{for sponsor in response.sponsors.get(sponsor_level,[]): }}
+                     {{for sponsor in response.sponsors.get(sponsor_level,[]):}}
                         <li class="span4">
                           {{=A(IMG(_alt=sponsor.alt,_class="thumbnail",_src=URL(r=request, c='default', f='fast_download', args=sponsor.logo),_border='0'),_href=sponsor.url,_title='%s (%s)' % (sponsor.alt, T(sponsor_level)))}}
                         </li>

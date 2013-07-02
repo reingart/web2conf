@@ -193,4 +193,3 @@ def incoming():
     yesterday = request.now.date() - datetime.timedelta(1)
     emails = imapdb(imapdb.INBOX.created >= yesterday).select()
     return dict(emails=emails)
-

@@ -9,6 +9,7 @@ syntax: glob
 #*
 models/0_override.py
 models/0_private.py
+models/app_settings_private.py
 databases/*
 sessions/*
 errors/*

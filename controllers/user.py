@@ -85,7 +85,7 @@ def login():
     login_form = auth.login()  #next=URL(r=request,c='user',f='profile'),
     # customize form style
     login_form['_class'] = "form-signin"
-    
+
     #if alt_login_form:
     #    extended_login_form = ExtendedLoginForm(auth, alt_login_form, signals=signals)
     #    auth.settings.login_form = extended_login_form
@@ -94,9 +94,11 @@ def login():
 def janrain():
     alt_login_form, signals = create_rpx_login_form()
     auth.settings.login_form = alt_login_form
-    return dict(form=auth.login(next=URL(r=request,c='user',f='profile'),
-                                ##onaccept=lambda form:update_pay(auth.user),
-                                ))
+    # the following next value prevents the app from
+    # redirecting to the requested action
+    # next=URL(r=request,c='user',f='profile')
+    ##onaccept=lambda form:update_pay(auth.user)    
+    return dict(form=auth.login())
 
 def verify():
     return auth.verify_email(next=URL(r=request,f='login'))

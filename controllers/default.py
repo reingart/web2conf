@@ -2,7 +2,7 @@
 # The main public page
 #############################################
 
-#@caching
+@caching
 def index():
     ## for pycontech: redirect(URL(c='about', f='index'))
     response.reg_count = cache.ram(request.env.path_info + ".reg_count", 
@@ -71,8 +71,9 @@ def twitter():
         if TWITTER_HASH:
             # tweets = urllib.urlopen('http://twitter.com/%s?format=json' % TWITTER_HASH).read()
             try: 
+                # abria que usar la API 1.1 (seguramente aluna biblioteca)
                 tweets = cache.disk(request.env.path_info + ".tweets", 
-                                               lambda: urllib.urlopen("http://search.twitter.com/search.json?q=%%40%s" % TWITTER_HASH).read(), 
+                                               lambda: urllib.urlopen("https://api.twitter.com/1.1/search/tweets.json?q=%%40%s" % TWITTER_HASH).read(), 
                                                time_expire=60*15)
             except:
                import os
@@ -89,14 +90,22 @@ def twitter():
             data = sj.loads(tweets, encoding="utf-8")
             the_tweets = dict()
             
-            for obj in data["results"]:
-                the_tweets[obj["id"]] = (obj["created_at"], obj["from_user"], obj["profile_image_url"], obj["text"])
+            if "results" in data:
+                for obj in data["results"]:
+                    the_tweets[obj["id"]] = \
+                        (obj["created_at"], obj["from_user"],
+                         obj["profile_image_url"], obj["text"])
+            else:
+                # FIXME: the custom timeline broke because of an
+                # API authentication issue
+                the_tweets = {}
+                # raise Exception(str(data))
             ret = dict(message = None, tweets = the_tweets)
         else:
             ret = dict(tweets = None, message = 'disabled')
 
     except Exception, e:
-        ret = dict(tweets = None, message = DIV(T('Unable to download because:'),BR(),str(e)))
+        ret = dict(tweets = None, message = DIV(T('Unable to download tweets:'),BR(),str(e)))
     return response.render(ret)
 
 

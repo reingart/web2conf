@@ -2,8 +2,17 @@
 # activities (activity proposal)
 #############################################
 
+if request.function in ("propose", "update") and (not auth.has_membership("manager")):
+    db.activity.duration.readable = db.activity.duration.writable = False
+
+if CFP:
+    db.activity.duration.readable = db.activity.duration.writable = False
+    db.activity.track.readable = db.activity.track.writable = False
+    # db.activity.logo.writable = db.activity.readable = False
+    db.activity.logo.writable = db.activity.logo.readable = False
+
 # we are not in default controller, change it at crud
-if not request.function in ('accepted', 'propossed', 'ratings', 'vote'):
+if not request.function in ('accepted', 'proposed', 'ratings', 'vote'):
     crud=Crud(globals(),db)
     crud.settings.controller='activity'
 
@@ -369,6 +378,7 @@ def download():
 def email_author(form):
     to = subject = text = cc = None
     user = "%s %s" % (auth.user.first_name, auth.user.last_name)
+    backup = None
     if isinstance(user, unicode):
         user = user.encode('utf-8', 'replace')
     if request.function == "propose":
@@ -404,9 +414,14 @@ def email_author(form):
         to = activity.created_by.email
     if to is None:
         to = auth.user.email
-
     if to:
         db.commit()   # just in case, save the changes to the db if email fails
+        if activity:
+            backup = "\n".join(["%s: %s" % (field, activity[field]) for field in db.activity.fields()])
         notify(subject, text, to=to, cc=cc)
+        if ACTIVITY_BACKUP_TO and backup and (request.function in ("propose", "update")):
+            backup = """
+%(note)s
 
-
+%(backup)s""" % dict(note=T("Following is a copy of the submitted data"), backup=backup)
+            notify(subject, backup, to=ACTIVITY_BACKUP_TO, cc=cc)

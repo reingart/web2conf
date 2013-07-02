@@ -11,6 +11,8 @@ T.force(session.lang or "es")
 SUSPEND_SERVICE = False
 # True for accepting user activity votes
 ALLOW_VOTE = False
+# call for proposals
+CFP = True
 
 ######################################
 ### PARAMETERS
@@ -122,8 +124,11 @@ TUTORIALS_CAPS={
 COST_FIRST_TUTORIAL=120.0
 COST_SECOND_TUTORIAL=80.0
 
-# default activities
-ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
+if CFP:
+    ACTIVITY_TYPES = ('talk', 'extreme talk')
+else:
+    # default activities
+    ACTIVITY_TYPES= ('keynote', 'panel', 'plenary',
                  'talk', 'extreme talk', 'poster',
                  'tutorial', 'workshop', 'project',
                  'stand', 'summit', 'open space',
@@ -156,6 +161,8 @@ ACTIVITY_VENUE=SPAN(A("Main Venue \"Downtown\"", _href=URL(c="venue")))
 
 ACTIVITY_SHOW_DESCRIPTION = False # hide desc to public
 
+ACTIVITY_BACKUP_TO = "pyconar2013@gmail.com"
+
 PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'talk': datetime.datetime(2013,6,30,23,59,59),
     'extreme talk': datetime.datetime(2013,6,30,23,59,59),
@@ -169,7 +176,7 @@ PROPOSALS_DEADLINE_DATE_PER_ACTIVITY_TYPE={
     'sprint': datetime.datetime(2013,10,12,0,0,0),
     }
 
-ON_PROPOSE_EMAIL = "edvm@fedoraproject.org;spametki@gmail.com" #email address list, separated by ";"
+ON_PROPOSE_EMAIL = "edvm@fedoraproject.org" #email address list, separated by ";"
 PROPOSE_NOTIFY_TEXT = str(T("""Your activity proposal %(activity)s has been recorded.
 You can access the current activity information at %(link)s
 Thank you"""))
@@ -256,4 +263,3 @@ def caching(fn):
     else:
         session.forget()    # only if no session.flash (allow to clean it!)
         return cache(request.env.path_info,time_expire=60*5,cache_model=cache.ram)(fn)
-

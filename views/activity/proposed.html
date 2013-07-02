@@ -1,0 +1,56 @@
+{{extend 'layout.html'}}
+
+<div class="frame">
+<h1>{{=T('Proposed Activities')}}</h1>
+
+{{first = None}}
+<div class="accordion" id="accordion2">
+
+{{for activity_type in ACTIVITY_TYPES:}}
+    {{if activity_type not in ACTIVITY_REVIEWABLE: continue}}
+        {{for track in ACTIVITY_TRACKS:}}
+            {{activities_filtered = [act for act in activities if act.type == activity_type and act.track==track]}}
+            {{if activities_filtered:}}
+              {{group_id = "%s_%s" % (activity_type, track)}}
+              {{first = 'in' if first is None else ''}}
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#{{=group_id}}">
+                    <h3>{{=T(activity_type)}} - track {{=T(track).lower()}}</h3>
+                  </a>
+                </div>
+                  <div id="{{=group_id}}" class="accordion-body collapse {{=first}}">
+                  <div class="accordion-inner">
+        			{{for activity in activities_filtered:}}
+                        {{review = reviews.get(activity.id)}}
+                        {{author = authors.get(activity.created_by)}}
+                        {{try:}}
+                          {{flag = URL(c='static', f='img', args=FLAGS[author.country])}}
+                        {{except KeyError:}}
+                          <!-- No flag found for {{=author.country}}-->
+                          {{flag = ""}}
+                        {{pass}}
+                        {{=LI(T(activity.status),' ',A(activity.title,_href=URL(r=request,f='display',args=activity.id)),
+                              " (", activity.authors, " ", 
+                              IMG(_alt=T("from %s") % author.country, _src=flag), ") ",
+                              review and I(DIV(" %s " % T("review:"),
+                                  A(review.rating, 
+                                   _href=URL(r=request,f='review',args=activity.id), 
+                                   _title=review.body),
+                                  ' ', T("last modification: %s") % activity.modified_on),
+                                   )  or '',  
+                                  activity.confirmed and " (%s) " % T("confirmed") or "",
+                              )}}
+                    {{pass}}
+                  </div>
+                </div>
+              </div>
+            
+        {{pass}}
+    {{pass}}
+{{pass}}
+</div>
+
+{{if not activities:}}
+No talks proposed yet
+{{pass}}

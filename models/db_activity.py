@@ -4,6 +4,8 @@
 ### MANAGE ACTIVITIES ("TALK" PROPOSALS)
 ######################################
 
+autotranslate = lambda x: T(x) if not x in ("", None) else x
+
 db.define_table('activity',
     db.Field('authors',label=T("Authors"),default=('%s %s' %(auth.user.first_name, auth.user.last_name)) if auth.user else None),
     db.Field('title',label=T("Title")),
@@ -15,8 +17,8 @@ db.define_table('activity',
     db.Field('abstract','text',label=T("Abstract")),
     db.Field('description','text',label=T("Description"),widget=wysiwyg),
     db.Field('categories','list:string',label=T("Categories")),
-    db.Field('level','string',label=T("Level"),represent=lambda x: T(x)),
-    db.Field('track','string',label=T("Track"),represent=lambda x: T(x)),
+    db.Field('level','string',label=T("Level"),represent=autotranslate),
+    db.Field('track','string',label=T("Track"),represent=autotranslate),
     db.Field('logo','upload', comment=T("only used for sprints)")),
     db.Field('scheduled_datetime','datetime',label=T("Scheduled Datetime"),writable=False,readable=False),
     db.Field('scheduled_room',label=T("Scheduled Room"),requires=IS_EMPTY_OR(IS_IN_SET(sorted(ACTIVITY_ROOMS.items()))), writable=False,readable=False),

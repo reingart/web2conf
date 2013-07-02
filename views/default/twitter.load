@@ -4,17 +4,17 @@
 
 {{ if tweets is not None: }}
 <ul class="media-list">
-{{ for k in reversed(sorted(tweets)): }}
+{{for k in reversed(sorted(tweets)): }}
     <li class="media">
-  {{ # tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
+  {{# tweets is a dictionary of type id: (created_at, img_source, user_name, message) }}
         <a class="pull-left" href="#">
- 		 {{ =IMG(_src=tweets[k][2], _width="48px", _height="48px")}}
+ 		 {{=IMG(_src=tweets[k][2], _width="48px", _height="48px")}}
         </a>
 	    <div class="media-body">
-      		<h4 class="media-heading">{{ ="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
-  			{{ =MARKMIN(tweets[k][3].encode('utf8', 'ignore')) }}
+      		<h4 class="media-heading">{{="%s: %s" % (tweets[k][1], tweets[k][0][:-5]) }}</h4>
+  			{{=MARKMIN(tweets[k][3].encode('utf8', 'ignore')) }}
         </div>
 	</li>
-{{ pass }}
+    {{ pass }}
 </ul>
 {{ pass }}
